@@ -1,0 +1,36 @@
+# Node / Nuxt
+node_modules/
+.nuxt/
+.nitro/
+.output/
+dist/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+*.log
+
+# Strapi
+cms_strapi/.cache/
+cms_strapi/build/
+cms_strapi/.tmp/
+
+# Python / Django
+__pycache__/
+*.py[cod]
+.venv/
+.python-version
+*.sqlite3
+*.egg-info/
+
+# Environnements
+.env
+.env.*
+!.env.example
+frontend_nuxt/.env
+backend_django/.env*
+cms_strapi/.env*
+
+# IDE
+.DS_Store
+.idea/
+.vscode/

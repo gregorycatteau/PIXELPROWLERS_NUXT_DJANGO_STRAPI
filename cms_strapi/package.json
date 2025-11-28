@@ -1,0 +1,16 @@
+{
+  "name": "cms_strapi",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Strapi 5 (PostgreSQL only) pour PixelProwlers",
+  "scripts": {
+    "develop": "strapi develop",
+    "start": "strapi start",
+    "build": "strapi build"
+  },
+  "dependencies": {
+    "@strapi/strapi": "^5.0.0",
+    "pg": "^8.13.1",
+    "typescript": "^5.9.3"
+  }
+}
