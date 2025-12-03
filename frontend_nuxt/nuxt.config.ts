@@ -2,6 +2,7 @@
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineNuxtConfig({
+  srcDir: 'app',
   typescript: {
     strict: true
   },
