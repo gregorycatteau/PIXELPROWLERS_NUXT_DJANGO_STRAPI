@@ -1,20 +1,144 @@
 # PX V1.2 — Parcours longue traîne « Ma structure dysfonctionne » (spécification fonctionnelle)
 
+> Statut SSOT : document V1.2 conservé pour historique. La version active est V1.3, voir `docs/20-product_specs/functional/PX_V1_3_P1_DIAGNOSTIC_ATELIER.md`.
+
 ## 1. Contexte & objectifs
-- Objectif : filtrer entre curieux et personnes prêtes à agir via un double diagnostic anonyme, fournir des ressources open source adaptées, puis proposer Relinium (SSOT perso) et un tunnel Fit PixelProwlers.
+- Objectif : filtrer entre curieux et personnes prêtes à agir via un parcours modulaire P1 (panorama + blocs d’exploration) puis un diagnostic VUCA/Alignement, fournir des ressources open source adaptées, puis proposer Relinium (SSOT perso) et un tunnel Fit PixelProwlers.
 - Périmètre V1.2 : front Nuxt uniquement pour les questionnaires/bilans/ressources, backend limité au contact existant ; pas de stockage serveur des réponses sans opt-in Relinium.
 - Promesse clé : souveraineté — pas de compte ni d’identité requise pour le diagnostic, aucune persistance serveur par défaut, possibilité d’effacer localement.
 
 ## 2. Parcours global V1.2 – « Ma structure dysfonctionne »
 - Page longue traîne dédiée (ex. `/parcours/ma-structure-dysfonctionne`) : cadrage du problème, langage aligné sur les structures sociales/humaines, promesse de souveraineté explicitée.
-- Séquence : Questionnaire 1 (dysfonctionnements) → Bilan 1 → Questionnaire 2 (VUCA/systémique) → Bilan 2 → Ressources open source adaptées → Option Relinium (SSOT perso) → Tunnel Fit PixelProwlers.
+- Séquence : Panorama P1 + blocs d’exploration (dysfonctionnements) → bilans de blocs → Bilan global P1 → Questionnaire 2 (VUCA/systémique + Valeurs/Alignement) → Bilan 2 → Ressources open source adaptées → Option Relinium (SSOT perso) → Tunnel Fit PixelProwlers.
 - Sorties possibles : rester en mode autonome (ressources), créer un compte Relinium pour conserver/exporter, ou entrer dans le tunnel Fit pour vérifier l’adéquation avec PixelProwlers.
 
-## 3. Questionnaire 1 – Dysfonctionnements (diagnostic « symptômes »)
-- Durée cible 5–7 min, échelle Likert 1–5 (« pas du tout un problème » → « problème majeur et récurrent »).
-- Structure : 8–12 blocs thématiques (humain, gouvernance, organisation, finances, numérique, etc.), 1–3 items par bloc → ~20–25 items max.
-- Axes d’analyse (synthèse) : (1) Humain/coopération, (2) Gouvernance/décision, (3) Organisation/process/documentation, (4) Ressources/soutenabilité (finances, temps, outils).
-- Sortie attendue : score/indice de friction par axe (faible/moyen/fort) + top 3 zones de blocage.
+## 3. Questionnaire P1 – Dysfonctionnements (panorama + blocs d’exploration)
+
+### 3.1. Architecture générale
+
+Le questionnaire P1 n’est pas un bloc unique mais un **parcours d’exploration** structuré :
+
+1. **E1 – Panorama express**  
+   - 10 à 12 questions transversales couvrant les 4 axes :  
+     (1) Humain/coopération  
+     (2) Gouvernance/décision  
+     (3) Organisation/process/documentation  
+     (4) Ressources/soutenabilité  
+   - Objectif : offrir une vue d’ensemble rapide des tensions, en ~3–4 minutes, et identifier les chantiers les plus “chargés”.
+   - Sortie : un premier “niveau de friction” par axe (faible / moyen / fort) + une suggestion de blocs à explorer en priorité.
+
+2. **E2 – Choix de blocs d’exploration**  
+   L’utilisateur voit une carte des **4 blocs thématiques** et peut choisir lesquels explorer en profondeur, dans l’ordre qu’il veut :
+
+   - Bloc 1 – Climat & ressenti  
+   - Bloc 2 – Mouvement & prévisibilité  
+   - Bloc 3 – Règles & décisions  
+   - Bloc 4 – Structure & robustesse  
+
+   Chaque bloc se comporte comme un “questionnaire autonome”, avec son propre bilan, et alimente un **bilan global** qui se construit au fil de l’exploration.
+
+   L’utilisateur peut :
+   - explorer **un seul bloc** puis s’arrêter,
+   - explorer **plusieurs blocs** (dans l’ordre de son choix),
+   - ou explorer **les 4 blocs** avant de passer à la suite (Q2 VUCA + Valeurs / Alignement).
+
+   Le parcours est conçu pour rester utile même si un seul bloc est exploré.
+
+3. **E3.x – Questionnaires de blocs (1 à 4)**  
+   Pour chaque bloc choisi, l’utilisateur accède à un ensemble de questions détaillées (voir ci-dessous).
+
+### 3.2. Format des questions (tous blocs P1)
+
+- **Échelle unique 0–5** pour tous les items :
+
+  - 0 = « Pas du tout un problème »  
+  - 5 = « Problème majeur identifié »
+
+- Chaque question est pensée avec une **double focale** :
+
+  - « 🧍‍♂️ Moi » = vécu personnel de l’utilisateur,  
+  - « 🏛 Organisation » = perception du fonctionnement global.
+
+- Temps cible par bloc : **~8 minutes** pour 30–35 questions, avec possibilité de **sauter** des questions.
+
+- Il est explicitement possible de **ne pas répondre à un item** (bouton « Je préfère ne pas répondre à cette question » ou équivalent UX).  
+  → L’absence de réponse est intégrée comme **information** dans les bilans (cf. 3.4 et 5).
+
+### 3.3. Contenu des blocs (version P1.2)
+
+#### Bloc 1 – Climat & ressenti
+
+**But** : capter le vécu humain dans la structure, sans pathologiser la personne.
+
+Types d’items (30–35 questions au total) :
+
+- Position & place dans le système  
+  - ancienneté, rôle, centralité vs périphérie, sentiment d’être “au centre” ou “à la marge”.
+- Compréhension des règles & du « mode d’emploi »  
+  - devoir deviner, règles implicites, réponses différentes selon les personnes, changements non expliqués.
+- Climat relationnel & confiance  
+  - droit au désaccord, censure, sujets tabous, clans, usage de la parole en réunion.
+- Sens, alignement & légitimité  
+  - compréhension du projet, sentiment d’être à sa place, dilemmes de valeurs, écart discours / réalité.
+- Charge, fatigue & saturation  
+  - épuisement, surcharge des mêmes personnes, report de sujets importants.
+- Lisibilité du quotidien & prévisibilité  
+  - surprises, urgences, capacité à anticiper, impression d’impro permanente.
+- Justice / équité (mini-bloc)  
+  - sentiment d’injustice, passes-droits, règles non appliquées de la même manière.
+
+**Usage interne** : ce bloc nourrit surtout les dimensions Incompréhensible, Anxieux et le “climat” BANI/VUCA. Les scores et patterns d’items non répondus alimentent le **bilan de bloc** et le **bilan global P1**.
+
+> Les blocs 2, 3 et 4 suivent la même logique :  
+> 30–35 questions, double focale Moi/Organisation, avec une structuration thématique propre.  
+> Leur contenu détaillé est décrit dans un document interne complémentaire (banque de questions P1) et ne modifie pas la présente spécification fonctionnelle.
+
+### 3.4. Gestion des questions non répondues
+
+L’absence de réponse à une question n’est **pas considérée comme un “trou” à ignorer**, mais comme une **information à part entière**.
+
+#### Règles produit
+
+- Chaque item peut être dans l’un des états suivants :
+
+  - répondu (0–5),
+  - non répondu (explicitement ignoré / « Je préfère ne pas répondre »),
+  - non vu (si l’utilisateur quitte le bloc avant de l’atteindre).
+
+- Pour chaque bloc, le système calcule :
+
+  - `answeredCount` = nombre d’items effectivement répondus,  
+  - `skippedCount` = nombre d’items vus mais laissés sans réponse,  
+  - `unseenCount` = nombre d’items non affichés (si sortie anticipée du bloc),  
+  - des **scores moyens par sous-thème** sur les items répondus.
+
+#### Impact sur les bilans
+
+- Les **scores quantitatifs** sont toujours calculés sur les **réponses présentes uniquement** (pas d’imputation automatique).
+- Les **questions non répondues** sont utilisées pour produire des signaux qualitatifs, par exemple :
+
+  - « Plusieurs questions liées à la confiance ou aux conflits n’ont pas été renseignées. Cela peut pointer une zone sensible ou difficile à regarder pour l’instant. »  
+  - « Certaines questions sur la justice et l’équité n’ont pas reçu de réponse. C’est en soi une information, à prendre en douceur. »
+
+- L’interface de bilan indique clairement :
+
+  - combien de questions ont été répondues,
+  - combien ont été laissées de côté,
+  - sur quels sous-thèmes se concentrent ces “blancs”.
+
+Aucun jugement n’est porté sur ces absences de réponse.  
+Elles servent à suggérer des **« zones à explorer plus tard »**, pas à dégrader un score.
+
+#### Contraintes sécurité
+
+- Les réponses brutes (y compris les états “non répondu”) restent **strictement en mémoire** (cf. §7 : Sécurité & souveraineté).
+- Seules des **agrégations** sont persistées dans `pp_journey_p1_scores_v1` et `pp_journey_p1_meta_v1` :
+
+  - scores moyens par sous-thème / bloc,  
+  - `answeredCount`, `skippedCount`, `unseenCount` par bloc,  
+  - pas de détail question par question.
+
+- L’absence de réponse n’est jamais utilisée pour faire de la **corrélation diag ↔ Fit** ni pour de l’analytics utilisateur fin.
 
 ## 4. Questionnaire 2 – Environnement VUCA / modèle systémique
 - Durée cible 5 min, 10–15 items en Likert 1–5.
@@ -33,13 +157,79 @@
   - Profil D — structure cohérente mais toi en décalage.  
   Ces profils sont utilisés uniquement dans le texte du Bilan 2, pour orienter les ressources, et comme tag ultra-coarse éventuel dans les scores persistés (ex. `alignement_profil: "B"`), jamais les réponses brutes.
 
-## 5. Bilans – format, restitution & export
-- Bilan 1 (dysfonctionnements) : résumé 3–4 phrases, visualisation simple des 4 axes (barres ou badges faible/moyen/fort), liste des 3 blocages majeurs.
-- Bilan 2 (VUCA + Valeurs/Alignement) :  
-  - Lecture VUCA / modèle systémique : rappel des dimensions (adaptabilité, feedback, autonomie, vision partagée), phrase de cadrage (“Votre structure fonctionne plutôt comme…”), visualisation simple (radar ou barres).  
-  - Bloc “Valeurs & Alignement” (Axe I) : phrase de reconnaissance (“vous tenez manifestement à…” / “vous avez essayé de rester fidèle à…”), description du profil (A/B/C/D) en langage clair, 1–2 questions de sens (ce que tu refuses de sacrifier, ce qui fait que tu es encore là).  
-  - Piste d’orientation : aider à distinguer ses valeurs profondes, celles de la structure (ou pseudo-valeurs) et ce que cela implique (rester, adapter son rôle, partir…) sans chercher qui a raison.  
-- Export V1.2 : 100 % client-side (texte copiable + impression navigateur stylée), pas de génération PDF serveur. Le profil (A/B/C/D) peut apparaître dans le texte exporté ; les réponses brutes et indices détaillés ne sont jamais envoyés au serveur ni utilisés tels quels dans les analytics.
+## 5. Bilans – format, restitution & prise en compte des “blancs”
+
+Le parcours produit plusieurs niveaux de bilans :
+
+1. des **bilans de bloc** (locaux) après chaque chantier exploré,
+2. un **bilan global P1** qui se construit au fur et à mesure des blocs complétés,
+3. un **Bilan 2** (VUCA + Valeurs/Alignement) décrit dans les sections dédiées.
+
+### 5.1. Bilan de bloc (ex. Bloc 1 – Climat & ressenti)
+
+Pour chaque bloc exploré, l’utilisateur reçoit un bilan dédié comprenant :
+
+- 3–4 phrases de synthèse, en langage simple, sur ce que le bloc raconte du vécu :  
+  ex. « Tu sembles porter beaucoup de choses au quotidien, avec peu de marges pour souffler. »
+- Une visualisation légère des **sous-thèmes du bloc** (barres ou badges) :  
+  ex. « Climat relationnel », « Sentiment de justice », « Fatigue », etc.
+- Un encart dédié aux **questions non répondues** :  
+  ex. « Plusieurs questions liées à la confiance et aux conflits n’ont pas été renseignées. Cela peut signaler une zone délicate ou simplement un sujet à aborder plus tard. C’est parfaitement ok. »
+- 1–2 questions de sens “à garder près de soi”, adaptées au bloc :  
+  ex. « Qu’est-ce que tu refuses de sacrifier dans ta manière de travailler avec les autres ? »
+
+Les bilans de bloc restent dans un ton :
+
+- descriptif (constats, pas verdicts),
+- respectueux (« c’est un début de carte, pas un jugement »),
+- compatible avec la suite du parcours (Q2, ressources, Relinium, Fit).
+
+### 5.2. Bilan global P1 (progressif)
+
+Le **Bilan global P1** agrège ce qui a été exploré dans :
+
+- le panorama express (E1),
+- les blocs visités (1 à 4).
+
+Il contient :
+
+- une carte synthétique des 4 grandes familles de tensions :  
+  - Humain/coopération  
+  - Gouvernance/décision  
+  - Organisation/process/documentation  
+  - Ressources/soutenabilité
+- un statut visuel de chaque bloc :  
+  - « Exploré en détail » / « Survolé » / « Pas encore exploré ».
+- une section « zones nettes » vs « zones floues » :  
+  - « zones nettes » = thèmes où il y a beaucoup de réponses,  
+  - « zones floues ou sensibles » = thèmes où il y a beaucoup de questions non répondues.
+
+Une phrase pivot reste obligatoire :
+
+> « Ce n’est pas un verdict, c’est un point de départ pour mieux prendre soin de la structure et de toi. »
+
+Le bilan global ne pousse jamais à « tout casser » :  
+il invite à **poser des questions plus justes**, pas à trancher brutalement.
+
+### 5.3. Export V1.2
+
+- Export toujours **100 % client-side** :
+
+  - texte copiable dans l’interface,
+  - impression via le navigateur (`window.print`).
+
+- Le bilan peut inclure :
+
+  - les titres des blocs explorés,
+  - les grandes tendances (forte friction / moyenne / faible),
+  - des mentions comme « Certaines questions n’ont pas reçu de réponse, ce qui peut signaler des zones sensibles ou à explorer plus tard. »
+
+- Il **n’inclut jamais** :
+
+  - la liste des réponses question par question,
+  - un identifiant technique de diagnostic.
+
+Aucune donnée n’est envoyée au serveur à l’occasion de l’export.
 
 ## 6. Ressources dynamiques open source – logique de recommandation
 - Catalogue (Strapi ou JSON) : chaque ressource est taguée par familles de problèmes (gouvernance, conflits humains, process, finances, numérique…), tags VUCA (rigidité, faible feedback, centralisation…), niveau de maturité (débutant/intermédiaire/avancé).
@@ -77,7 +267,7 @@
 - KPIs prioritaires : % longtail_view, q1_start/q1_complete, q2_complete, resource_click, relinium_optin_click, fit_start, fit_outcome.
 
 ## 11. Critères de “Done” pour la V1.2 du parcours longue traîne
-- Les deux questionnaires fonctionnent de bout en bout, avec bilans lisibles et exportables via le navigateur (client-side).
+- Le parcours P1 (panorama + blocs) et le questionnaire VUCA/Alignement fonctionnent de bout en bout, avec bilans lisibles et exportables via le navigateur (client-side).
 - Stockage : aucune réponse brute persistée ; seules scores/méta sous `pp_diag_v1_scores` / `pp_diag_v1_meta` avec TTL 30 jours ; bouton “Effacer mes réponses de cet appareil” opérationnel (purge + reset).
 - Les ressources dynamiques s’affichent selon les tags, avec une logique de recommandation explicitée et traçable.
 - Aucune donnée nominative n’est stockée côté serveur sans opt-in Relinium ; purge locale possible.

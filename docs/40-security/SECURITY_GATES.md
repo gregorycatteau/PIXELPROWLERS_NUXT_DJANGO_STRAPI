@@ -11,6 +11,7 @@
 - Description : stockage local limité, clés documentées, TTL défini, purge “Tout effacer” opérationnelle, modèle de menaces front rempli.
 - Critères : `ARCHITECTURE_SECURITE.md` et `MODELES_DE_MENACES.md` à jour pour V1.2.
 - Statut : EN COURS (implémentation stockage local + purge côté front ; tests manuels à exécuter)
+- TODO : ajouter les nouvelles clés P1 (`pp_journey_p1_scores_v1`, `pp_journey_p1_meta_v1`) dans l’architecture front + modèle de menaces.
 - Validé par : (à renseigner)
 - Date : (à renseigner)
 

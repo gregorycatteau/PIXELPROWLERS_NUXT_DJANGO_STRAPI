@@ -34,3 +34,7 @@ cms_strapi/.env*
 .DS_Store
 .idea/
 .vscode/
+
+# Dev pid files
+.nuxt-dev.pid
+frontend_nuxt/.nuxt-dev.pid
