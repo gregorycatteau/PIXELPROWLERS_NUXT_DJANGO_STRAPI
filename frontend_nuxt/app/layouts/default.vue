@@ -108,8 +108,9 @@ const navItems = [
   { to: '/a-propos', label: 'À propos', icon: 'ℹ️' },
   { to: '/relinium', label: 'Relinium', icon: '🧪' },
   { to: '/accompagnement-formation', label: 'Accompagnement & formation', icon: '🛠️' },
-  { to: '/mentions-legales', label: 'Mentions légales', icon: '📄' },
-  { to: '/confidentialite', label: 'Confidentialité', icon: '🔒' }
+  { to: '/blog', label: 'Blog', icon: '📰' },
+  { to: '/ressources', label: 'Ressources', icon: '📚' },
+  { to: '/contact', label: 'Contact', icon: '✉️' }
 ];
 
 const isMenuOpen = ref(false);
@@ -179,7 +180,7 @@ onBeforeUnmount(() => {
 /* --- Fond global : voûte étoilée calme, soir d'été --- */
 
 .AppBackground {
-  @apply relative overflow-hidden bg-slate-950;
+  @apply relative overflow-hidden bg-bg-page;
 }
 
 /* Dégradé crépuscule très doux : horizon chaud en bas, nuit en haut */

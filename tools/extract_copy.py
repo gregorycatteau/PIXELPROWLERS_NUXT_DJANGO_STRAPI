@@ -35,15 +35,41 @@ def extract_texts_in_vue_file(path: Path) -> List[str]:
             continue
         if len(text) < 3:
             continue
+        if re.match(r"[A-Za-z_][A-Za-z0-9_]*\\([^)]*\\)$", text):
+            # Ignore fragments de code capturés par erreur (ex. emitAnswer(...))
+            continue
+        normalized = " ".join(text.split())
+        if any(token in normalized for token in ("emitAnswer(", "handleAnswer(", "$emit(")):
+            # Ignore chaînes techniques capturées (handlers Vue) : pas de copy à exposer.
+            continue
+        if re.search(r'\)"\s*/?>', normalized):
+            # Ignore les fragments de templates fermés (ex. />) qui ne sont pas de la copy.
+            continue
         texts.append(text)
     return texts
 
 
 def walk_vue_files(root: Path) -> Iterable[Path]:
-    """Parcourt pages/, components/ et layouts/ sous frontend_nuxt/ pour trouver les fichiers .vue."""
-    targets = ["pages", "components", "layouts"]
-    for target in targets:
-        folder = root / target
+    """
+    Parcourt les dossiers Nuxt pour trouver les fichiers .vue.
+
+    Périmètre général :
+    - pages/, components/, layouts/ à la racine du projet
+    - app/pages/, app/components/, app/layouts/ (cas Nuxt 3/4 avec srcDir=app)
+
+    Parcours P1 :
+    - inclus via app/components/journey/p1/* et app/pages/parcours/[journeySlug].vue
+    - prêt à étendre à P2–P5 en ajoutant d’autres sous-dossiers journey si besoin.
+    """
+    targets = [
+        root / "pages",
+        root / "components",
+        root / "layouts",
+        root / "app" / "pages",
+        root / "app" / "components",
+        root / "app" / "layouts",
+    ]
+    for folder in targets:
         if not folder.exists():
             continue
         yield from folder.rglob("*.vue")

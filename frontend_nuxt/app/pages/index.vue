@@ -1,246 +1,202 @@
 <template>
-  <div class="PageContainer">
+  <div class="space-y-16 pb-24">
     <HomeHeroSection
-      :journeys="journeys"
-      :selected-journey-id="selectedJourneyId"
-      :selected-journey="selectedJourney"
-      @select-journey="handleSelectJourney"
+      section-id="home-hero"
+      :title="hero.title"
+      :subtitle="hero.subtitlePrimary + (hero.subtitleSecondary ? ' ' + hero.subtitleSecondary : '')"
+      :primary-cta-label="hero.primaryCta"
+      :secondary-cta-label="hero.secondaryCta"
+      :microcopy="hero.microcopy"
+      @cta-primary-click="handleHeroPrimaryCta"
+      @cta-secondary-click="handleHeroSecondaryCta"
     />
 
-    <HomeRecognitionSection
-      :situations="situations"
-      :selected-journey-id="selectedJourneyId"
-      :selected-journey="selectedJourney"
-      @select-journey="handleSelectJourney"
-      @scroll-to-hero="scrollToHero"
+    <HomeJourneysGridSection
+      section-id="home-journeys"
+      :journeys="HOME_JOURNEYS"
+      :title="journeysTitle"
+      :subtitle="journeysSubtitle"
+      @journey-click="handleJourneyClick"
     />
 
-    <HomeAxesSection :axes="axes" />
+    <HomeNowSection
+      section-id="home-now"
+      :title="nowContent.title"
+      :subtitle="nowContent.subtitle"
+      :items="nowContent.items"
+      @block-click="handleNowBlockClick"
+    />
 
-    <HomeTimelineSection :steps="steps" />
+    <HomeFitAudienceSection
+      section-id="home-fit"
+      :title="fitContent.title"
+      :subtitle="fitContent.subtitle"
+      :fit-list="fitContent.fitList"
+      :not-for-list="fitContent.notForList"
+    />
 
-    <HomeFitSection :fit-list="fitList" />
-
-    <HomeManifestoSection />
-
-    <HomeContactSection />
+    <HomeHowWeWorkSection
+      section-id="home-how"
+      :title="howContent.title"
+      :subtitle="howContent.subtitle"
+      :steps="howContent.steps"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import HomeAxesSection from '~/components/home/AxesSection.vue';
-import HomeContactSection from '~/components/home/ContactSection.vue';
-import HomeFitSection from '~/components/home/FitSection.vue';
-import HomeHeroSection from '~/components/home/HeroSection.vue';
-import HomeManifestoSection from '~/components/home/ManifestoSection.vue';
-import HomeRecognitionSection from '~/components/home/RecognitionSection.vue';
-import HomeTimelineSection from '~/components/home/TimelineSection.vue';
-import { useHead } from '#imports';
+import { onMounted } from 'vue';
+import { useHead, navigateTo } from '#imports';
+import HomeFitAudienceSection from '~/components/home/HomeFitAudienceSection.vue';
+import HomeHeroSection from '~/components/home/HomeHeroSection.vue';
+import HomeHowWeWorkSection from '~/components/home/HomeHowWeWorkSection.vue';
+import HomeJourneysGridSection from '~/components/home/HomeJourneysGridSection.vue';
+import HomeNowSection from '~/components/home/HomeNowSection.vue';
+import { HOME_JOURNEYS, type HomeJourneyId } from '~/config/homeJourneysConfig';
+import { useAnalytics } from '~/composables/useAnalytics';
 
+const { trackEvent } = useAnalytics();
 
-/**
- * Parcours d’entrée proposés sur la landing :
- * 1) idée ou projet qui ne prend pas,
- * 2) structure qui dysfonctionne,
- * 3) outils numériques épuisants,
- * 4) malaise dans le job,
- * 5) sensation diffuse que « quelque chose coince ».
- */
-const journeys = [
-  {
-    id: 'idee-isolee',
-    label: "J’ai une super idée mais personne ne la partage",
-    tagline:
-      "Tu sens qu’il y a quelque chose de juste dans ce que tu portes, mais tu n’arrives pas à l’expliquer, ni à embarquer les bonnes personnes.",
-    heroHighlight: "Tu as une idée qui te semble évidente, mais autour de toi ça décroche, ça doute ou ça ne suit pas.",
-    step2Description:
-      "Tu as une intuition forte, un projet, un format d’activité… mais dès que tu en parles, tu sens un flou.\nOn te dit « c’est intéressant », sans jamais savoir quoi en faire. Tu ne sais plus si c’est toi, ton idée, ou la façon dont tu la présentes.\nIci, on va surtout t’aider à la clarifier, à la mettre en forme, et à vérifier si elle trouve sa place dans le réel."
-  },
-  {
-    id: 'structure-dysfonction',
-    label: "Ma structure fonctionne mal",
-    tagline:
-      "Réunions lourdes, décisions qui tournent en rond, tensions qui s’installent… tu as besoin d’y voir clair et de recadrer sans casser ce qui tient encore.",
-    heroHighlight: "Tu passes ton temps à éteindre des feux, les réunions s’allongent et personne ne sait vraiment où on va.",
-    step2Description:
-      "Ton asso, collectif, SCIC ou tiers-lieu tourne… mais dans la douleur.\nRéunions qui s’enchaînent, décisions floues, tensions larvées, outils mal utilisés, et la sensation d’être toujours en mode réaction.\nIci, on va prendre le temps de comprendre où ça coince, poser les rôles, les flux, et tester quelques ajustements concrets, à petite échelle."
-  },
-  {
-    id: 'outils-fatigants',
-    label: "Mes outils informatiques me fatiguent",
-    tagline:
-      "Site, mails, formulaires, tableaux, messageries… tu passes plus de temps à gérer les outils qu’à faire ton vrai boulot, et tu veux simplifier sans tout jeter.",
-    heroHighlight: "Tu as accumulé des outils « parce qu’il fallait bien », et maintenant c’est toi qui travailles pour eux.",
-    step2Description:
-      "Tu jongles entre mails, drives, tableurs, formulaires, messageries, outils « gratuits » et comptes partagés à rallonge.\nChaque nouvelle tâche te demande trois plateformes, quatre mots de passe et une bonne dose de patience.\nIci, on va regarder ton environnement numérique comme un tout, garder ce qui sert vraiment ton terrain, simplifier le reste, et documenter pour que ça ne repose pas que sur toi."
-  },
-  {
-    id: 'plus-en-phase-job',
-    label: "Je ne me retrouve plus dans mon job",
-    tagline:
-      "Ton métier, ton poste ou ton rôle ont changé (ou toi tu as changé) et tu as besoin de clarifier où tu en es, ce que tu veux garder et ce que tu veux faire évoluer.",
-    heroHighlight: "Tu fais ton boulot, mais tu as l’impression d’avoir glissé loin de ce qui te faisait vibrer au départ.",
-    step2Description:
-      "Tu as une vraie expérience, des compétences solides, mais ton quotidien ne ressemble plus à ce que tu avais en tête.\nTu passes plus de temps à gérer des contraintes qu’à faire ce pour quoi tu es doué·e, et tu sens monter une lassitude qui te fait peur.\nIci, on ne te dira pas de tout plaquer : on va cartographier ce que tu sais faire, ce que tu veux garder, ce que tu veux arrêter, et voir comment ton projet numérique peut t’aider à réaligner tout ça."
-  },
-  {
-    id: 'je-sais-pas-mais',
-    label: "Je ne sais pas, mais je sens que ça coince",
-    tagline:
-      "Tu avances par réflexes, avec une fatigue de fond. Tu ne mets pas encore les mots dessus, mais tu sais que tu ne peux pas continuer comme ça indéfiniment.",
-    heroHighlight: "Tu ne sais pas mettre des mots dessus, mais tu sens un frottement permanent : quelque chose cloche, sans que tu arrives à le pointer.",
-    step2Description:
-      "Tout n’est pas en train de s’effondrer, mais tu sens une usure diffuse : des retours qui se répètent, des tensions récurrentes, des tâches qui reviennent comme des boomerangs.\nTu n’arrives pas à dire exactement « où ça bloque », et du coup tu ne sais pas par quel bout prendre le problème.\nIci, on va poser calmement le contexte, repérer les signaux faibles, et formuler ensemble 2 ou 3 hypothèses de travail réalistes, à tester sans tout casser."
-  }
-] as const;
+// S1 — Hero (cf. HOME_V1_2_HOMEPAGE_UX_CONTENT_TALIA.md, section Hero)
+const hero = {
+  title: 'Tu portes un projet utile. Ta structure et tes outils suivent… plus ou moins.',
+  subtitlePrimary: 'PixelProwlers est un studio d’architecture numérique souveraine pour assos, SCIC, collectifs et personnes en transition.',
+  subtitleSecondary:
+    'Ici, tu choisis un parcours adapté à ta situation pour commencer à explorer ce qui coince dans ta structure, tes outils ou ta trajectoire.',
+  primaryCta: 'Choisir un parcours',
+  secondaryCta: 'Comprendre comment on travaille',
+  microcopy: undefined
+} as const;
 
-type JourneyId = (typeof journeys)[number]['id'];
+// S2 — Titre/sous-titre (cf. HOME_V1_2_HOMEPAGE_UX_CONTENT_TALIA.md, section S2)
+const journeysTitle = 'Par quoi tu as envie de commencer ?';
+const journeysSubtitle = 'Choisis la carte qui se rapproche le plus de ce que tu vis. Tu pourras toujours changer de parcours ensuite.';
 
-type Journey = (typeof journeys)[number];
+// S3 — “Ce que tu peux faire ici, tout de suite” (cf. Talia S3)
+type HomeNowBlockId = 'now-words' | 'now-clarity' | 'now-action';
+type HomeNowBlock = { id: HomeNowBlockId; title: string; body: string; };
 
-const selectedJourneyId = ref<JourneyId>(journeys[0].id);
+const nowContent: { title: string; subtitle: string; items: HomeNowBlock[] } = {
+  title: 'Ce que tu peux faire ici, tout de suite',
+  subtitle:
+    'Quel que soit le parcours que tu choisis, la démarche reste la même : poser les choses, comprendre ce qui se joue, et décider comment avancer à ton rythme.',
+  items: [
+    {
+      id: 'now-words',
+      title: 'Mettre des mots',
+      body:
+        'En choisissant un parcours proche de ce que tu vis, tu commences par déplier calmement les situations qui posent problème, et mettre des mots sur des faits.'
+    },
+    {
+      id: 'now-clarity',
+      title: 'Y voir plus clair',
+      body:
+        'Les écrans de diagnostic et de bilan du parcours t’aident à relier les symptômes entre eux et à comprendre ce qui se passe vraiment dans ta structure, tes outils ou ta trajectoire.'
+    },
+    {
+      id: 'now-action',
+      title: 'Passer à l’action',
+      body:
+        'À la fin du parcours, tu repars avec des ressources open source et des pistes de travail concrètes, à activer en autonomie — avec la possibilité de nous embarquer plus tard si ça a du sens pour toi.'
+    }
+  ]
+};
 
-const selectedJourney = computed<Journey>(() => {
-  return journeys.find((j) => j.id === selectedJourneyId.value) ?? journeys[0];
+// S4 — “Quand notre façon de travailler te correspond…” (cf. Talia S4)
+const fitContent: {
+  title: string;
+  subtitle?: string;
+  fitList: string[];
+  notForList: string[];
+} = {
+  title: 'Quand notre façon de travailler te correspond… et quand ce n’est pas le bon cadre',
+  subtitle: undefined,
+  fitList: [
+    'Tu veux comprendre avant de “scaler” et prendre un temps de diagnostic honnête.',
+    'Ta souveraineté numérique est aussi une position politique et tu veux réduire tes dépendances.',
+    'Tu acceptes de regarder le réel tel qu’il est, tensions et bricolages compris.',
+    'Tu cherches un allié exigeant qui aide à structurer, documenter et questionner les choix.',
+    'Tu veux que ton système soit transmissible et ne repose pas sur quelques personnes héroïques.'
+  ],
+  notForList: [
+    'Tu veux surtout un résultat visible très vite, sans phase de mise à plat.',
+    'Tu n’as aucune envie de questionner tes dépendances numériques aux grands acteurs.',
+    'Tu préfères que la communication enjolive et évite les tensions ou zones d’ombre.',
+    'Tu attends d’un prestataire qu’il exécute sans remettre en question le sens ou les effets à long terme.',
+    'Tu acceptes que tout repose durablement sur quelques personnes clés sans documenter ni partager.'
+  ]
+};
+
+// S5 — “Comment on travaille, concrètement” (cf. Talia S5)
+const howContent = {
+  title: 'Comment on travaille, concrètement',
+  subtitle: 'L’idée n’est pas de tout retourner, mais de t’aider à avancer de façon posée, documentée et soutenable.',
+  steps: [
+    {
+      title: '1. Explorer en autonomie',
+      body: 'Tu choisis un parcours qui te parle. Tu explores la page longue traîne, tu utilises les questionnaires et les ressources pour clarifier ta situation, sans compte ni engagement.'
+    },
+    {
+      title: '2. Structurer ce que tu découvres',
+      body: 'Si tu en as besoin, tu peux documenter ton diagnostic dans un espace Relinium dédié : un SSOT personnel pour garder une trace, partager avec ton collectif et suivre les évolutions dans le temps.'
+    },
+    {
+      title: '3. Vérifier si on est faits pour travailler ensemble',
+      body: 'Quand le terrain est prêt, tu peux enclencher un échange Fit. On regarde ensemble si PixelProwlers est la bonne pièce du puzzle pour toi maintenant, ou si d’autres options sont plus justes. Dans tous les cas, l’objectif est que tu repartes avec plus de clarté que lorsque tu es arrivé·e.'
+    }
+  ]
+};
+
+const scrollToSection = (id: string) => {
+  if (process.server) return;
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
+
+const handleHeroPrimaryCta = () => {
+  trackEvent('home_hero_cta_clicked' as any, { target: 'journeys' });
+  scrollToSection('home-journeys');
+};
+
+const handleHeroSecondaryCta = () => {
+  trackEvent('home_hero_cta_clicked' as any, { target: 'how' });
+  scrollToSection('home-how');
+};
+
+const handleJourneyClick = ({ journeyId }: { journeyId: HomeJourneyId }) => {
+  const journey = HOME_JOURNEYS.find((j) => j.id === journeyId);
+  if (!journey || !journey.isAvailable) return;
+  trackEvent('home_journey_card_clicked' as any, { journey_id: journeyId });
+  navigateTo(`/parcours/${journey.slug}`);
+};
+
+const handleNowBlockClick = ({ blockId }: { blockId: string }) => {
+  trackEvent('home_now_block_clicked' as any, { block_id: blockId });
+};
+
+onMounted(() => {
+  trackEvent('home_view' as any);
 });
 
-/**
- * Liste des situations typiques affichées plus bas dans la page.
- * Elles servent à confirmer à l’utilisateur qu’il est « au bon endroit ».
- */
-const situations: {
-  title: string;
-  body: string;
-  tag: string;
-  icon: string;
-  journeyId: JourneyId;
-}[] = [
-  {
-    title: 'Trop de demandes floues, équipe à bout',
-    body: "Ton asso, collectif, SCIC ou tiers-lieu tourne… mais dans la douleur.\nRéunions qui s’enchaînent, décisions floues, tensions larvées, outils mal utilisés, et la sensation d’être toujours en mode réaction.\nIci, on va prendre le temps de comprendre où ça coince, poser les rôles, les flux, et tester quelques ajustements concrets, à petite échelle.",
-    tag: 'Épuisement',
-    icon: '⚠️',
-    journeyId: 'structure-dysfonction'
-  },
-  {
-    title: 'Ton message se perd en route',
-    body: "Tu as une intuition forte, un projet, un format d’activité… mais dès que tu en parles, tu sens un flou.\nOn te dit « c’est intéressant », sans jamais savoir quoi en faire. Tu ne sais plus si c’est toi, ton idée, ou la façon dont tu la présentes.\nIci, on va surtout t’aider à la clarifier, à la mettre en forme, et à vérifier si elle trouve sa place dans le réel.",
-    tag: 'Confusion',
-    icon: '🧩',
-    journeyId: 'idee-isolee'
-  },
-  {
-    title: 'Toujours en réaction, jamais en cadence',
-    body: "Tu jongles entre mails, drives, tableurs, formulaires, messageries, outils « gratuits » et comptes partagés à rallonge.\nChaque nouvelle tâche te demande trois plateformes, quatre mots de passe et une bonne dose de patience.\nIci, on va regarder ton environnement numérique comme un tout, garder ce qui sert vraiment ton terrain, simplifier le reste, et documenter pour que ça ne repose pas que sur toi.",
-    tag: 'Cadence',
-    icon: '🔁',
-    journeyId: 'structure-dysfonction'
-  },
-  {
-    title: 'Tout repose sur les mêmes personnes',
-    body: "Tout n’est pas en train de s’effondrer, mais tu sens une usure diffuse : des retours qui se répètent, des tensions récurrentes, des tâches qui reviennent comme des boomerangs.\nTu n’arrives pas à dire exactement « où ça bloque », et du coup tu ne sais pas par quel bout prendre le problème.\nIci, on va poser calmement le contexte, repérer les signaux faibles, et formuler ensemble 2 ou 3 hypothèses de travail réalistes, à tester sans tout casser.",
-    tag: 'Transfert',
-    icon: '📚',
-    journeyId: 'outils-fatigants'
-  }
-];
-
-/**
- * Axes de travail structurels mis en avant dans la seconde section :
- * cadrage, expérience éditoriale, pilotage.
- */
-const axes = [
-  { title: 'Cadrage clair', body: 'Aligner enjeux, critères de décision et proposition de valeur.', badge: 'Clarifier', icon: '🎯' },
-  { title: 'Expérience éditoriale', body: 'Designer vitrine, formulaires et contenus qui filtrent et orientent.', badge: 'Outiller', icon: '🛠️' },
-  { title: 'Pilotage et transmission', body: 'Documenter, mesurer, préparer la suite (offres pilotes, automatisations).', badge: 'Accompagner', icon: '🤝' }
-];
-
-/**
- * Étapes génériques du parcours : écoute, plan court, livraison, passage de relais.
- */
-const steps = [
-  { title: 'Signal faible', body: 'On écoute, on cartographie les tensions et les priorités, sans chercher à « faire joli » pour un rapport ou un financeur. À ce stade, tu peux tout dire : rien ne part en communication derrière.' },
-  { title: 'Plan court', body: 'Roadmap 4–6 semaines, livrables et responsabilités.' },
-  { title: 'Livraison guidée', body: 'Ateliers + sprints sur les pages clés, formulaires et messages.' },
-  { title: 'Passage de relais', body: 'Documentation, mesures, options d’évolution.' }
-];
-
-const fitList = [
-  'Tu veux une vitrine claire et un système de tri des demandes.',
-  'Tu es prêt·e à prototyper vite sans tout verrouiller au départ.',
-  'Tu cherches un regard extérieur qui facilite la décision, pas une agence en mode boîte noire.',
-  'Tu veux garder la main sur les contenus et la donnée.'
-];
-
-const scrollToHero = () => {
-  const hero = document.querySelector('.HeroWrapper');
-  if (!hero) return;
-  hero.scrollIntoView({ behavior: 'smooth', block: 'start' });
-};
-
-const handleSelectJourney = (journeyId: string) => {
-  selectedJourneyId.value = (journeyId as JourneyId);
-};
-
-const canonicalUrl = 'https://pixelprowlers.io/';
-
-const organizationJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: 'PixelProwlers',
-  url: canonicalUrl,
-  logo: 'https://pixelprowlers.io/logo.png',
-  sameAs: [],
-  description:
-    'Studio pluriactif pour collectifs, associations et SCIC : clarté éditoriale, produit léger, transmission.'
-};
-
-const webPageJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebPage',
-  url: canonicalUrl,
-  name: 'PixelProwlers · Studio pluriactif pour collectifs, assos et SCIC',
-  description:
-    'Clarifier ton projet, simplifier tes outils et aligner ton organisation avec un plan court et documenté.'
-};
+const seoTitle = 'PixelProwlers · Choisis un parcours pour clarifier ta structure et tes outils';
+const seoDescription =
+  "Studio d’architecture numérique souveraine pour assos, SCIC, collectifs et personnes en transition. Parcours P1–P5 pour mettre des mots, y voir clair et passer à l’action sans tunnel forcé.";
 
 useHead({
-  title: 'PixelProwlers · Studio pluriactif pour collectifs, assos et SCIC',
+  title: seoTitle,
   meta: [
-    {
-      name: 'description',
-      content: 'Clarifier ton projet, simplifier tes outils et aligner ton organisation avec un plan court et documenté.'
-    },
-    { name: 'robots', content: 'index,follow' },
+    { name: 'description', content: seoDescription },
     { property: 'og:type', content: 'website' },
-    { property: 'og:title', content: 'PixelProwlers · Studio pluriactif pour collectifs, assos et SCIC' },
-    {
-      property: 'og:description',
-      content: 'Clarifier ton projet, simplifier tes outils et aligner ton organisation avec un plan court et documenté.'
-    },
-    { property: 'og:url', content: canonicalUrl },
+    { property: 'og:title', content: seoTitle },
+    { property: 'og:description', content: seoDescription },
+    { property: 'og:url', content: 'https://pixelprowlers.io/' },
     { property: 'og:image', content: '/mainhero.webp' },
     { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:title', content: 'PixelProwlers · Studio pluriactif pour collectifs, assos et SCIC' },
-    {
-      name: 'twitter:description',
-      content: 'Clarifier ton projet, simplifier tes outils et aligner ton organisation avec un plan court et documenté.'
-    },
+    { name: 'twitter:title', content: seoTitle },
+    { name: 'twitter:description', content: seoDescription },
     { name: 'twitter:image', content: '/mainhero.webp' }
   ],
-  link: [{ rel: 'canonical', href: canonicalUrl }],
-  script: [
-    { type: 'application/ld+json', innerHTML: JSON.stringify(organizationJsonLd) },
-    { type: 'application/ld+json', innerHTML: JSON.stringify(webPageJsonLd) }
-  ]
+  link: [{ rel: 'canonical', href: 'https://pixelprowlers.io/' }]
 });
 </script>
-
-<style scoped>
-@reference "@/assets/css/main.css";
-
-.PageContainer {
-  @apply w-full max-w-9/10 mx-auto px-4 sm:px-6 lg:px-8 space-y-20 pb-24;
-}
-</style>

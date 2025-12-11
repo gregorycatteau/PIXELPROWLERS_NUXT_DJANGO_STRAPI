@@ -1,4 +1,9 @@
 export type AnalyticsEventName =
+  | 'home_view'
+  | 'home_scroll_depth'
+  | 'home_hero_cta_clicked'
+  | 'home_journey_card_clicked'
+  | 'home_now_block_clicked'
   | 'journey_selected'
   | 'journey_cta_clicked'
   | 'contact_submit_success'
