@@ -1,24 +1,37 @@
 <template>
   <JourneyLayout>
-    <div class="pp-journey-panel space-y-4" role="region" aria-labelledby="journey-step-heading-B4_questions">
+    <div class="pp-journey-panel space-y-5" role="region" aria-labelledby="journey-step-heading-B4_questions">
       <JourneyStepHeader
         :title="blockCopy.questionnaireTitle"
         :subtitle="blockCopy.questionnaireSubtitle || blockCopy.subtitle"
         heading-id="journey-step-heading-B4_questions"
       />
-      <div class="space-y-3">
+      <div class="pp-journey-global-notice mt-4 md:mt-5" :id="skipNoticeId">
+        <span aria-hidden="true">🛡️</span>
+        <span>{{ skipHelper }}</span>
+      </div>
+      <div class="space-y-4">
         <JourneyQuestionBlock
           v-for="question in questions"
           :id="question.id"
           :key="question.id"
           :title="question.label"
           :question-id="question.id"
+          :data-journey-question-index="`b4-${question.id}`"
+          :question-index="question.order ?? questions.indexOf(question) + 1"
+          :total-questions="questions.length"
+          :theme-key="question.axisId"
+          :status="getStatus(answers[question.id])"
         >
+          <p class="pp-journey-feel-hint">
+            Réponds au ressenti : il n’y a pas de bonne ou de mauvaise réponse.
+          </p>
           <LikertScale
             :question-id="question.id"
             :name="`b4-${question.id}`"
             :model-value="answers[question.id] ?? null"
             :labels="scaleLabels"
+            :show-skip="true"
             @update:model-value="(val) => handleAnswer(question.id, val as LikertValue | null)"
             @skip="() => handleAnswer(question.id, null)"
           />
@@ -49,7 +62,7 @@ import { computed } from 'vue';
 import { useJourneyDiagnostics, type LikertValue } from '~/composables/useJourneyDiagnostics';
 import { useDiagnosticStorage } from '~/composables/useDiagnosticStorage';
 import { p1BlockContent, p1BlocksQuestions, p1BlockThemes, p1Copy } from '~/config/journeys/p1QuestionsConfig';
-import { P1_SCALE_COPY } from '@/config/journeys/p1CopyV1_3';
+import { P1_SCALE_COPY, P1_SKIP_COPY } from '@/config/journeys/p1CopyV1_3';
 
 const props = defineProps<{
   goToStep: (stepId: string) => void;
@@ -65,6 +78,8 @@ const scaleLabels = {
   min: `1 = ${P1_SCALE_COPY.valueLabels[1]}`,
   max: `5 = ${P1_SCALE_COPY.valueLabels[5]}`
 };
+const skipHelper = P1_SKIP_COPY.helperText;
+const skipNoticeId = 'p1-skip-notice-b4';
 
 const answers = computed(() => diagnostics.blockAnswers.value[blockId] ?? {});
 const totalQuestions = questions.length;
@@ -73,6 +88,12 @@ const skippedCount = computed(() => Object.values(answers.value).filter((v) => v
 
 const handleAnswer = (questionId: string, value: LikertValue | null) => {
   diagnostics.setBlockAnswer(blockId, questionId, value);
+};
+
+const getStatus = (value: LikertValue | null | undefined): 'answered' | 'skipped' | 'empty' => {
+  if (typeof value === 'number') return 'answered';
+  if (value === null) return 'skipped';
+  return 'empty';
 };
 
 const handleValidate = () => {

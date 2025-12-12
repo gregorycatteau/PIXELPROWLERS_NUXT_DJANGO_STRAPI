@@ -7,6 +7,10 @@
         heading-id="journey-step-heading-E1"
       />
       <JourneyProgressBar :current="answeredCount" :total="questions.length" label="Avancement" />
+      <div class="pp-journey-global-notice mt-4 md:mt-5" :id="skipNoticeId">
+        <span aria-hidden="true">🛡️</span>
+        <span>{{ skipHelper }}</span>
+      </div>
       <div class="space-y-4">
         <JourneyQuestionBlock
           v-for="question in questions"
@@ -14,14 +18,24 @@
           :title="question.label"
           :description="axisLabels[question.axis]"
           :question-id="question.id"
+          :data-journey-question-index="`q1-${question.id}`"
+          :question-index="question.order ?? questions.indexOf(question) + 1"
+          :total-questions="questions.length"
+          :theme-key="question.axis"
+          :status="getStatus(getAnswer(question.id))"
         >
+          <p class="pp-journey-feel-hint">
+            Réponds au ressenti : il n’y a pas de bonne ou de mauvaise réponse.
+          </p>
           <LikertScale
             :model-value="getAnswer(question.id)"
             :name="`p1-q1-${question.id}`"
             :question-id="question.id"
             :labels="likertLabels"
-            :describedBy="question.id + '-desc'"
+            :describedBy="skipNoticeId"
             @update:model-value="onUpdate(question.id, $event)"
+            :show-skip="true"
+            @skip="onUpdate(question.id, null)"
           />
         </JourneyQuestionBlock>
       </div>
@@ -51,12 +65,13 @@ import JourneyQuestionBlock from '~/components/journey/JourneyQuestionBlock.vue'
 import JourneyStepHeader from '~/components/journey/JourneyStepHeader.vue';
 import LikertScale from '~/components/journey/LikertScale.vue';
 import type { SymptomAnswer, LikertValue } from '~/composables/useJourneyDiagnostics';
-import { P1_SCALE_COPY } from '@/config/journeys/p1CopyV1_3';
+import { P1_SCALE_COPY, P1_SKIP_COPY } from '@/config/journeys/p1CopyV1_3';
 
 export type P1Questionnaire1Item = {
   id: string;
   axis: 'human' | 'governance' | 'organization' | 'resources';
   label: string;
+  order?: number;
 };
 
 const props = defineProps<{
@@ -81,6 +96,8 @@ const likertLabels = {
   min: `1 = ${P1_SCALE_COPY.valueLabels[1]}`,
   max: `5 = ${P1_SCALE_COPY.valueLabels[5]}`
 };
+const skipHelper = P1_SKIP_COPY.helperText;
+const skipNoticeId = 'p1-skip-notice-q1';
 
 const getAnswer = (questionId: string): LikertValue | null => {
   const found = props.answers.find((a) => a.questionId === questionId);
@@ -96,5 +113,11 @@ const emitAnswer = (questionId: string, value: LikertValue | null) => {
 
 const onUpdate = (questionId: string, value: LikertValue | null) => {
   emitAnswer(questionId, value);
+};
+
+const getStatus = (value: LikertValue | null): 'answered' | 'skipped' | 'empty' => {
+  if (typeof value === 'number') return 'answered';
+  if (value === null) return 'skipped';
+  return 'empty';
 };
 </script>

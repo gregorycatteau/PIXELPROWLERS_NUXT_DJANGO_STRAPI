@@ -1,20 +1,43 @@
 <template>
 <section
-    class="JourneyQuestionBlock pp-card pp-journey-soft-scale"
-    role="group"
-    :aria-labelledby="labelId"
-    :aria-describedby="description ? descriptionId : undefined"
-  >
-    <header class="JourneyQuestionHeader">
-      <p :id="labelId" class="JourneyQuestionLabel">{{ title }}</p>
+  :class="[
+    'JourneyQuestionBlock pp-card pp-journey-soft-scale pp-journey-reveal pp-journey-question-card',
+    status === 'answered' ? 'pp-journey-question-card--answered' : '',
+    status === 'skipped' ? 'pp-journey-question-card--skipped' : ''
+  ]"
+  role="group"
+  :aria-labelledby="labelId"
+  :aria-describedby="description ? descriptionId : undefined"
+  :data-question-id="questionId || title"
+>
+  <div class="pp-journey-question-layout">
+    <div class="pp-journey-question-text">
+      <div class="JourneyQuestionHeaderTop">
+        <div class="JourneyQuestionBadges">
+          <span v-if="questionIndex && totalQuestions" class="pp-journey-question-chip">
+            Question {{ questionIndex }} / {{ totalQuestions }}
+          </span>
+          <span v-if="themeLabel" :class="['pp-journey-theme-badge', themeClass]">
+            {{ themeLabel }}
+          </span>
+          <span
+            v-if="status && status !== 'empty'"
+            :class="['pp-journey-status-badge', statusClass]"
+          >
+            {{ status === 'answered' ? 'Réponse enregistrée' : 'Mis de côté' }}
+          </span>
+        </div>
+        <p :id="labelId" class="JourneyQuestionLabel">{{ title }}</p>
+      </div>
       <p v-if="description" :id="descriptionId" class="JourneyQuestionDescription">
         {{ description }}
       </p>
-    </header>
-    <div class="JourneyQuestionContent">
+    </div>
+    <div class="pp-journey-question-controls">
       <slot />
     </div>
-  </section>
+  </div>
+</section>
 </template>
 
 <script setup lang="ts">
@@ -24,19 +47,53 @@ const props = defineProps<{
   title: string;
   description?: string;
   questionId?: string;
+  questionIndex?: number;
+  totalQuestions?: number;
+  themeKey?: string;
+  status?: 'answered' | 'skipped' | 'empty';
 }>();
 
 const { title, description, questionId } = toRefs(props);
 
 const labelId = computed(() => `${questionId?.value || title.value}-label`);
 const descriptionId = computed(() => `${questionId?.value || title.value}-desc`);
+
+const themeLabelMap: Record<string, string> = {
+  human: 'Humain / coopération',
+  governance: 'Gouvernance / décisions',
+  organization: 'Organisation / process',
+  resources: 'Ressources / soutenabilité'
+};
+
+const themeClass = computed(() => {
+  switch (props.themeKey) {
+    case 'human':
+      return 'pp-journey-theme-badge--human';
+    case 'governance':
+      return 'pp-journey-theme-badge--governance';
+    case 'organization':
+      return 'pp-journey-theme-badge--organization';
+    case 'resources':
+      return 'pp-journey-theme-badge--resources';
+    default:
+      return '';
+  }
+});
+
+const themeLabel = computed(() => (props.themeKey ? themeLabelMap[props.themeKey] ?? props.themeKey : ''));
+
+const statusClass = computed(() => {
+  if (props.status === 'answered') return 'pp-journey-status-badge--answered';
+  if (props.status === 'skipped') return 'pp-journey-status-badge--skipped';
+  return '';
+});
 </script>
 
 <style scoped>
 @reference "@/assets/css/main.css";
 
 .JourneyQuestionBlock {
-  @apply w-full space-y-3 border border-[color:var(--color-stroke)]/70 bg-[color:var(--color-bg-card)]/90 p-4 sm:p-6;
+  @apply w-full max-w-5xl mx-auto space-y-4 border border-[color:var(--color-stroke)]/70 bg-[color:var(--color-bg-card)]/90 p-4 sm:p-6;
 }
 
 .JourneyQuestionBlock:hover {
@@ -60,6 +117,10 @@ const descriptionId = computed(() => `${questionId?.value || title.value}-desc`)
 }
 
 .JourneyQuestionContent {
-  @apply space-y-3;
+  @apply space-y-4;
+}
+
+.JourneyQuestionHeaderTop {
+  @apply flex flex-col gap-2;
 }
 </style>

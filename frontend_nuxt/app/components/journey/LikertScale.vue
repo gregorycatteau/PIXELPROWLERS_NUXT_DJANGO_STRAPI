@@ -1,50 +1,5 @@
-<template>
-  <fieldset class="LikertScale">
-    <legend class="sr-only">{{ prompt }}</legend>
-    <p class="LikertPrompt">{{ prompt }}</p>
-    <div class="LikertScaleHeader" v-if="resolvedLabels?.min || resolvedLabels?.max">
-      <span class="LikertLabel">{{ resolvedLabels?.min }}</span>
-      <span class="LikertLabel text-right">{{ resolvedLabels?.max }}</span>
-    </div>
-    <div
-      class="LikertOptions"
-      role="radiogroup"
-      :aria-label="prompt"
-      :aria-describedby="describedBy"
-    >
-      <label
-        v-for="value in scale"
-        :key="value"
-        class="LikertOption"
-        :class="{ 'LikertOption--active': currentValue === value }"
-      >
-        <span class="sr-only">Note {{ valueLabels[value] }}</span>
-        <input
-          type="radio"
-          class="sr-only"
-          :name="name"
-          :value="value"
-          :aria-label="valueLabels[value]"
-          :checked="currentValue === value"
-          @change="handleSelect(value)"
-        />
-        <span aria-hidden="true">{{ value }}</span>
-      </label>
-    </div>
-    <button
-      v-if="showSkip"
-      type="button"
-      class="LikertSkip"
-      @click="handleSkip"
-    >
-      {{ skipLabel }}
-    </button>
-    <p v-if="showSkip" class="LikertSkipHelp">{{ skipHelper }}</p>
-  </fieldset>
-</template>
-
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import type { LikertValue } from '~/composables/useJourneyDiagnostics';
 import { P1_SCALE_COPY, P1_SKIP_COPY } from '@/config/journeys/p1CopyV1_3';
 
@@ -74,54 +29,81 @@ const valueLabels = P1_SCALE_COPY.valueLabels;
 const prompt = P1_SCALE_COPY.questionPrompt;
 const resolvedLabels = computed(() => props.labels ?? { min: `${valueLabels[1]}`, max: `${valueLabels[5]}` });
 const skipLabel = computed(() => props.skipLabel ?? P1_SKIP_COPY.buttonLabel);
-const skipHelper = computed(() => P1_SKIP_COPY.helperText);
 const showSkip = computed(() => props.showSkip ?? true);
+const hasInteracted = ref(false);
+const isSkipped = computed(() => hasInteracted.value && currentValue.value === null);
+const contextId = computed(() => `likert-context-${props.questionId}`);
+
+watch(
+  () => props.modelValue,
+  () => {
+    if (props.modelValue !== undefined) {
+      hasInteracted.value = true;
+    }
+  }
+);
 
 const handleSelect = (value: LikertValue) => {
+  hasInteracted.value = true;
   emit('update:modelValue', value);
   emit('select', value);
 };
 
 const handleSkip = () => {
+  hasInteracted.value = true;
   emit('update:modelValue', null);
   emit('skip');
 };
 </script>
 
-<style scoped>
-@reference "@/assets/css/main.css";
+<template>
+  <fieldset class="pp-likert-scale">
+    <legend class="sr-only">{{ prompt }}</legend>
 
-.LikertScale {
-  @apply space-y-3;
-}
+    <p v-if="resolvedLabels?.min || resolvedLabels?.max" :id="contextId" class="sr-only">
+      1 signifie « {{ resolvedLabels?.min }} », 5 signifie « {{ resolvedLabels?.max }} ». L’échelle va de plus léger à plus lourd au quotidien.
+    </p>
 
-.LikertScaleHeader {
-  @apply flex items-center justify-between text-xs text-[color:var(--color-text-muted)];
-}
-
-.LikertPrompt {
-  @apply text-sm font-medium text-[color:var(--color-text-primary)];
-}
-
-.LikertOptions {
-  @apply grid grid-cols-5 gap-2;
-}
-
-.LikertOption {
-  @apply inline-flex h-10 items-center justify-center rounded-xl border border-[color:var(--color-stroke)] bg-[color:var(--color-panel-soft)] text-sm font-semibold text-[color:var(--color-text-primary)] transition hover:border-[color:var(--color-accent-border)];
-  transition: transform 140ms ease, border-color 140ms ease, color 140ms ease, background-color 140ms ease;
-}
-
-.LikertOption--active {
-  @apply border-[color:var(--color-accent-border)] bg-[color:var(--color-accent-quiet)] text-[color:var(--color-accent-strong)] shadow-[0_0_0_3px_rgba(249,115,22,0.12)];
-  transform: scale(1.03);
-}
-
-.LikertSkip {
-  @apply inline-flex items-center justify-center gap-2 rounded-lg border border-dashed border-[color:var(--color-border-soft)] px-3 py-2 text-xs text-[color:var(--color-text-muted)] hover:border-[color:var(--color-accent-border)] transition;
-}
-
-.LikertSkipHelp {
-  @apply text-xs text-[color:var(--color-text-muted)];
-}
-</style>
+    <!--
+      Échelle 1 → 5, accessible au clavier.
+      On utilise des radios natifs pour bénéficier de la navigation clavier et des états aria implicites.
+    -->
+    <div
+      class="pp-likert-track"
+      role="radiogroup"
+      :aria-label="prompt"
+      :aria-describedby="describedBy || contextId"
+    >
+      <label
+        v-for="value in scale"
+        :key="value"
+        class="pp-likert-step"
+        :class="{ 'pp-likert-step--active': currentValue === value && !isSkipped }"
+      >
+        <input
+          type="radio"
+          class="sr-only"
+          :name="name"
+          :value="value"
+          :checked="currentValue === value"
+          :aria-label="valueLabels[value]"
+          @change="handleSelect(value)"
+        />
+        <span class="pp-likert-step__number" aria-hidden="true">{{ value }}</span>
+        <span class="pp-likert-step__label" aria-hidden="true">{{ valueLabels[value] }}</span>
+        <span class="sr-only">Note {{ valueLabels[value] }}</span>
+        <span v-if="currentValue === value && !isSkipped" class="sr-only">Ta réponse actuelle</span>
+      </label>
+    </div>
+    <button
+      v-if="showSkip"
+      type="button"
+      class="pp-likert-skip-button"
+      :class="{ 'pp-likert-skip-button--active': isSkipped }"
+      @click="handleSkip"
+    >
+      <span aria-hidden="true">🛡</span>
+      <span>{{ skipLabel }}</span>
+    </button>
+  </fieldset>
+</template>

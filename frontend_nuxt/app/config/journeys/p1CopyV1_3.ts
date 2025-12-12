@@ -14,13 +14,13 @@ export const P1_INTRO_COPY = {
 };
 
 export const P1_SCALE_COPY = {
-  questionPrompt: 'À quel point cette phrase est vraie pour ta structure ?',
+  questionPrompt: 'À quel point tu es d’accord avec cette phrase, pour ta structure ?',
   valueLabels: {
-    1: 'Pas du tout vrai',
-    2: 'Plutôt faux',
-    3: 'Mitigé / ça dépend',
-    4: 'Plutôt vrai',
-    5: 'Tout à fait vrai'
+    1: 'Pas du tout d’accord',
+    2: 'Plutôt pas d’accord',
+    3: 'Mitigé / ni d’accord ni pas d’accord',
+    4: 'Plutôt d’accord',
+    5: 'Tout à fait d’accord'
   },
   currentSelection: 'Sélection actuelle : {{label}} ({{value}} / 5)'
 };
