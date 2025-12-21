@@ -1,23 +1,21 @@
 <template>
   <JourneyLayout>
     <div class="pp-globalbilan-page" role="region" aria-labelledby="journey-step-heading-E_global_bilan">
-      <div v-if="!vm" class="pp-globalbilan-section space-y-3">
+      <div v-if="engineState !== 'ready' && engineState !== 'partial_vm'" class="pp-globalbilan-section space-y-3">
         <p class="text-sm text-[color:var(--color-text-muted)]">
-          Bilan indisponible pour ce parcours.
-        </p>
-        <button type="button" class="pp-journey-cta-secondary text-xs" @click="goToStep('E2_panorama_bilan')">
-          Retour
-        </button>
-      </div>
-      <div v-else-if="vm.meta?.isEmpty" class="pp-globalbilan-section space-y-3">
-        <p class="text-sm text-[color:var(--color-text-muted)]">
-          Bilan indisponible pour ce parcours.
+          <span v-if="engineState === 'missing_adapter'">Bilan indisponible pour ce parcours (adapter manquant).</span>
+          <span v-else-if="engineState === 'empty_vm'">Bilan indisponible pour ce parcours.</span>
         </p>
         <button type="button" class="pp-journey-cta-secondary text-xs" @click="goToStep('E2_panorama_bilan')">
           Retour
         </button>
       </div>
       <template v-else>
+        <div v-if="engineState === 'partial_vm'" class="pp-globalbilan-section space-y-2">
+          <p class="text-sm text-[color:var(--color-text-muted)]">
+            Bilan partiel : certaines sections ne sont pas disponibles pour ce parcours.
+          </p>
+        </div>
       <section class="pp-globalbilan-header">
         <JourneyStepHeader
           :title="vm.copy.title"
@@ -91,7 +89,7 @@
                       Ce qui pèse le plus
                     </button>
                     <button
-                      v-if="vm.resources.length"
+                      v-if="modules.resources?.length"
                       type="button"
                       class="pp-btn-ghost text-xs"
                       @click="scrollToSection('gb_ressources')"
@@ -139,7 +137,7 @@
               >
                 <div class="space-y-2">
                   <p
-                    v-for="paragraph in vm.engagement?.intro || []"
+                    v-for="paragraph in modules.engagement?.intro || []"
                     :key="paragraph"
                     class="text-sm text-[color:var(--color-text-muted)] leading-relaxed"
                   >
@@ -148,7 +146,7 @@
                 </div>
                 <div class="space-y-2">
                   <p
-                    v-for="paragraph in vm.engagement?.synthesis || []"
+                    v-for="paragraph in modules.engagement?.synthesis || []"
                     :key="paragraph"
                     class="text-sm text-[color:var(--color-text-muted)] leading-relaxed"
                   >
@@ -175,13 +173,14 @@
           </BilanPanoramaCard>
 
           <BilanIssuesList
+            v-if="modules.issues"
             id="gb_tensions"
-            :title="vm.issues.title"
-            :intro="vm.issues.intro"
+            :title="modules.issues?.title || ''"
+            :intro="modules.issues?.intro || ''"
             :issues="issuesForCard"
             :watchlist="watchlistForCard"
             :focus-details="focusDetails"
-            :empty-text="vm.issues.emptyText"
+            :empty-text="modules.issues?.emptyText || ''"
             @set-all="setAllIssuesExpanded"
             @toggle="toggleIssue"
             @go-resources="scrollToSection('gb_ressources')"
@@ -189,16 +188,16 @@
           />
 
           <section
-            v-if="vm.supports.main && vm.supports.main.length"
+            v-if="modules.supports?.main && modules.supports.main.length"
             class="pp-globalbilan-section"
             aria-labelledby="p1-global-supports"
           >
             <div class="pp-globalbilan-section-header">
               <h2 id="p1-global-supports" class="pp-globalbilan-section-title">
-                {{ vm.supports.copy.mainTitle }}
+                {{ modules.supports.copy.mainTitle }}
               </h2>
               <p class="text-sm text-[color:var(--color-text-muted)]">
-                {{ vm.supports.copy.intro }}
+                {{ modules.supports.copy.intro }}
               </p>
               <p class="text-xs text-[color:var(--color-text-muted)]">
                 Ce sont des points d’appui. Les protéger aide souvent à stabiliser le reste.
@@ -207,7 +206,7 @@
 
             <div class="pp-globalbilan-theme-grid" id="supports_anchor">
               <article
-                v-for="support in vm.supports.main"
+                v-for="support in modules.supports.main"
                 :key="support.id"
                 class="pp-globalbilan-theme-card space-y-2"
               >
@@ -225,6 +224,7 @@
           </section>
 
           <BilanHypothesesSection
+            v-if="modules.hypotheses"
             id="gb_hypotheses"
             :hypotheses="hypothesesForCard"
             :secondary-hypotheses="secondaryHypothesesForCard"
@@ -236,6 +236,7 @@
           />
 
           <BilanLandingPanel
+            v-if="modules.landing"
             id="gb_atterrissage"
             :plans="landingPlansForPanel"
             :highlight="highlightTarget === 'p1-atterrissage'"
@@ -271,19 +272,19 @@
                 Tu peux agir sans attendre : prends un kit et teste une première vérif.
               </p>
             </div>
-            <ResourceList :resources="vm.resources" variant="compact" />
+            <ResourceList :resources="resourcesForList" variant="compact" />
             <NuxtLink to="/ressources?focus=p1" class="pp-journey-cta-secondary inline-flex w-auto text-xs">
               Voir toutes les ressources
             </NuxtLink>
           </section>
 
-          <section id="gb_actions" class="pp-globalbilan-section space-y-4">
+          <section v-if="modules.actions" id="gb_actions" class="pp-globalbilan-section space-y-4">
             <div class="pp-globalbilan-section-header">
               <h2 class="pp-globalbilan-section-title">
-                {{ vm.actions?.copy.sectionTitle }}
+                {{ modules.actions?.copy.sectionTitle }}
               </h2>
               <p class="text-sm text-[color:var(--color-text-muted)]">
-                {{ vm.actions?.copy.intro }}
+                {{ modules.actions?.copy.intro }}
               </p>
               <div class="flex flex-wrap gap-2">
                 <button
@@ -303,16 +304,16 @@
               </div>
             </div>
 
-            <div v-if="vm.actions?.hasAnyAction" class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            <div v-if="modules.actions?.hasAnyAction" class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               <div
-                v-for="(actionList, horizonKey) in vm.actions?.filteredActionsByHorizon"
+                v-for="(actionList, horizonKey) in modules.actions?.filteredActionsByHorizon"
                 :key="horizonKey"
                 class="pp-globalbilan-card space-y-3"
               >
                 <h3 class="text-base font-semibold">
                   {{
-                    vm.actions?.copy.horizonLabels[
-                      horizonKey as keyof typeof vm.actions.copy.horizonLabels
+                    modules.actions?.copy.horizonLabels[
+                      horizonKey as keyof typeof modules.actions.copy.horizonLabels
                     ] || horizonKey
                   }}
                 </h3>
@@ -339,7 +340,7 @@
               </div>
             </div>
             <p v-else class="text-sm text-[color:var(--color-text-muted)]">
-              {{ vm.actions?.copy.empty }}
+              {{ modules.actions?.copy.empty }}
             </p>
 
             <div class="pp-globalbilan-card space-y-3">
@@ -376,7 +377,7 @@
                 class="pp-journey-cta-primary"
                 @click="onExportMarkdown"
               >
-                {{ vm.actions?.copy.exportButtonLabel }}
+                {{ modules.actions?.copy.exportButtonLabel }}
               </button>
             </div>
           </section>
@@ -410,7 +411,7 @@
                     Niveau 1 — Auto-défense solo
                   </p>
                   <p
-                    v-for="paragraph in vm.engagement?.levelN1 || []"
+                    v-for="paragraph in modules.engagement?.levelN1 || []"
                     :key="paragraph"
                     class="text-sm text-[color:var(--color-text-muted)] leading-relaxed"
                   >
@@ -425,7 +426,7 @@
                     Niveau 2 — Miroir sécurisé
                   </p>
                   <p
-                    v-for="paragraph in vm.engagement?.levelN2 || []"
+                    v-for="paragraph in modules.engagement?.levelN2 || []"
                     :key="paragraph"
                     class="text-sm text-[color:var(--color-text-muted)] leading-relaxed"
                   >
@@ -440,7 +441,7 @@
                     Niveau 3 — Atelier tactique
                   </p>
                   <p
-                    v-for="paragraph in vm.engagement?.levelN3 || []"
+                    v-for="paragraph in modules.engagement?.levelN3 || []"
                     :key="paragraph"
                     class="text-sm text-[color:var(--color-text-muted)] leading-relaxed"
                   >
@@ -455,7 +456,7 @@
                     Niveau 4 — Re-architecture accompagnée
                   </p>
                   <p
-                    v-for="paragraph in vm.engagement?.levelN4 || []"
+                    v-for="paragraph in modules.engagement?.levelN4 || []"
                     :key="paragraph"
                     class="text-sm text-[color:var(--color-text-muted)] leading-relaxed"
                   >
@@ -527,6 +528,7 @@ import { getBilanAdapter } from '@/adapters/bilan/registry';
 import { useP1SystemicFollowups } from '@/composables/useP1SystemicFollowups';
 import { useP1SystemicLanding } from '@/composables/useP1SystemicLanding';
 import { P1_SYSTEMIC_FOLLOWUPS } from '@/config/journeys/p1SystemicFollowupsV1_3';
+import type { GlobalBilanViewModel } from '@/types/bilan';
 
 const props = defineProps<{
   journeyId: string;
@@ -534,7 +536,48 @@ const props = defineProps<{
 }>();
 
 const adapter = getBilanAdapter(props.journeyId);
-const vm = computed(() => adapter?.buildViewModel() ?? null);
+const emptyVm: GlobalBilanViewModel = {
+  copy: { title: '', subtitle: '' },
+  axisSummaryLabel: '',
+  completedBlocksLabel: '',
+  panoramaAnsweredLabel: '',
+  summaryNav: [],
+  blocksSummaryHeading: '',
+  completedBlocks: '',
+  panorama: {
+    answeredCount: 0,
+    skippedCount: 0,
+    completenessLabel: '',
+    axes: [],
+    blocks: [],
+    completedLabel: ''
+  },
+  exportPanel: {
+    exportText: '',
+    clearMessage: '',
+    copied: false,
+    missingInfo: {},
+    eraseCopyLabel: '',
+    focusDetails: false,
+    hasGlobalMissing: false,
+    globalSkipText: '',
+    globalMissing: 0
+  },
+  meta: {
+    isEmpty: true,
+    partial: true
+  }
+};
+
+const vm = computed<GlobalBilanViewModel>(() => adapter?.buildViewModel() ?? emptyVm);
+const engineState = computed<'missing_adapter' | 'empty_vm' | 'partial_vm' | 'ready'>(() => {
+  if (!adapter) return 'missing_adapter';
+  if (vm.value.meta?.isEmpty) return 'empty_vm';
+  if (vm.value.meta?.partial) return 'partial_vm';
+  return 'ready';
+});
+const modules = computed(() => vm.value.modules ?? {});
+const resourcesForList = computed(() => (modules.value.resources ?? []) as any[]);
 
 const storage = useDiagnosticStorage({ journeyId: props.journeyId });
 const axisSummary = computed(() =>
@@ -584,7 +627,7 @@ const finalizeSystemicFollowups = () => {
   systemicFollowups.finalizeAndPersistStatuses();
 };
 
-const focusDetails = ref(vm.value?.issues.focusDetails ?? false);
+const focusDetails = ref(modules.value.issues?.focusDetails ?? false);
 const repereOpen = ref(false);
 const exportMode = ref<'minimal' | 'full'>('minimal');
 
@@ -613,7 +656,7 @@ const {
 });
 
 const selectedHypotheses = computed(() =>
-  (vm.value?.hypotheses.list ?? []).filter((h) => selectedHypothesisIds.value.includes(h.id))
+  (modules.value.hypotheses?.list ?? []).filter((h) => selectedHypothesisIds.value.includes(h.id))
 );
 
 const expandedIssueIds = ref<Set<string>>(new Set());
@@ -621,7 +664,7 @@ const isIssueExpanded = (issueId: string) => expandedIssueIds.value.has(issueId)
 const setAllIssuesExpanded = (expanded: boolean) => {
   const next = new Set<string>();
   if (expanded) {
-    (vm.value?.issues.list ?? []).forEach((issue) => next.add(issue.id));
+    (modules.value.issues?.list ?? []).forEach((issue) => next.add(issue.id));
   }
   expandedIssueIds.value = next;
 };
@@ -636,14 +679,14 @@ const toggleIssue = (issueId: string) => {
 };
 
 const issuesForCard = computed(() =>
-  vm.value?.issues.list.map((issue) => ({
+  modules.value.issues?.list.map((issue) => ({
     ...issue,
     icon: issue.icon ?? '',
     expanded: isIssueExpanded(issue.id)
   })) ?? []
 );
 const watchlistForCard = computed(() =>
-  vm.value?.issues.watchlist.map((issue) => ({ ...issue, icon: issue.icon ?? '' })) ?? []
+  modules.value.issues?.watchlist.map((issue) => ({ ...issue, icon: issue.icon ?? '' })) ?? []
 );
 
 const blocksForCard = computed(() =>
@@ -655,7 +698,7 @@ const blocksForCard = computed(() =>
 );
 
 const hypothesesForCard = computed(() =>
-  vm.value?.hypotheses.list.map((hypo) => ({
+  modules.value.hypotheses?.list.map((hypo) => ({
     ...hypo,
     selected: isHypothesisSelected(hypo.id),
     disabled: isHypothesisDisabled(hypo.id),
@@ -663,20 +706,20 @@ const hypothesesForCard = computed(() =>
   })) ?? []
 );
 
-const secondaryHypothesesForCard = computed(() => vm.value?.hypotheses.secondary ?? []);
+const secondaryHypothesesForCard = computed(() => modules.value.hypotheses?.secondary ?? []);
 
 const verificationPlansForCard = computed(() =>
   selectedHypotheses.value.map((hypo) => ({
     id: hypo.id,
     title: hypo.title,
-    steps: vm.value?.hypotheses.verificationPlans.find((p) => p.id === hypo.id)?.steps ?? []
+    steps: modules.value.hypotheses?.verificationPlans.find((p) => p.id === hypo.id)?.steps ?? []
   }))
 );
 
 const landingPlansForPanel = computed(() =>
   selectedHypotheses.value
     .map((hypo) => {
-      const plan = vm.value?.landing.plans.find((p) => p.id === hypo.id);
+      const plan = modules.value.landing?.plans.find((p) => p.id === hypo.id);
       if (!plan) return null;
       return { ...plan, done: isLandingDone(hypo.id) };
     })
@@ -703,9 +746,9 @@ const toggleBlockDetails = (blockId: string, force?: boolean) => {
   expandedBlockIds.value = next;
 };
 
-const hasHeavy = computed(() => (vm.value?.issues.list.length ?? 0) > 0);
-const hasWatch = computed(() => (vm.value?.issues.watchlist.length ?? 0) > 0);
-const hasSupports = computed(() => (vm.value?.supports.main.length ?? 0) > 0);
+const hasHeavy = computed(() => (modules.value.issues?.list.length ?? 0) > 0);
+const hasWatch = computed(() => (modules.value.issues?.watchlist.length ?? 0) > 0);
+const hasSupports = computed(() => (modules.value.supports?.main.length ?? 0) > 0);
 
 const exportText = computed(() => vm.value?.exportPanel.exportText ?? '');
 const copied = ref(false);

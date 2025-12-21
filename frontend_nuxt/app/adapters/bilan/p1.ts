@@ -473,29 +473,44 @@ export const p1BilanAdapter: JourneyBilanAdapter = {
         blocks: blockSummariesForCard.value,
         completedLabel: completedBlocksLabel.value
       },
-      issues: {
-        list: issuesForCard.value,
-        watchlist: watchlistForCard.value,
-        focusDetails: focusDetails.value,
-        title: P1_GLOBAL_ISSUES_COPY.mainTitle,
-        intro: P1_GLOBAL_ISSUES_COPY.intro,
-        emptyText: P1_GLOBAL_ISSUES_COPY.noStrongIssues
+      modules: {
+        issues: {
+          list: issuesForCard.value,
+          watchlist: watchlistForCard.value,
+          focusDetails: focusDetails.value,
+          title: P1_GLOBAL_ISSUES_COPY.mainTitle,
+          intro: P1_GLOBAL_ISSUES_COPY.intro,
+          emptyText: P1_GLOBAL_ISSUES_COPY.noStrongIssues
+        },
+        supports: {
+          main: mainSupports.value,
+          copy: P1_GLOBAL_SUPPORTS_COPY
+        },
+        hypotheses: {
+          list: hypothesesForCard.value,
+          secondary: secondaryHypothesesForCard.value,
+          selectionCount: '0/2',
+          verificationPlans: verificationPlansForHypotheses.value
+        },
+        landing: {
+          plans: landingPlansForPanel.value,
+          highlightTarget: null
+        },
+        resources: recommendedResources.value,
+        actions: {
+          hasAnyAction: Object.keys(filteredActionsByHorizon.value ?? {}).length > 0,
+          filteredActionsByHorizon: filteredActionsByHorizon.value,
+          copy: P1_ACTION_PLAN_COPY
+        },
+        engagement: {
+          intro: splitParagraphs(p1EngagementCopy.globalBilan.intro),
+          synthesis: splitParagraphs(p1EngagementCopy.globalBilan.synthesis),
+          levelN1: splitParagraphs(p1EngagementCopy.globalBilan.levelN1),
+          levelN2: splitParagraphs(p1EngagementCopy.globalBilan.levelN2),
+          levelN3: splitParagraphs(p1EngagementCopy.globalBilan.levelN3),
+          levelN4: splitParagraphs(p1EngagementCopy.globalBilan.levelN4)
+        }
       },
-      supports: {
-        main: mainSupports.value,
-        copy: P1_GLOBAL_SUPPORTS_COPY
-      },
-      hypotheses: {
-        list: hypothesesForCard.value,
-        secondary: secondaryHypothesesForCard.value,
-        selectionCount: '0/2',
-        verificationPlans: verificationPlansForHypotheses.value
-      },
-      landing: {
-        plans: landingPlansForPanel.value,
-        highlightTarget: null
-      },
-      resources: recommendedResources.value,
       exportPanel: {
         exportText: exportText.value,
         clearMessage: '',
@@ -507,23 +522,11 @@ export const p1BilanAdapter: JourneyBilanAdapter = {
         globalSkipText: globalSkipSummary.value.text,
         globalMissing: hasGlobalMissing.value
       },
-      actions: {
-        hasAnyAction: Object.keys(filteredActionsByHorizon.value ?? {}).length > 0,
-        filteredActionsByHorizon: filteredActionsByHorizon.value,
-        copy: P1_ACTION_PLAN_COPY
-      },
-      engagement: {
-        intro: splitParagraphs(p1EngagementCopy.globalBilan.intro),
-        synthesis: splitParagraphs(p1EngagementCopy.globalBilan.synthesis),
-        levelN1: splitParagraphs(p1EngagementCopy.globalBilan.levelN1),
-        levelN2: splitParagraphs(p1EngagementCopy.globalBilan.levelN2),
-        levelN3: splitParagraphs(p1EngagementCopy.globalBilan.levelN3),
-        levelN4: splitParagraphs(p1EngagementCopy.globalBilan.levelN4)
-      },
       meta: {
-        exportMode: exportMode.value
+        exportMode: exportMode.value,
+        partial: false
       }
-    } as GlobalBilanViewModel;
+    };
 
     assertNoRawAnswers(vm);
     return vm;

@@ -29,29 +29,7 @@ export const bilanAdapterTemplate: JourneyBilanAdapter = {
         blocks: [],
         completedLabel: ''
       },
-      issues: {
-        list: [],
-        watchlist: [],
-        focusDetails: false,
-        title: '',
-        intro: '',
-        emptyText: ''
-      },
-      supports: {
-        main: [],
-        copy: {}
-      },
-      hypotheses: {
-        list: [],
-        secondary: [],
-        selectionCount: '0/2',
-        verificationPlans: []
-      },
-      landing: {
-        plans: [],
-        highlightTarget: null
-      },
-      resources: [],
+      modules: {},
       exportPanel: {
         exportText: '',
         clearMessage: '',

@@ -93,41 +93,47 @@ export type GlobalBilanViewModel = {
     blocks: BilanBlockVM[];
     completedLabel: string;
   };
-  issues: {
-    list: BilanIssueVM[];
-    watchlist: BilanIssueVM[];
-    focusDetails: boolean;
-    title: string;
-    intro: string;
-    emptyText: string;
-  };
-  supports: {
-    main: { id: string; label: string; summary: string; interpretation?: string }[];
-    copy: any;
-  };
-  hypotheses: {
-    list: BilanHypothesisVM[];
-    secondary: { id: string; title: string }[];
-    selectionCount: string;
-    verificationPlans: { id: string; title: string; steps: string[] }[];
-  };
-  landing: {
-    plans: BilanLandingPlanVM[];
-    highlightTarget: string | null;
-  };
-  resources: any[];
   blocksSummaryHeading: string;
   completedBlocks: string;
-  actions?: BilanActionGroupVM;
-  engagement?: {
-    intro: string[];
-    synthesis: string[];
-    levelN1: string[];
-    levelN2: string[];
-    levelN3: string[];
-    levelN4: string[];
+  meta?: {
+    isEmpty?: boolean;
+    partial?: boolean;
+    [key: string]: any;
   };
-  meta?: Record<string, any>;
+  modules?: {
+    issues?: {
+      list: BilanIssueVM[];
+      watchlist: BilanIssueVM[];
+      focusDetails: boolean;
+      title: string;
+      intro: string;
+      emptyText: string;
+    };
+    supports?: {
+      main: { id: string; label: string; summary: string; interpretation?: string }[];
+      copy: any;
+    };
+    hypotheses?: {
+      list: BilanHypothesisVM[];
+      secondary: { id: string; title: string }[];
+      selectionCount: string;
+      verificationPlans: { id: string; title: string; steps: string[] }[];
+    };
+    landing?: {
+      plans: BilanLandingPlanVM[];
+      highlightTarget: string | null;
+    };
+    resources?: any[];
+    actions?: BilanActionGroupVM;
+    engagement?: {
+      intro: string[];
+      synthesis: string[];
+      levelN1: string[];
+      levelN2: string[];
+      levelN3: string[];
+      levelN4: string[];
+    };
+  };
   exportPanel: {
     exportText: string;
     clearMessage: string;

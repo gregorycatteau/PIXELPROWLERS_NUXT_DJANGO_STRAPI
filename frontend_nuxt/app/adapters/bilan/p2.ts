@@ -48,29 +48,7 @@ export const p2BilanAdapter: JourneyBilanAdapter = {
         blocks,
         completedLabel: 'Bloc exploratoire'
       },
-      issues: {
-        list: [],
-        watchlist: [],
-        focusDetails: false,
-        title: '',
-        intro: '',
-        emptyText: ''
-      },
-      supports: {
-        main: [],
-        copy: {}
-      },
-      hypotheses: {
-        list: [],
-        secondary: [],
-        selectionCount: '0/2',
-        verificationPlans: []
-      },
-      landing: {
-        plans: [],
-        highlightTarget: null
-      },
-      resources: [],
+      modules: {},
       exportPanel: {
         exportText: 'Bilan P2 (panorama + blocs)',
         clearMessage: '',
@@ -83,7 +61,8 @@ export const p2BilanAdapter: JourneyBilanAdapter = {
         globalMissing: 0
       },
       meta: {
-        isEmpty: false
+        isEmpty: false,
+        partial: true
       }
     };
     assertNoRawAnswers(vm);
