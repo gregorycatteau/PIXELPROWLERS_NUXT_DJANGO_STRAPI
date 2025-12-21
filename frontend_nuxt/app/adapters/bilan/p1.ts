@@ -370,6 +370,13 @@ export const p1BilanAdapter: JourneyBilanAdapter = {
     const secondaryHypothesesForCard = computed(() =>
       secondaryHypotheses.value.map((hypo) => ({ id: hypo.id, title: hypo.title }))
     );
+    const verificationPlansForHypotheses = computed(() =>
+      mainHypotheses.value.map((hypo) => ({
+        id: hypo.id,
+        title: hypo.title,
+        steps: verificationPlan(hypo)
+      }))
+    );
     const landingPlansForPanel = computed(() =>
       mainHypotheses.value.map((hypo) => {
         const plan = landingPlans[hypo.id] ?? {
@@ -481,7 +488,7 @@ export const p1BilanAdapter: JourneyBilanAdapter = {
         list: hypothesesForCard.value,
         secondary: secondaryHypothesesForCard.value,
         selectionCount: '0/2',
-        verificationPlans: []
+        verificationPlans: verificationPlansForHypotheses.value
       },
       landing: {
         plans: landingPlansForPanel.value,
