@@ -62,7 +62,8 @@ export const p3BilanAdapter: JourneyBilanAdapter = {
       },
       meta: {
         isEmpty: false,
-        partial: true
+        partial: true,
+        maturity: 'core'
       }
     };
     assertNoRawAnswers(vm);

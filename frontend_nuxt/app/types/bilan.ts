@@ -98,6 +98,7 @@ export type GlobalBilanViewModel = {
   meta?: {
     isEmpty?: boolean;
     partial?: boolean;
+    maturity?: 'stub' | 'core' | 'full' | 'prod';
     [key: string]: any;
   };
   modules?: {

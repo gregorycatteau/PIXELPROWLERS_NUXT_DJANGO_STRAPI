@@ -10,5 +10,11 @@ export const BILAN_ENGINE_COPY = {
   partialVm: {
     message: 'Bilan partiel : certaines sections ne sont pas disponibles pour ce parcours.',
     cta: 'Retour'
+  },
+  maturityLabel: {
+    stub: 'Version stub',
+    core: 'Version core',
+    full: 'Version full',
+    prod: ''
   }
 };

@@ -40,6 +40,11 @@ export const bilanAdapterTemplate: JourneyBilanAdapter = {
         hasGlobalMissing: false,
         globalSkipText: '',
         globalMissing: 0
+      },
+      meta: {
+        isEmpty: true,
+        partial: true,
+        maturity: 'stub'
       }
     };
   }

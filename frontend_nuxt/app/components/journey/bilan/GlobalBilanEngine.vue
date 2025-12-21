@@ -35,6 +35,13 @@
             <span class="text-[10px] uppercase tracking-[0.14em] text-[color:var(--color-text-muted)]">Blocs</span>
             <span class="text-sm font-semibold">{{ vm.completedBlocksLabel }}</span>
           </div>
+          <div
+            v-if="maturityLabel"
+            class="pp-globalbilan-summary-chip"
+          >
+            <span class="text-[10px] uppercase tracking-[0.14em] text-[color:var(--color-text-muted)]">Maturité</span>
+            <span class="text-sm font-semibold">{{ BILAN_ENGINE_COPY.maturityLabel[maturityLabel] }}</span>
+          </div>
         </div>
       </section>
 
@@ -579,6 +586,7 @@ const engineState = computed<'missing_adapter' | 'empty_vm' | 'partial_vm' | 're
 });
 const modules = computed(() => vm.value.modules ?? {});
 const resourcesForList = computed(() => (modules.value.resources ?? []) as any[]);
+const maturityLabel = computed(() => vm.value.meta?.maturity && vm.value.meta.maturity !== 'prod' ? vm.value.meta.maturity : null);
 
 const storage = useDiagnosticStorage({ journeyId: props.journeyId });
 const axisSummary = computed(() =>

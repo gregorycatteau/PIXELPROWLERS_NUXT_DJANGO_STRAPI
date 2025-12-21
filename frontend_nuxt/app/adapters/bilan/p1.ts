@@ -524,7 +524,8 @@ export const p1BilanAdapter: JourneyBilanAdapter = {
       },
       meta: {
         exportMode: exportMode.value,
-        partial: false
+        partial: false,
+        maturity: 'prod'
       }
     };
 
