@@ -8,10 +8,12 @@
         <span class="JourneyBrandText">PixelProwlers</span>
       </NuxtLink>
     </header>
-    <main id="main" class="JourneyMain pp-journey-container">
-      <slot />
+    <main id="main" class="JourneyMain pp-journey-page">
+      <div class="pp-journey-inner">
+        <slot />
+      </div>
     </main>
-    <footer class="JourneyFooter pp-journey-container">
+    <footer class="JourneyFooter pp-journey-inner">
       <p class="text-sm text-slate-400">Souveraineté des données · réponses en mémoire par défaut</p>
     </footer>
   </div>

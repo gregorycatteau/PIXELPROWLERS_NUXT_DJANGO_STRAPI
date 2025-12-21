@@ -1,6 +1,53 @@
 <template>
   <div>
-    <P1JourneyOrchestrator v-if="journeyId === 'p1'" :initial-step-id="initialStepId" />
+    <template v-if="journeyId === 'p1'">
+      <main v-if="showLanding" class="pp-page space-y-10">
+        <section class="space-y-3">
+          <p class="pp-section-label">Parcours P1</p>
+          <h1 class="pp-section-title">Ma structure dysfonctionne (ou fatigue)</h1>
+          <p class="pp-section-desc">
+            Tu sens que la structure tient grâce au bricolage et à l’héroïsme. Ce parcours t’aide à éclairer les points mortels, décider quoi couper et sécuriser la gouvernance.
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <NuxtLink
+              class="pp-journey-cta-primary"
+              :to="startLink"
+            >
+              Commencer le diagnostic
+            </NuxtLink>
+            <NuxtLink class="pp-journey-cta-secondary" to="/contact">
+              Parler avec nous
+            </NuxtLink>
+          </div>
+        </section>
+
+        <section class="space-y-3">
+          <h2 class="pp-section-title text-lg">Ce que tu obtiens</h2>
+          <ul class="list-disc list-inside space-y-2 text-sm text-[color:var(--color-text-muted)]">
+            <li>Une lecture système de tes tensions (mission/cash, gouvernance, dépendances, capacité).</li>
+            <li>Un plan d’action court, généré depuis tes réponses, exportable en Markdown.</li>
+            <li>Des kits gratuits pour lancer une première vérif avec ton équipe.</li>
+          </ul>
+        </section>
+
+        <section class="space-y-3">
+          <h2 class="pp-section-title text-lg">Ressources gratuites</h2>
+          <p class="pp-section-desc">
+            Prends un kit et lance une première vérif en autonomie, sans compte ni friction.
+          </p>
+          <ResourceList :resources="resourcePreview" variant="compact" />
+          <div class="flex flex-wrap gap-2">
+            <NuxtLink class="pp-journey-cta-secondary inline-flex w-auto text-xs" to="/ressources?focus=p1">
+              Voir toutes les ressources P1
+            </NuxtLink>
+            <NuxtLink class="pp-btn-ghost text-xs" :to="startLink">
+              Passer directement au diagnostic
+            </NuxtLink>
+          </div>
+        </section>
+      </main>
+      <P1JourneyOrchestrator v-else :initial-step-id="initialStepId" />
+    </template>
     <div v-else class="pp-card p-6 space-y-3">
       <p class="text-lg font-semibold">Parcours indisponible</p>
       <p class="text-sm text-[color:var(--color-text-muted)]">Le parcours demandé n’existe pas encore.</p>
@@ -11,7 +58,9 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import ResourceList from '@/components/resources/ResourceList.vue';
 import P1JourneyOrchestrator from '~/components/journey/p1/P1JourneyOrchestrator.vue';
+import { P1_RESOURCES_V1_3 } from '@/config/resources/p1ResourcesV1_3';
 import { p1JourneySchema } from '~/config/journeys/p1JourneySchema';
 
 definePageMeta({
@@ -34,4 +83,15 @@ const initialStepId = computed(() => {
   }
   return null;
 });
+
+const showLanding = computed(() => journeyId.value === 'p1' && !initialStepId.value);
+
+const resourcePreview = computed(() => {
+  const ids = ['kit_p1_demarrage', 'kit_mission_cash', 'kit_gouvernance_veto'] as const;
+  return ids
+    .map((id) => P1_RESOURCES_V1_3.find((res) => res.id === id))
+    .filter(Boolean);
+});
+
+const startLink = computed(() => '/parcours/ma-structure-dysfonctionne?step=E0_intro');
 </script>

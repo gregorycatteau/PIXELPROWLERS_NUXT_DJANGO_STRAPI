@@ -17,6 +17,9 @@
         :badge-label="journey.badgeLabel"
         :is-available="journey.isAvailable"
         :is-emphasized="journey.isEmphasized"
+        :problem-title="journey.problemTitle"
+        :problem-body="journey.problemBody"
+        :solution-body="journey.solutionBody"
         @select="emitJourneyClick"
       />
     </div>

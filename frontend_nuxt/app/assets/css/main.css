@@ -85,11 +85,11 @@
   }
 
   .pp-container-xl {
-    @apply w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8;
+    @apply w-full max-w-9/10 mx-auto px-4 sm:px-6 lg:px-8;
   }
 
   .pp-section {
-    @apply w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4;
+    @apply w-full max-w-9/10 mx-auto px-4 sm:px-6 lg:px-8 space-y-4;
   }
 
   .pp-section-header {
@@ -197,6 +197,176 @@
 
   .home-section {
     @apply w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4;
+  }
+
+  /* P1 Global Bilan */
+  .pp-globalbilan-page {
+    @apply w-full max-w-6xl mx-auto px-4 lg:px-8 py-10 space-y-12;
+  }
+
+  .pp-globalbilan-header {
+    @apply space-y-4 mb-6;
+  }
+
+  .pp-globalbilan-summary-chips {
+    @apply flex flex-wrap gap-3;
+  }
+
+  .pp-globalbilan-summary-chip {
+    @apply inline-flex items-center gap-2 rounded-full border border-slate-700/70 bg-slate-900/70 px-3 py-1 text-xs font-medium tracking-wide;
+  }
+
+  .pp-globalbilan-section {
+    @apply space-y-4 pt-8 border-t border-slate-800/60;
+  }
+
+  .pp-globalbilan-section-header {
+    @apply flex flex-col gap-1;
+  }
+
+  .pp-globalbilan-section-title {
+    @apply text-lg font-semibold text-slate-50;
+  }
+
+  .pp-globalbilan-card {
+    @apply rounded-2xl border border-slate-800/70 bg-slate-900/70 px-5 py-5 md:px-6 md:py-6;
+  }
+
+  .pp-globalbilan-card--primary {
+    @apply border-amber-500/40 bg-slate-900/90 shadow-[0_0_40px_rgba(245,158,11,0.15)];
+  }
+
+  /* P1 Global Bilan — Repères */
+  .pp-globalbilan-reperes-ctas {
+    @apply flex flex-wrap gap-2;
+  }
+
+  .pp-globalbilan-reperes-pills {
+    @apply flex flex-wrap gap-2;
+  }
+
+  .pp-globalbilan-reperes-pill {
+    @apply inline-flex items-center gap-2 rounded-full border border-slate-700/70 bg-slate-900/70 px-3 py-1 text-xs font-medium tracking-wide transition;
+  }
+
+  .pp-globalbilan-reperes-pill:hover {
+    @apply border-amber-400/80 text-amber-100 bg-slate-900;
+  }
+
+  .pp-globalbilan-reperes-pill:focus-visible {
+    @apply outline-none ring-2 ring-amber-400/70 ring-offset-2 ring-offset-slate-950;
+  }
+
+  .pp-globalbilan-reperes-details > summary:focus-visible {
+    @apply outline-none ring-2 ring-amber-400/70 ring-offset-2 ring-offset-slate-950 rounded-lg;
+  }
+
+  .pp-btn-ghost:focus-visible {
+    @apply outline-none ring-2 ring-amber-400/70 ring-offset-2 ring-offset-slate-950;
+  }
+
+  .pp-globalbilan-options-grid {
+    @apply grid gap-5 md:grid-cols-2 xl:grid-cols-4;
+  }
+
+  .pp-globalbilan-option-card {
+    @apply rounded-2xl border border-slate-800/70 bg-slate-900/70 px-5 py-5 md:px-6 md:py-6 flex flex-col justify-between gap-4;
+  }
+
+  .pp-globalbilan-theme-grid {
+    @apply grid gap-5 md:grid-cols-2;
+  }
+
+  .pp-globalbilan-theme-card {
+    @apply rounded-2xl border border-slate-800/70 bg-slate-900/70 px-5 py-5 md:px-6 md:py-6;
+  }
+
+  .pp-globalbilan-hypothesis-grid {
+    @apply grid gap-6 md:grid-cols-2;
+  }
+
+  .pp-globalbilan-hypothesis-card {
+    @apply rounded-2xl border border-slate-800/70 bg-slate-900/70 px-5 py-5 md:px-6 md:py-6 border-amber-500/40 bg-slate-900/95;
+  }
+
+  .pp-globalbilan-check-grid {
+    @apply grid gap-8 lg:grid-cols-2;
+  }
+
+  .pp-globalbilan-check-card {
+    @apply rounded-2xl border border-slate-800/70 bg-slate-900/70 px-5 py-5 md:px-6 md:py-6 space-y-4;
+  }
+
+  .pp-globalbilan-resources-grid {
+    @apply grid gap-5 md:grid-cols-2;
+  }
+
+  .pp-globalbilan-actions-bar {
+    @apply flex flex-wrap gap-3 justify-start items-center mt-4;
+  }
+
+  .pp-globalbilan-axe-card {
+    @apply rounded-xl border border-slate-800/70 bg-slate-900/80 px-4 py-3 space-y-1;
+  }
+
+  .pp-globalbilan-reperes-ctas {
+    @apply flex flex-wrap gap-2;
+  }
+
+  .pp-globalbilan-reperes-pills {
+    @apply flex flex-wrap gap-2;
+  }
+
+  .pp-globalbilan-reperes-pill {
+    @apply inline-flex items-center gap-2 rounded-full border border-slate-700/70 bg-slate-900/70 px-3 py-1 text-[11px] font-medium tracking-wide;
+  }
+
+  .pp-globalbilan-reperes-details {
+    @apply space-y-2;
+  }
+
+  .pp-globalbilan-layout {
+    @apply grid gap-8 lg:grid-cols-[1fr_320px] items-start;
+  }
+
+  .pp-globalbilan-aside {
+    @apply space-y-4;
+  }
+
+  .pp-globalbilan-aside--sticky {
+    @apply hidden lg:block sticky top-24;
+  }
+
+  .pp-globalbilan-aside--mobile {
+    @apply block lg:hidden;
+  }
+
+  .pp-globalbilan-aside-card {
+    @apply rounded-2xl border border-slate-800/70 bg-slate-900/70 px-4 py-4 space-y-2;
+  }
+
+  .pp-globalbilan-aside-title {
+    @apply text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--color-text-muted)];
+  }
+
+  .pp-globalbilan-aside-nav {
+    @apply rounded-2xl border border-slate-800/70 bg-slate-900/70 px-4 py-4 space-y-2;
+  }
+
+  .pp-globalbilan-aside-link {
+    @apply w-full text-left inline-flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-[color:var(--color-text-primary)] border border-transparent hover:border-[color:var(--color-stroke)];
+  }
+
+  .pp-globalbilan-aside-link--active {
+    @apply border-[color:var(--color-accent-border)] bg-[color:var(--color-accent-quiet)];
+  }
+
+  .pp-globalbilan-aside-dot {
+    @apply h-2 w-2 rounded-full;
+  }
+
+  .pp-globalbilan-aside-actions {
+    @apply space-y-2;
   }
 
   .home-section-header {
@@ -338,11 +508,39 @@
   }
 
   .pp-journey-container {
-    @apply w-full max-w-6xl lg:max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 pb-16;
+    @apply w-full pb-16;
+  }
+
+  .pp-journey-page {
+    @apply w-full min-h-screen bg-slate-950/95;
+  }
+
+  .pp-journey-inner {
+    @apply w-full flex flex-col gap-10 px-4 sm:px-6 mx-auto;
+  }
+
+  @media (min-width: 1024px) {
+    .pp-journey-inner {
+      padding-left: 2;
+      padding-right: 2%;
+      max-width: none;
+    }
+  }
+
+  .pp-journey-layout-wide {
+    @apply w-full px-4 sm:px-6;
+  }
+
+  @media (min-width: 1024px) {
+    .pp-journey-layout-wide {
+      padding-left: 2vw;
+      padding-right: 2vw;
+      max-width: none;
+    }
   }
 
   .pp-journey-header {
-    @apply w-full max-w-6xl mx-auto px-5 sm:px-6 lg:px-8 py-6 flex items-center justify-between;
+    @apply w-full max-w-8/10 mx-auto px-5 sm:px-6 lg:px-8 py-6 flex items-center justify-between;
   }
 
   .pp-journey-panel {
@@ -403,6 +601,154 @@
     outline: 2px solid var(--color-accent-strong);
     outline-offset: 3px;
     box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.18);
+  }
+
+  .pp-journey-badges-row {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4;
+  }
+
+  .pp-journey-block-grid {
+    @apply grid gap-4 sm:gap-5 md:grid-cols-2;
+  }
+
+  .pp-journey-status-chip {
+    @apply inline-flex items-center rounded-full border border-slate-500/70 bg-slate-700/60 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-[color:var(--color-text-primary)];
+  }
+
+  /* Bilans E2 */
+  .pp-bilan-card-soft {
+    @apply relative overflow-hidden rounded-3xl border border-slate-800/70 bg-slate-900/85 p-5 sm:p-6 shadow-lg shadow-slate-900/40;
+  }
+
+  .pp-bilan-card-accent {
+    @apply relative overflow-hidden rounded-3xl border border-slate-800/70 bg-slate-900/85 p-5 sm:p-6 shadow-lg shadow-slate-900/40;
+  }
+
+  .pp-bilan-card-accent::before {
+    content: "";
+    @apply absolute left-0 top-0 h-[3px] w-full;
+    background: linear-gradient(90deg, #fdba74 0%, #f97316 100%);
+  }
+
+  .pp-bilan-card-priority {
+    @apply shadow-[0_22px_70px_rgba(249,115,22,0.12)];
+    border-color: color-mix(in srgb, var(--color-accent-border) 75%, transparent);
+  }
+
+  .pp-bilan-icon {
+    @apply text-2xl sm:text-3xl mr-3 text-orange-400/80;
+  }
+
+  .pp-bilan-cta-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-[var(--radius-pill)] px-5 sm:px-6 py-3 text-sm font-semibold bg-orange-500/90 text-[color:var(--color-text-invert)] shadow-[0_14px_40px_rgba(249,115,22,0.24)] transition-colors duration-200 hover:bg-orange-600;
+  }
+
+  .pp-bilan-cta-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-[var(--radius-pill)] px-5 sm:px-6 py-3 text-sm font-medium border border-slate-500/80 text-[color:var(--color-text-primary)] transition-colors duration-200 hover:bg-slate-800/80;
+  }
+
+  .pp-bilan-step {
+    @apply mb-12 space-y-4;
+  }
+
+  .pp-bilan-step-label {
+    @apply mb-3 block text-xs font-semibold uppercase tracking-[0.2em] text-slate-400;
+  }
+
+  .pp-bilan-axe-icon {
+    @apply flex h-8 w-8 items-center justify-center rounded-xl bg-slate-900 text-lg text-orange-400/90;
+  }
+
+  .pp-bilan-tension-card,
+  .pp-bilan-interpretation-card {
+    @apply bg-slate-900/80 border border-slate-800/70 rounded-xl p-5;
+  }
+
+  .pp-bilan-axes-grid {
+    @apply grid gap-4 md:gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4;
+  }
+
+ /* Wrapper global du bilan */
+.pp-bilan-wrapper {
+  /* on laisse la largeur gérée par le layout journey,
+     ici on enlève la grille qui resserrait tout */
+  @apply w-full;
+}
+
+/* Colonne principale : les sections E1/E2/E3/E4 */
+.pp-bilan-main {
+  @apply flex flex-col gap-10 lg:gap-12;
+}
+
+/* Layout principal : pile sur mobile, 2 colonnes 75/25 sur desktop
+   → grosse colonne contenu + petite colonne timeline sticky */
+.pp-bilan-layout {
+  @apply relative flex flex-col gap-10;
+}
+
+@media (min-width: 1024px) {
+  .pp-bilan-layout {
+    display: grid;
+    /* 3 parts pour le contenu, 1 part pour la timeline */
+    grid-template-columns: minmax(0, 3fr) minmax(260px, 1fr);
+    /* on réduit un peu le gap pour éviter le gros “trou” central */
+    column-gap: 3.5rem; /* ~ entre gap-14 et gap-16 */
+    align-items: flex-start;
+  }
+}
+
+  .pp-bilan-timeline-shell {
+    @apply mt-8;
+  }
+
+  .pp-bilan-timeline {
+    @apply hidden md:block relative pl-6;
+  }
+
+  @media (min-width: 1024px) {
+    .pp-bilan-timeline-shell {
+      position: sticky;
+      top: 96px;
+      align-self: flex-start;
+      max-height: calc(100vh - 120px);
+    }
+  }
+
+  .pp-bilan-timeline-list {
+    @apply flex flex-col gap-6;
+  }
+
+  .pp-bilan-timeline-step {
+    @apply relative flex items-start gap-3 text-left text-xs text-slate-400 bg-transparent border-0 p-0 w-full cursor-pointer;
+  }
+
+  .pp-bilan-timeline-dot {
+    @apply flex h-7 w-7 items-center justify-center rounded-full border border-slate-600 bg-slate-900 text-[11px] font-semibold;
+  }
+
+  .pp-bilan-timeline-step--active .pp-bilan-timeline-dot {
+    @apply border-amber-400 bg-amber-400/10 text-amber-300 shadow-[0_0_0_1px_rgba(251,191,36,0.25)];
+  }
+
+  .pp-bilan-timeline-step--active .pp-bilan-timeline-title {
+    @apply text-amber-200;
+  }
+
+  .pp-bilan-timeline-title {
+    @apply text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400;
+  }
+
+  .pp-bilan-timeline-sub {
+    @apply text-[11px] text-slate-500;
+  }
+
+  .pp-bilan-timeline::before {
+    content: "";
+    @apply absolute left-[1.05rem] top-1 h-full w-px bg-slate-700/60;
+  }
+
+  .pp-bilan-timeline-step:focus-visible {
+    @apply outline-none ring-2 ring-amber-400/70 ring-offset-2 ring-offset-slate-950 rounded-xl;
   }
 
   .pp-journey-card-interactive {
@@ -544,6 +890,269 @@
     @apply border-emerald-300/50 text-emerald-100;
   }
 
+  /* P1 Intro (E0) */
+  .pp-journey-intro-shell {
+    @apply w-full max-w-6xl mx-auto px-4 md:px-8 py-10 md:py-14 rounded-3xl bg-slate-950/70 border border-slate-800/80 shadow-[0_0_60px_rgba(15,23,42,0.8)] flex flex-col gap-10;
+  }
+
+  .pp-journey-intro-header {
+    @apply flex flex-col gap-4;
+  }
+
+  .pp-journey-intro-title {
+    @apply text-2xl md:text-3xl font-semibold tracking-tight text-slate-50;
+  }
+
+  .pp-journey-intro-subtitle {
+    @apply text-base md:text-lg text-slate-300 max-w-3xl leading-relaxed;
+  }
+
+  .pp-journey-intro-body {
+    @apply grid gap-8 md:grid-cols-[minmax(0,1.7fr)_minmax(260px,1fr)] items-start;
+  }
+
+  .pp-journey-intro-text {
+    @apply flex flex-col gap-4 text-sm md:text-base text-slate-200 leading-relaxed max-w-3xl;
+  }
+
+  .pp-journey-intro-sovereignty {
+    @apply rounded-3xl border border-amber-400/60 bg-gradient-to-br from-slate-950 via-slate-950/95 to-slate-900/90 px-5 py-5 flex flex-col gap-3 shadow-[0_0_40px_rgba(248,153,72,0.25)];
+  }
+
+  .pp-journey-intro-sovereignty-title {
+    @apply flex items-center gap-2 text-xs font-semibold tracking-[0.18em] uppercase text-amber-300;
+  }
+
+  .pp-journey-intro-sovereignty-icon {
+    @apply text-base;
+  }
+
+  .pp-journey-intro-sovereignty-text {
+    @apply text-sm md:text-[15px] text-slate-100 leading-relaxed;
+  }
+
+  .pp-journey-intro-footer {
+    @apply flex flex-col md:flex-row md:items-center gap-4 md:gap-6 justify-between;
+  }
+
+  .pp-journey-intro-footer-hint {
+    @apply text-sm text-slate-300 max-w-3xl leading-relaxed;
+  }
+
+  .pp-journey-intro-cta {
+    @apply self-start md:self-auto;
+  }
+
+  /* Panorama bilan par axe (E2) */
+  .pp-bilan-by-axis-intro {
+    @apply flex flex-col gap-4 mb-8;
+  }
+
+  .pp-bilan-axis-summary-row {
+    @apply mt-6 flex flex-wrap gap-3;
+  }
+
+  .pp-bilan-axis-summary-chip {
+    @apply inline-flex items-center gap-2 rounded-full border border-slate-700/70 bg-slate-900/80 px-3 py-1 text-xs text-slate-200/90 hover:border-amber-400/80 hover:text-amber-100 hover:bg-slate-900 transition;
+  }
+
+  .pp-bilan-axis-summary-label {
+    @apply font-medium;
+  }
+
+  .pp-bilan-axis-summary-score {
+    @apply text-[0.7rem] text-slate-400;
+  }
+
+  .pp-bilan-axis-summary-meteo {
+    @apply text-[0.7rem] text-slate-300/80;
+  }
+
+  .pp-bilan-axis-section {
+    @apply relative py-10;
+  }
+
+  .pp-bilan-axis-shell {
+    @apply rounded-3xl border border-slate-800/80 bg-slate-950/80 px-6 py-6 md:px-8 md:py-8 shadow-[0_0_45px_rgba(0,0,0,0.6)];
+  }
+
+  .pp-bilan-axis-header {
+    @apply flex flex-wrap items-center justify-between gap-4 mb-6;
+  }
+
+  .pp-bilan-axis-header-main {
+    @apply inline-flex items-center gap-3 text-sm font-medium text-slate-100;
+  }
+
+  .pp-bilan-axis-label {
+    @apply text-base md:text-lg font-semibold text-slate-50;
+  }
+
+  .pp-bilan-axis-header-score {
+    @apply inline-flex items-center gap-3 text-xs text-slate-300/90;
+  }
+
+  .pp-bilan-axis-score-chip {
+    @apply inline-flex items-center rounded-full bg-slate-900/90 px-3 py-1 font-medium text-amber-200;
+  }
+
+  .pp-bilan-axis-meteo {
+    @apply text-[0.7rem] text-slate-400;
+  }
+
+  .pp-bilan-axis-grid {
+    @apply grid gap-6 md:grid-cols-2;
+  }
+
+  .pp-bilan-axis-card {
+    @apply rounded-2xl border px-5 py-5 text-sm leading-relaxed;
+  }
+
+  .pp-bilan-axis-card-tensions {
+    @apply border-slate-800 bg-slate-950/90;
+  }
+
+  .pp-bilan-axis-card-interpretation {
+    @apply border-slate-700 bg-slate-900/90;
+  }
+
+  .pp-bilan-axis-card-label {
+    @apply mb-2 text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-slate-400;
+  }
+
+  .pp-bilan-axis-card-text {
+    @apply text-sm text-slate-100/90;
+  }
+
+  .pp-bilan-axis-actions {
+    @apply mt-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-amber-500/40 bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent px-5 py-4;
+  }
+
+  .pp-bilan-axis-actions-text {
+    @apply max-w-xl text-xs md:text-sm text-slate-100/90;
+  }
+
+  .pp-bilan-axis-actions-label {
+    @apply text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-amber-300/90;
+  }
+
+  .pp-bilan-axis-actions-title {
+    @apply text-sm md:text-base font-semibold text-amber-100;
+  }
+
+  .pp-bilan-axis-actions-note {
+    @apply mt-1 text-xs text-slate-300/90;
+  }
+
+  .pp-bilan-axis-actions-ctas {
+    @apply flex flex-wrap gap-3;
+  }
+
+  .pp-bilan-timeline {
+    @apply flex flex-col gap-3 text-xs;
+  }
+
+  .pp-bilan-timeline-item {
+    @apply inline-flex items-center gap-2 rounded-full px-3 py-1 text-left text-slate-400 hover:text-slate-100 hover:bg-slate-900/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/80;
+  }
+
+  .pp-bilan-timeline-item--active {
+    @apply bg-slate-900/90 text-amber-200;
+  }
+
+  .pp-bilan-timeline-dot {
+    @apply h-2 w-2 rounded-full border border-amber-500/60;
+  }
+
+  .pp-bilan-timeline-item--active .pp-bilan-timeline-dot {
+    @apply bg-amber-400;
+  }
+
+  /* Bloc bilan (B1…) */
+  .pp-bilan-block-header {
+    @apply mb-8 flex flex-col gap-3 max-w-4xl;
+  }
+
+  .pp-bilan-block-title {
+    @apply text-2xl md:text-3xl font-semibold text-slate-50;
+  }
+
+  .pp-bilan-block-subtitle {
+    @apply text-sm md:text-base text-slate-300/90;
+  }
+
+  .pp-bilan-block-grid {
+    @apply grid gap-6 md:grid-cols-2 mb-10;
+  }
+
+  .pp-bilan-block-card {
+    @apply rounded-3xl border border-slate-800/80 bg-slate-950/90 px-5 py-5 md:px-6 md:py-6 shadow-[0_0_40px_rgba(0,0,0,0.5)];
+  }
+
+  .pp-bilan-block-card-label {
+    @apply mb-2 text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-slate-400;
+  }
+
+  .pp-bilan-block-card-text {
+    @apply text-sm md:text-[0.95rem] leading-relaxed text-slate-100/90;
+  }
+
+  .pp-bilan-block-stats-card {
+    @apply mt-4 rounded-3xl border border-amber-500/30 bg-slate-950/95 px-5 py-5 md:px-7 md:py-7 shadow-[0_0_50px_rgba(245,158,11,0.25)];
+  }
+
+  .pp-bilan-block-stats-header {
+    @apply mb-3 text-[0.75rem] font-semibold uppercase tracking-[0.18em] text-amber-300/90;
+  }
+
+  .pp-bilan-block-stats-subtitle {
+    @apply mb-3 text-xs md:text-sm text-slate-300/90;
+  }
+
+  .pp-bilan-block-stats-list {
+    @apply mb-4 space-y-1 text-sm text-slate-100/90;
+  }
+
+  .pp-bilan-block-subthemes {
+    @apply mt-4 rounded-2xl border border-slate-800/80 bg-slate-950/95 px-4 py-4;
+  }
+
+  .pp-bilan-block-subthemes-title {
+    @apply mb-2 text-sm md:text-base font-semibold text-slate-50;
+  }
+
+  .pp-bilan-block-subthemes-list {
+    @apply space-y-1 text-sm text-slate-200/90;
+  }
+
+  .pp-bilan-block-subtheme-line {
+    @apply flex items-baseline justify-between gap-3;
+  }
+
+  .pp-bilan-block-subtheme-label {
+    @apply text-[0.9rem] text-slate-200;
+  }
+
+  .pp-bilan-block-subtheme-score {
+    @apply text-[0.8rem] font-medium text-slate-400;
+  }
+
+  .pp-bilan-block-footer {
+    @apply mt-8 border-t border-slate-800/80 pt-5;
+  }
+
+  .pp-bilan-block-footer-actions {
+    @apply flex flex-wrap gap-3 md:gap-4;
+  }
+
+  .pp-btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-slate-900 bg-amber-400 hover:bg-amber-300 transition;
+  }
+
+  .pp-btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium text-slate-100 border border-slate-700 hover:border-amber-300 hover:text-amber-100 transition;
+  }
+
   /* Likert scale (P1) */
   .pp-likert-scale {
     @apply space-y-3;
@@ -659,6 +1268,10 @@
     .pp-likert-step--active {
       transform: none;
       transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .pp-journey-card-priority {
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.32);
     }
   }
 }

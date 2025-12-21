@@ -1,85 +1,130 @@
 <template>
   <JourneyLayout>
     <div class="pp-journey-panel space-y-4" role="region" aria-labelledby="journey-step-heading-B1_bilan">
-      <JourneyStepHeader
-        :title="blockCopy.bilanTitle"
-        :subtitle="blockCopy.bilanSubtitle || blockCopy.subtitle"
-        heading-id="journey-step-heading-B1_bilan"
-      />
-      <div v-if="hasScores" class="pp-journey-section space-y-3">
-        <section class="space-y-2" aria-labelledby="b1-summary-heading">
-          <h2 id="b1-summary-heading" class="pp-journey-title text-lg">
-            {{ narrativeCopy.summaryTitle }}
-          </h2>
-          <ul class="pp-journey-body list-disc list-inside space-y-1">
-            <li v-for="item in narrative.summary" :key="item.key">
-              {{ item.text }}
-            </li>
-          </ul>
+      <section class="pp-bilan-block-header">
+        <JourneyStepHeader
+          :title="blockCopy.bilanTitle"
+          :subtitle="blockCopy.bilanSubtitle || blockCopy.subtitle"
+          heading-id="journey-step-heading-B1_bilan"
+        />
+      </section>
+
+      <div v-if="hasScores" class="space-y-6">
+        <section class="pp-bilan-block-grid" aria-labelledby="b1-summary-heading">
+          <article class="pp-bilan-block-card">
+            <p id="b1-summary-heading" class="pp-bilan-block-card-label">
+              {{ narrativeCopy.summaryTitle || 'Ce que tu viens de poser dans ce bloc' }}
+            </p>
+            <div class="pp-bilan-block-card-text space-y-2">
+              <p v-for="item in narrative.summary" :key="item.key">{{ item.text }}</p>
+            </div>
+          </article>
+
+          <article class="pp-bilan-block-card">
+            <p id="b1-interpretation-heading" class="pp-bilan-block-card-label">
+              {{ narrativeCopy.interpretationTitle || 'Comment on peut lire ce que tu as posé' }}
+            </p>
+            <div class="pp-bilan-block-card-text space-y-2">
+              <p v-for="item in narrative.interpretation" :key="item.key">{{ item.text }}</p>
+            </div>
+          </article>
         </section>
 
-        <section class="space-y-2" aria-labelledby="b1-interpretation-heading">
-          <h2 id="b1-interpretation-heading" class="pp-journey-title text-lg">
-            {{ narrativeCopy.interpretationTitle }}
-          </h2>
-          <ul class="pp-journey-body list-disc list-inside space-y-1">
-            <li v-for="item in narrative.interpretation" :key="item.key">
-              {{ item.text }}
-            </li>
-          </ul>
-        </section>
-
-        <details class="pp-journey-panel pp-journey-panel-alt space-y-2">
-          <summary class="cursor-pointer text-sm font-semibold">
-            {{ narrativeCopy.detailsTitle }}
-          </summary>
-          <p class="pp-journey-meta">{{ copy.statsLabel }}</p>
-          <ul class="pp-journey-body list-disc list-inside space-y-1">
+        <section class="pp-bilan-block-stats-card" aria-labelledby="b1-details-heading">
+          <p id="b1-details-heading" class="pp-bilan-block-stats-header">
+            {{ narrativeCopy.detailsTitle || 'Détail des réponses chiffrées' }}
+          </p>
+          <p class="pp-bilan-block-stats-subtitle">
+            {{ copy.statsLabel }}
+          </p>
+          <ul class="pp-bilan-block-stats-list">
             <li>Répondu : {{ blockScores?.answeredCount ?? 0 }}</li>
             <li>Non répondu : {{ blockScores?.skippedCount ?? 0 }}</li>
             <li>Non vu : {{ blockScores?.unseenCount ?? 0 }}</li>
           </ul>
-          <div class="pp-journey-panel pp-journey-panel-alt space-y-1">
-            <p class="pp-journey-title text-sm">{{ copy.themesLabel }}</p>
-            <ul class="pp-journey-body list-disc list-inside text-sm text-[color:var(--color-text-muted)]">
-              <li v-for="theme in themeList" :key="theme.name">
-                {{ theme.name }} : {{ theme.average }} ({{ theme.count }} items)
+
+          <div class="pp-bilan-block-subthemes">
+            <p class="pp-bilan-block-subthemes-title">{{ copy.themesLabel }}</p>
+            <ul class="pp-bilan-block-subthemes-list">
+              <li v-for="theme in themeList" :key="theme.name" class="pp-bilan-block-subtheme-line">
+                <span class="pp-bilan-block-subtheme-label">{{ theme.name }}</span>
+                <span class="pp-bilan-block-subtheme-score">{{ theme.average }} ({{ theme.count }} items)</span>
               </li>
             </ul>
           </div>
-        </details>
+        </section>
+
+        <template v-for="bandKey in bandOrder" :key="bandKey">
+          <section v-if="getBandThemes(bandKey).length" class="space-y-3">
+            <h3 class="pp-bilan-block-card-label text-[0.8rem]">
+              {{ bandLabels[bandKey] }}
+            </h3>
+            <div class="pp-bilan-block-grid md:grid-cols-3">
+              <article
+                v-for="theme in getBandThemes(bandKey)"
+                :key="theme.themeId"
+                class="pp-bilan-block-card"
+              >
+                <p class="pp-bilan-block-card-label">{{ theme.label }}</p>
+                <div class="pp-bilan-block-card-text space-y-2">
+                  <p>{{ theme.summary }}</p>
+                  <p class="text-slate-300/90">{{ theme.interpretation }}</p>
+                  <p class="text-xs text-[color:var(--color-text-muted)]">
+                    Base : {{ theme.answeredCount }} / {{ theme.totalCount }} items
+                    <span v-if="theme.answeredCount === 1"> · Signal à confirmer.</span>
+                  </p>
+                  <p v-if="theme.confidenceHint" class="text-xs text-[color:var(--color-text-muted)]">
+                    {{
+                      theme.confidenceHint === 'confirmed'
+                        ? 'Confirmé par précision'
+                        : theme.confidenceHint === 'clarified'
+                          ? 'Affiné'
+                          : theme.confidenceHint === 'protected'
+                            ? 'Zone protégée'
+                            : 'À confirmer'
+                    }}
+                  </p>
+                </div>
+              </article>
+            </div>
+          </section>
+        </template>
+
         <p v-if="blockCopy.dignityNote" class="pp-journey-body text-sm text-[color:var(--color-text-muted)]">
           {{ blockCopy.dignityNote }}
         </p>
       </div>
       <div v-else class="pp-journey-section space-y-2">
         <p class="pp-journey-body">Bilan non disponible pour ce bloc, retourne au hub.</p>
-        <button type="button" class="pp-journey-cta-secondary" @click="goToStep('E2_panorama_bilan')">
+        <button type="button" class="pp-btn-ghost" @click="goToStep('E2_panorama_bilan')">
           {{ copy.ctaHub }}
         </button>
       </div>
-      <div class="flex flex-wrap gap-3">
-        <button type="button" class="pp-journey-cta-secondary" @click="goToStep('E2_panorama_bilan')">
-          {{ copy.ctaHub }}
-        </button>
-        <button type="button" class="pp-journey-cta-secondary" @click="goToStep(nextBlockStep)">
-          {{ copy.ctaAnother }}
-        </button>
-        <button
-          v-if="canAccessGlobalBilan"
-          type="button"
-          class="pp-journey-cta-secondary"
-          @click="handleGoToGlobal"
-        >
-          {{ copy.ctaGlobal }}
-        </button>
-        <button type="button" class="pp-journey-cta-secondary" @click="handleClear">
-          {{ copy.ctaClear }}
-        </button>
-      </div>
-      <p v-if="!canAccessGlobalBilan" class="text-sm text-[color:var(--color-text-muted)]">
-        {{ copy.globalLocked }}
-      </p>
+
+      <section class="pp-bilan-block-footer">
+        <div class="pp-bilan-block-footer-actions">
+          <button type="button" class="pp-btn-ghost" @click="goToStep('E2_panorama_bilan')">
+            {{ copy.ctaHub }}
+          </button>
+          <button type="button" class="pp-btn-ghost" @click="goToStep(nextBlockStep)">
+            {{ copy.ctaAnother }}
+          </button>
+          <button
+            v-if="canAccessGlobalBilan"
+            type="button"
+            class="pp-btn-primary"
+            @click="handleGoToGlobal"
+          >
+            {{ copy.ctaGlobal }}
+          </button>
+          <button type="button" class="pp-btn-ghost" @click="handleClear">
+            {{ copy.ctaClear }}
+          </button>
+        </div>
+        <p v-if="!canAccessGlobalBilan" class="mt-2 text-sm text-[color:var(--color-text-muted)]">
+          {{ copy.globalLocked }}
+        </p>
+      </section>
     </div>
   </JourneyLayout>
 </template>
@@ -89,9 +134,10 @@ import JourneyLayout from '~/components/journey/JourneyLayout.vue';
 import JourneyStepHeader from '~/components/journey/JourneyStepHeader.vue';
 import { computed } from 'vue';
 import { useDiagnosticStorage } from '~/composables/useDiagnosticStorage';
-import { useP1BlockNarrative } from '~/composables/useP1BlockNarrative';
+import { useP1BlockNarrative, type ThemeCard } from '~/composables/useP1BlockNarrative';
 import { P1_BLOCK_IDS, p1BlockContent, p1Copy, p1PanoramaText } from '~/config/journeys/p1QuestionsConfig';
 import { hasP1GlobalBilanAccess } from '~/utils/p1GlobalBilanAccess';
+import type { P1FollowupPackStatus, P1TensionBand } from '@/types/p1Meta';
 
 const props = defineProps<{
   goToStep: (stepId: string) => void;
@@ -105,7 +151,10 @@ const copy = computed(() => p1Copy.blockBilan);
 const blockScores = computed(() => storage.scores.value?.blocks?.[blockId] ?? null);
 const hasScores = computed(() => Boolean(blockScores.value));
 const { getBlockNarrative } = useP1BlockNarrative();
-const narrativeResult = computed(() => getBlockNarrative(blockId, blockScores.value));
+const followupsStatus = computed<Record<string, P1FollowupPackStatus>>(
+  () => storage.meta.value?.followups?.b1 ?? {}
+);
+const narrativeResult = computed(() => getBlockNarrative(blockId, blockScores.value, followupsStatus.value));
 const narrative = computed(() => ({
   summary:
     narrativeResult.value.summary && narrativeResult.value.summary.length
@@ -122,6 +171,22 @@ const narrative = computed(() => ({
           text: p1PanoramaText[key] ?? key
         }))
 }));
+const themesByBand = computed<Record<P1TensionBand, ThemeCard[]>>(() => ({
+  very_high: narrativeResult.value.themesByBand?.very_high ?? [],
+  high: narrativeResult.value.themesByBand?.high ?? [],
+  medium: narrativeResult.value.themesByBand?.medium ?? [],
+  low: narrativeResult.value.themesByBand?.low ?? [],
+  very_low: narrativeResult.value.themesByBand?.very_low ?? []
+}));
+const bandOrder: P1TensionBand[] = ['very_high', 'high', 'medium', 'low', 'very_low'];
+const bandLabels: Record<P1TensionBand, string> = {
+  very_high: 'Très forte tension',
+  high: 'Forte tension',
+  medium: 'Zone à surveiller',
+  low: 'Plutôt stable',
+  very_low: 'Ça tient encore'
+};
+const getBandThemes = (band: P1TensionBand) => themesByBand.value[band] ?? [];
 const narrativeCopy = computed(
   () =>
     p1Copy.blocks?.[blockId]?.bilan ??

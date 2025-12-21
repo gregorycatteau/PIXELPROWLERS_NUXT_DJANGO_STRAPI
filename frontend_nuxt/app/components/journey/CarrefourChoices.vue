@@ -1,6 +1,6 @@
 <template>
   <div class="CarrefourChoices">
-    <ul class="grid gap-4 md:grid-cols-3" role="list">
+    <ul class="grid gap-4 md:grid-cols-2 lg:grid-cols-4" role="list">
       <li
         v-for="(option, index) in options"
         :key="option.id"
@@ -22,7 +22,7 @@ import type { PropType } from 'vue';
 import CarrefourChoiceCard from './CarrefourChoiceCard.vue';
 
 export interface CarrefourChoiceCardProps {
-  id: 'autonomie' | 'relinium' | 'fit';
+  id: 'n1' | 'n2' | 'n3' | 'n4';
   title: string;
   description: string;
   ctaLabel: string;
@@ -37,7 +37,7 @@ defineProps({
 });
 
 defineEmits<{
-  (e: 'select', id: 'autonomie' | 'relinium' | 'fit'): void;
+  (e: 'select', id: CarrefourChoiceCardProps['id']): void;
 }>();
 </script>
 

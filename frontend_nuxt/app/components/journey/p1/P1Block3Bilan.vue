@@ -48,6 +48,42 @@
             </ul>
           </div>
         </details>
+
+        <template v-for="bandKey in bandOrder" :key="bandKey">
+          <section v-if="getBandThemes(bandKey).length" class="space-y-3">
+            <h3 class="pp-bilan-block-card-label text-[0.8rem]">
+              {{ bandLabels[bandKey] }}
+            </h3>
+            <div class="pp-bilan-block-grid md:grid-cols-3">
+              <article
+                v-for="theme in getBandThemes(bandKey)"
+                :key="theme.themeId"
+                class="pp-bilan-block-card"
+              >
+                <p class="pp-bilan-block-card-label">{{ theme.label }}</p>
+                <div class="pp-bilan-block-card-text space-y-2">
+                  <p>{{ theme.summary }}</p>
+                  <p class="text-slate-300/90">{{ theme.interpretation }}</p>
+                  <p class="text-xs text-[color:var(--color-text-muted)]">
+                    Base : {{ theme.answeredCount }} / {{ theme.totalCount }} items
+                    <span v-if="theme.answeredCount === 1"> · Signal à confirmer.</span>
+                  </p>
+                  <p v-if="theme.confidenceHint" class="text-xs text-[color:var(--color-text-muted)]">
+                    {{
+                      theme.confidenceHint === 'confirmed'
+                        ? 'Confirmé par précision'
+                        : theme.confidenceHint === 'clarified'
+                          ? 'Affiné'
+                          : theme.confidenceHint === 'protected'
+                            ? 'Zone protégée'
+                            : 'À confirmer'
+                    }}
+                  </p>
+                </div>
+              </article>
+            </div>
+          </section>
+        </template>
         <p v-if="blockCopy.dignityNote" class="pp-journey-body text-sm text-[color:var(--color-text-muted)]">
           {{ blockCopy.dignityNote }}
         </p>
@@ -89,9 +125,10 @@ import JourneyLayout from '~/components/journey/JourneyLayout.vue';
 import JourneyStepHeader from '~/components/journey/JourneyStepHeader.vue';
 import { computed } from 'vue';
 import { useDiagnosticStorage } from '~/composables/useDiagnosticStorage';
-import { useP1BlockNarrative } from '~/composables/useP1BlockNarrative';
+import { useP1BlockNarrative, type ThemeCard } from '~/composables/useP1BlockNarrative';
 import { P1_BLOCK_IDS, p1BlockContent, p1Copy, p1PanoramaText } from '~/config/journeys/p1QuestionsConfig';
 import { hasP1GlobalBilanAccess } from '~/utils/p1GlobalBilanAccess';
+import type { P1FollowupPackStatus, P1TensionBand } from '@/types/p1Meta';
 
 const props = defineProps<{
   goToStep: (stepId: string) => void;
@@ -109,7 +146,26 @@ const nextBlockId = computed(() => P1_BLOCK_IDS.find((id) => id !== blockId && !
 const nextBlockStep = computed(() => `${nextBlockId.value.toUpperCase()}_questions`);
 const canAccessGlobalBilan = computed(() => hasP1GlobalBilanAccess(storage.meta.value, storage.scores.value));
 const { getBlockNarrative } = useP1BlockNarrative();
-const narrativeResult = computed(() => getBlockNarrative(blockId, blockScores.value));
+const followupsStatus = computed<Record<string, P1FollowupPackStatus>>(
+  () => storage.meta.value?.followups?.b3 ?? {}
+);
+const narrativeResult = computed(() => getBlockNarrative(blockId, blockScores.value, followupsStatus.value));
+const themesByBand = computed<Record<P1TensionBand, ThemeCard[]>>(() => ({
+  very_high: narrativeResult.value.themesByBand?.very_high ?? [],
+  high: narrativeResult.value.themesByBand?.high ?? [],
+  medium: narrativeResult.value.themesByBand?.medium ?? [],
+  low: narrativeResult.value.themesByBand?.low ?? [],
+  very_low: narrativeResult.value.themesByBand?.very_low ?? []
+}));
+const bandOrder: P1TensionBand[] = ['very_high', 'high', 'medium', 'low', 'very_low'];
+const bandLabels: Record<P1TensionBand, string> = {
+  very_high: 'Très forte tension',
+  high: 'Forte tension',
+  medium: 'Zone à surveiller',
+  low: 'Plutôt stable',
+  very_low: 'Ça tient encore'
+};
+const getBandThemes = (band: P1TensionBand) => themesByBand.value[band] ?? [];
 const narrative = computed(() => ({
   summary:
     narrativeResult.value.summary && narrativeResult.value.summary.length

@@ -1,8 +1,38 @@
+/**
+ * TODO Audit P1 Panorama V1.3 — 16 assertions (E1)
+ * - Axes actuellement utilisés dans le code : human/governance/organization/resources (héritage V1.3).
+ * - Axes souhaités pour Panorama V1.3.1 : human/movement/decisions/structure.
+ * - p1PanoramaQuestions est consommé par :
+ *   - P1PanoramaE1 (liste des questions + panoramaAxisMap pour le scoring),
+ *   - P1PanoramaBilanE2 (bilan, badges et cartes),
+ *   - useJourneyDiagnostics (computePanoramaScores via panoramaAxisMap),
+ *   - p1PanoramaStorage (lecture des scores stockés),
+ *   - useP1PanoramaNarrative (narration par axe).
+ * - Passage 12 → 16 questions : pas de pagination codée en dur, rendu basé sur la liste.
+ * - Stratégie retenue : Option B — introduire un type d’axe Panorama dédié
+ *   (human/movement/decisions/structure), remplacer p1PanoramaQuestions par 16 assertions,
+ *   aligner le scoring et les métadonnées Panorama sur ces axes. P1 est encore en dev,
+ *   donc pas de migration de storage legacy : on lit les nouvelles clés directement.
+ */
 import { P1_QUESTIONS_V1_3 } from './p1QuestionsV1_3';
 import type { P1Question } from '@/types/journeys/p1';
 
 export type P1AxisId = 'human' | 'governance' | 'organization' | 'resources';
 export type P1BlockId = 'b1' | 'b2' | 'b3' | 'b4';
+export type P1PanoramaAxisId = 'human' | 'movement' | 'decisions' | 'structure';
+export type P1PanoramaBlockId = 'B1' | 'B2' | 'B3' | 'B4';
+export type P1PanoramaPolarity = 'positive' | 'negative';
+
+export interface P1PanoramaQuestion {
+  id: string;
+  axisId: P1PanoramaAxisId;
+  blockId: P1PanoramaBlockId;
+  weight: 1 | 2 | 3;
+  polarity: P1PanoramaPolarity;
+  critical?: boolean;
+  label: string;
+  order?: number;
+}
 
 export interface P1QuestionConfig {
   id: string;
@@ -30,6 +60,13 @@ export const p1AxesMeta: Record<P1AxisId, { label: string; shortLabel: string }>
   governance: { label: 'Gouvernance / décision', shortLabel: 'Gouvernance' },
   organization: { label: 'Organisation / process', shortLabel: 'Organisation' },
   resources: { label: 'Ressources / soutenabilité', shortLabel: 'Ressources' }
+};
+
+export const p1PanoramaAxesMeta: Record<P1PanoramaAxisId, { label: string; shortLabel: string }> = {
+  human: { label: 'Humain / coopération', shortLabel: 'Humain' },
+  movement: { label: 'Mouvement / dynamique', shortLabel: 'Mouvement' },
+  decisions: { label: 'Décisions / clarté', shortLabel: 'Décisions' },
+  structure: { label: 'Structure / robustesse', shortLabel: 'Structure' }
 };
 
 export const p1BlockContent: Record<P1BlockId, P1BlockContent> = {
@@ -94,12 +131,6 @@ const mapQuestionToConfig = (question: P1Question): P1QuestionConfig => ({
   label: question.assertion
 });
 
-const p1PanoramaQuestionsV1_3 = P1_QUESTIONS_V1_3.filter(
-  (q) => q.stepId === 'E1' && q.blockId === 'GLOBAL'
-)
-  .sort((a, b) => a.order - b.order)
-  .map(mapQuestionToConfig);
-
 const p1BlocksQuestionsV1_3: Record<P1BlockId, P1QuestionConfig[]> = {
   b1: P1_QUESTIONS_V1_3.filter((q) => q.blockId === 'B1').sort((a, b) => a.order - b.order).map(mapQuestionToConfig),
   b2: P1_QUESTIONS_V1_3.filter((q) => q.blockId === 'B2').sort((a, b) => a.order - b.order).map(mapQuestionToConfig),
@@ -158,8 +189,8 @@ export const p1Copy = {
     validate: 'Voir le bilan panorama',
     back: 'Retour à l’intro',
     bilan: {
-      summaryTitle: 'Ce que tu viens de poser',
-      summarySubtitle: 'Un aperçu rapide des tensions que tu as signalées, axe par axe.',
+      summaryTitle: '',
+      summarySubtitle: '',
       interpretationTitle: 'Ce qu’on peut en comprendre',
       interpretationSubtitle: 'Quelques pistes de lecture pour situer ta structure, sans verdict ni jugement.',
       nextStepsTitle: 'Ce que tu peux explorer maintenant',
@@ -169,8 +200,8 @@ export const p1Copy = {
     }
   },
   hub: {
-    title: 'Bilan panorama & hub des blocs',
-    subtitle: 'Aperçu des scores et accès aux blocs. Les données affichées sont agrégées et restent sur cet appareil.',
+    title: 'Bilan panoramique initial',
+    subtitle: 'Un aperçu rapide des tensions que tu as signalées, axe par axe, avec accès aux blocs détaillés.',
     panoramaHeading: 'Synthèse panorama',
     blocksHeading: 'Blocs d’exploration',
     backToPanorama: 'Retour au panorama',
@@ -237,7 +268,170 @@ export const p1Copy = {
 };
 
 // Panorama express (10 questions)
-export const p1PanoramaQuestions: P1QuestionConfig[] = p1PanoramaQuestionsV1_3;
+export const p1PanoramaQuestions: P1PanoramaQuestion[] = [
+  // Humain
+  {
+    id: 'p1_panorama_humain_b1',
+    axisId: 'human',
+    blockId: 'B1',
+    weight: 1,
+    polarity: 'positive',
+    critical: false,
+    label: 'Dans notre structure, les échanges restent globalement respectueux, même quand il y a des désaccords.'
+  },
+  {
+    id: 'p1_panorama_humain_b2',
+    axisId: 'human',
+    blockId: 'B2',
+    weight: 2,
+    polarity: 'negative',
+    critical: true,
+    label:
+      'Quand la pression monte, il devient difficile de parler franchement sans craindre que cela se retourne contre quelqu’un.'
+  },
+  {
+    id: 'p1_panorama_humain_b3',
+    axisId: 'human',
+    blockId: 'B3',
+    weight: 3,
+    polarity: 'negative',
+    critical: true,
+    label:
+      'Certaines personnes ou certains groupes semblent régulièrement mis de côté dans les discussions importantes ou les moments conviviaux.'
+  },
+  {
+    id: 'p1_panorama_humain_b4',
+    axisId: 'human',
+    blockId: 'B4',
+    weight: 3,
+    polarity: 'negative',
+    critical: true,
+    label:
+      'Il m’arrive de me sentir en insécurité (émotionnelle ou symbolique) quand certains sujets sont abordés dans notre structure.'
+  },
+
+  // Mouvement
+  {
+    id: 'p1_panorama_mouvement_b1',
+    axisId: 'movement',
+    blockId: 'B1',
+    weight: 1,
+    polarity: 'positive',
+    critical: false,
+    label: 'Globalement, j’ai le sentiment que notre structure avance, même si tout n’est pas parfait.'
+  },
+  {
+    id: 'p1_panorama_mouvement_b2',
+    axisId: 'movement',
+    blockId: 'B2',
+    weight: 2,
+    polarity: 'negative',
+    critical: false,
+    label: 'Nous passons beaucoup de temps à gérer des urgences, au point d’avoir du mal à stabiliser ce qui devrait être routinier.'
+  },
+  {
+    id: 'p1_panorama_mouvement_b3',
+    axisId: 'movement',
+    blockId: 'B3',
+    weight: 2,
+    polarity: 'negative',
+    critical: true,
+    label:
+      'Des projets ou chantiers importants restent en suspens pendant des mois, sans décision claire pour les relancer ou les arrêter.'
+  },
+  {
+    id: 'p1_panorama_mouvement_b4',
+    axisId: 'movement',
+    blockId: 'B4',
+    weight: 3,
+    polarity: 'negative',
+    critical: true,
+    label:
+      'On a souvent l’impression de s’épuiser à éteindre des incendies, sans que la situation globale s’améliore vraiment.'
+  },
+
+  // Décisions
+  {
+    id: 'p1_panorama_decisions_b1',
+    axisId: 'decisions',
+    blockId: 'B1',
+    weight: 1,
+    polarity: 'positive',
+    critical: false,
+    label:
+      'Les décisions importantes sont annoncées de manière suffisamment claire pour que je comprenne ce qui change pour moi.'
+  },
+  {
+    id: 'p1_panorama_decisions_b2',
+    axisId: 'decisions',
+    blockId: 'B2',
+    weight: 2,
+    polarity: 'negative',
+    critical: false,
+    label: 'Il n’est pas toujours évident de savoir qui décide quoi, ni sur quelle base les décisions sont prises.'
+  },
+  {
+    id: 'p1_panorama_decisions_b3',
+    axisId: 'decisions',
+    blockId: 'B3',
+    weight: 3,
+    polarity: 'negative',
+    critical: true,
+    label:
+      'Il arrive que des décisions importantes soient prises ou modifiées sans que les personnes concernées aient pu donner leur point de vue.'
+  },
+  {
+    id: 'p1_panorama_decisions_b4',
+    axisId: 'decisions',
+    blockId: 'B4',
+    weight: 3,
+    polarity: 'negative',
+    critical: true,
+    label:
+      'Certaines décisions semblent prises dans un cercle très restreint, et il est délicat, voire impossible, de les questionner ouvertement.'
+  },
+
+  // Structure
+  {
+    id: 'p1_panorama_structure_b1',
+    axisId: 'structure',
+    blockId: 'B1',
+    weight: 1,
+    polarity: 'positive',
+    critical: false,
+    label: 'Les grandes lignes de l’organisation (qui fait quoi, à quel endroit) sont suffisamment claires pour moi.'
+  },
+  {
+    id: 'p1_panorama_structure_b2',
+    axisId: 'structure',
+    blockId: 'B2',
+    weight: 2,
+    polarity: 'negative',
+    critical: false,
+    label:
+      'Dans la pratique, les frontières entre les rôles sont parfois floues, ce qui crée des zones grises de responsabilité.'
+  },
+  {
+    id: 'p1_panorama_structure_b3',
+    axisId: 'structure',
+    blockId: 'B3',
+    weight: 2,
+    polarity: 'negative',
+    critical: true,
+    label:
+      'Certaines personnes se retrouvent régulièrement à compenser des manques structurels (rôles non tenus, absences, outils inadaptés).'
+  },
+  {
+    id: 'p1_panorama_structure_b4',
+    axisId: 'structure',
+    blockId: 'B4',
+    weight: 3,
+    polarity: 'negative',
+    critical: true,
+    label:
+      'Si une ou deux personnes clés s’absentent, une partie importante de l’activité de la structure est fortement ralentie ou à l’arrêt.'
+  }
+];
 
 // Narration panorama (clés éditoriales, pas de texte final)
 export const p1PanoramaNarratives = {
@@ -255,21 +449,7 @@ export const p1PanoramaNarratives = {
       interpretationKey: 'p1.panorama.human.high.interpretation'
     }
   },
-  governance: {
-    low: {
-      summaryKey: 'p1.panorama.governance.low.summary',
-      interpretationKey: 'p1.panorama.governance.low.interpretation'
-    },
-    medium: {
-      summaryKey: 'p1.panorama.governance.medium.summary',
-      interpretationKey: 'p1.panorama.governance.medium.interpretation'
-    },
-    high: {
-      summaryKey: 'p1.panorama.governance.high.summary',
-      interpretationKey: 'p1.panorama.governance.high.interpretation'
-    }
-  },
-  organization: {
+  movement: {
     low: {
       summaryKey: 'p1.panorama.organization.low.summary',
       interpretationKey: 'p1.panorama.organization.low.interpretation'
@@ -283,7 +463,21 @@ export const p1PanoramaNarratives = {
       interpretationKey: 'p1.panorama.organization.high.interpretation'
     }
   },
-  resources: {
+  decisions: {
+    low: {
+      summaryKey: 'p1.panorama.governance.low.summary',
+      interpretationKey: 'p1.panorama.governance.low.interpretation'
+    },
+    medium: {
+      summaryKey: 'p1.panorama.governance.medium.summary',
+      interpretationKey: 'p1.panorama.governance.medium.interpretation'
+    },
+    high: {
+      summaryKey: 'p1.panorama.governance.high.summary',
+      interpretationKey: 'p1.panorama.governance.high.interpretation'
+    }
+  },
+  structure: {
     low: {
       summaryKey: 'p1.panorama.resources.low.summary',
       interpretationKey: 'p1.panorama.resources.low.interpretation'
@@ -308,21 +502,21 @@ export const p1PanoramaSuggestions = {
       high: 'p1.panorama.suggest.b1.human.high'
     }
   },
-  governance: {
+  decisions: {
     mainBlockId: 'b3',
     reasonKeyByIntensity: {
       medium: 'p1.panorama.suggest.b3.governance.medium',
       high: 'p1.panorama.suggest.b3.governance.high'
     }
   },
-  organization: {
+  movement: {
     mainBlockId: 'b2',
     reasonKeyByIntensity: {
       medium: 'p1.panorama.suggest.b2.organization.medium',
       high: 'p1.panorama.suggest.b2.organization.high'
     }
   },
-  resources: {
+  structure: {
     mainBlockId: 'b4',
     reasonKeyByIntensity: {
       medium: 'p1.panorama.suggest.b4.resources.medium',

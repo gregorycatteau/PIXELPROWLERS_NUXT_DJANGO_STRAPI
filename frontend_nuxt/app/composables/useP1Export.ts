@@ -16,8 +16,13 @@ export function useP1Export() {
 
     lines.push(p1Copy.export.panoramaHeading);
     if (scores.panorama) {
-      const axisLine = (Object.keys(p1AxesMeta) as (keyof typeof p1AxesMeta)[])
-        .map((axisId) => `${p1AxesMeta[axisId].shortLabel}: ${scores.panorama?.[axisId] ?? 0}`)
+      const axisLine = Object.keys(p1AxesMeta)
+        .map((k) => {
+          const axisId = k as keyof typeof p1AxesMeta;
+          const label = p1AxesMeta[axisId].shortLabel;
+          const value = ((scores.panorama ?? {}) as Record<string, number>)[axisId] ?? 0;
+          return `${label}: ${value}`;
+        })
         .join(' | ');
       lines.push(axisLine);
       lines.push(

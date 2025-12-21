@@ -1,6 +1,7 @@
 import { ref, type Ref } from 'vue';
 import type { P1Answer, P1AnswerStatus, P1PatternInput, P1Question } from '@/types/journeys/p1';
 import { P1_QUESTIONS_V1_3 } from '@/config/journeys/p1QuestionsV1_3';
+import { p1PanoramaQuestions, type P1PanoramaAxisId } from '@/config/journeys/p1QuestionsConfig';
 
 export type LikertValue = 1 | 2 | 3 | 4 | 5;
 
@@ -30,7 +31,7 @@ export interface UseJourneyDiagnosticsOptions {
   journeyId: string; // 'p1'
   symptomAxisMap?: Record<string, keyof SymptomScores>;
   vucaAxisMap?: Record<string, 'vuca' | 'values'>;
-  panoramaAxisMap?: Record<string, P1Axis>;
+  panoramaAxisMap?: Record<string, P1PanoramaAxis>;
   blockThemeMap?: Record<string, Record<string, string>>; // blockId -> questionId -> themeId
 }
 
@@ -61,16 +62,17 @@ export interface UseJourneyDiagnosticsResult {
 
 // P1 panorama / blocs types
 export type P1Axis = 'human' | 'governance' | 'organization' | 'resources';
+export type P1PanoramaAxis = P1PanoramaAxisId;
 
 export interface P1PanoramaScores {
   human: number;
-  governance: number;
-  organization: number;
-  resources: number;
+  movement: number;
+  decisions: number;
+  structure: number;
   answeredCount: number;
   skippedCount: number;
   byAxis?: Record<
-    P1Axis,
+    P1PanoramaAxis,
     {
       answeredCount: number;
       skippedCount: number;
@@ -226,12 +228,9 @@ export function useJourneyDiagnostics(options: UseJourneyDiagnosticsOptions): Us
     return { vucaIndex, valuesProfile };
   };
 
-  const resolveAxis = (questionId: string): P1Axis | undefined => {
-    const q = p1QuestionMap[questionId];
-    const axis = q?.axis as P1Axis | undefined;
-    if (axis && ['human', 'governance', 'organization', 'resources'].includes(axis)) {
-      return axis;
-    }
+  const PANORAMA_AXIS_ORDER: P1PanoramaAxis[] = ['human', 'movement', 'decisions', 'structure'];
+
+  const resolveAxis = (questionId: string): P1PanoramaAxis | undefined => {
     return panoramaAxisMap[questionId];
   };
 
@@ -241,7 +240,7 @@ export function useJourneyDiagnostics(options: UseJourneyDiagnosticsOptions): Us
     return null;
   };
 
-  const getPanoramaQuestions = () => P1_QUESTIONS_V1_3.filter((q) => q.stepId === 'E1' && q.blockId === 'GLOBAL');
+  const getPanoramaQuestions = () => p1PanoramaQuestions;
 
   const getBlockQuestions = (blockId: string) => {
     const schemaId = toSchemaBlockId(blockId);
@@ -289,12 +288,13 @@ export function useJourneyDiagnostics(options: UseJourneyDiagnosticsOptions): Us
   };
 
   const computePanoramaScores = (): P1PanoramaScores => {
-    const totals: Record<P1Axis, { total: number; answered: number; skipped: number; totalQuestions: number }> = {
-      human: { total: 0, answered: 0, skipped: 0, totalQuestions: 0 },
-      governance: { total: 0, answered: 0, skipped: 0, totalQuestions: 0 },
-      organization: { total: 0, answered: 0, skipped: 0, totalQuestions: 0 },
-      resources: { total: 0, answered: 0, skipped: 0, totalQuestions: 0 }
-    };
+    const totals: Record<P1PanoramaAxis, { total: number; answered: number; skipped: number; totalQuestions: number }> =
+      {
+        human: { total: 0, answered: 0, skipped: 0, totalQuestions: 0 },
+        movement: { total: 0, answered: 0, skipped: 0, totalQuestions: 0 },
+        decisions: { total: 0, answered: 0, skipped: 0, totalQuestions: 0 },
+        structure: { total: 0, answered: 0, skipped: 0, totalQuestions: 0 }
+      };
     let skippedCount = 0;
     let answeredCount = 0;
 
@@ -313,47 +313,24 @@ export function useJourneyDiagnostics(options: UseJourneyDiagnosticsOptions): Us
       }
     });
 
-    const byAxis: NonNullable<P1PanoramaScores['byAxis']> = {
-      human: {
-        answeredCount: totals.human.answered,
-        skippedCount: totals.human.skipped,
-        missingCount: Math.max(totals.human.totalQuestions - totals.human.answered - totals.human.skipped, 0),
-        totalCount: totals.human.totalQuestions
-      },
-      governance: {
-        answeredCount: totals.governance.answered,
-        skippedCount: totals.governance.skipped,
-        missingCount: Math.max(
-          totals.governance.totalQuestions - totals.governance.answered - totals.governance.skipped,
-          0
-        ),
-        totalCount: totals.governance.totalQuestions
-      },
-      organization: {
-        answeredCount: totals.organization.answered,
-        skippedCount: totals.organization.skipped,
-        missingCount: Math.max(
-          totals.organization.totalQuestions - totals.organization.answered - totals.organization.skipped,
-          0
-        ),
-        totalCount: totals.organization.totalQuestions
-      },
-      resources: {
-        answeredCount: totals.resources.answered,
-        skippedCount: totals.resources.skipped,
-        missingCount: Math.max(totals.resources.totalQuestions - totals.resources.answered - totals.resources.skipped, 0),
-        totalCount: totals.resources.totalQuestions
-      }
-    };
+    const byAxis = PANORAMA_AXIS_ORDER.reduce<NonNullable<P1PanoramaScores['byAxis']>>((acc, axis) => {
+      acc[axis] = {
+        answeredCount: totals[axis].answered,
+        skippedCount: totals[axis].skipped,
+        missingCount: Math.max(totals[axis].totalQuestions - totals[axis].answered - totals[axis].skipped, 0),
+        totalCount: totals[axis].totalQuestions
+      };
+      return acc;
+    }, {} as NonNullable<P1PanoramaScores['byAxis']>);
 
-    const average = (axis: P1Axis) =>
+    const average = (axis: P1PanoramaAxis) =>
       totals[axis].answered ? Number((totals[axis].total / totals[axis].answered).toFixed(2)) : 0;
 
     return {
       human: average('human'),
-      governance: average('governance'),
-      organization: average('organization'),
-      resources: average('resources'),
+      movement: average('movement'),
+      decisions: average('decisions'),
+      structure: average('structure'),
       answeredCount,
       skippedCount,
       byAxis

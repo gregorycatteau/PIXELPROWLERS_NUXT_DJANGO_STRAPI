@@ -1,6 +1,6 @@
 // Génère un bilan narratif à partir des scores agrégés du panorama P1 (aucune réponse brute, pas de storage direct).
 import type { P1PanoramaScores } from '~/composables/useJourneyDiagnostics';
-import type { P1AxisId, P1BlockId } from '~/config/journeys/p1QuestionsConfig';
+import type { P1BlockId, P1PanoramaAxisId } from '~/config/journeys/p1QuestionsConfig';
 import { p1PanoramaNarratives, p1PanoramaSuggestions, p1PanoramaText } from '~/config/journeys/p1QuestionsConfig';
 
 type Bucket = 'low' | 'medium' | 'high';
@@ -16,7 +16,7 @@ export interface P1PanoramaNarrative {
   }[];
 }
 
-const AXIS_ORDER: P1AxisId[] = ['human', 'governance', 'organization', 'resources'];
+const AXIS_ORDER: P1PanoramaAxisId[] = ['human', 'movement', 'decisions', 'structure'];
 
 const getBucket = (score: number | null | undefined): Bucket => {
   if (score == null) return 'low';

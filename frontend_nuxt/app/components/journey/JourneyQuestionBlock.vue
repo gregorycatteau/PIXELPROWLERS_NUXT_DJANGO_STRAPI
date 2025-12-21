@@ -62,7 +62,10 @@ const themeLabelMap: Record<string, string> = {
   human: 'Humain / coopération',
   governance: 'Gouvernance / décisions',
   organization: 'Organisation / process',
-  resources: 'Ressources / soutenabilité'
+  resources: 'Ressources / soutenabilité',
+  movement: 'Mouvement / dynamique',
+  decisions: 'Décisions / clarté',
+  structure: 'Structure / robustesse'
 };
 
 const themeClass = computed(() => {
@@ -74,6 +77,12 @@ const themeClass = computed(() => {
     case 'organization':
       return 'pp-journey-theme-badge--organization';
     case 'resources':
+      return 'pp-journey-theme-badge--resources';
+    case 'movement':
+      return 'pp-journey-theme-badge--organization';
+    case 'decisions':
+      return 'pp-journey-theme-badge--governance';
+    case 'structure':
       return 'pp-journey-theme-badge--resources';
     default:
       return '';

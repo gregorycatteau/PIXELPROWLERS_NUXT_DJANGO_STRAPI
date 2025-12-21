@@ -1,10 +1,12 @@
 import { ref, type Ref } from 'vue';
 import { P1_QUESTIONS_V1_3 } from '@/config/journeys/p1QuestionsV1_3';
+import type { P1FollowupsMeta } from '@/types/p1Meta';
 import type {
   P1Axis,
   P1BlockScores,
   P1GlobalScores,
   P1PanoramaScores,
+  P1PanoramaAxis,
   SymptomScores,
   VucaProfile
 } from '~/composables/useJourneyDiagnostics';
@@ -27,6 +29,7 @@ export interface P1MetaStorage {
   schemaVersion?: string;
   q1Completed?: boolean; // legacy
   q2Completed?: boolean; // legacy
+  followups?: P1FollowupsMeta;
 }
 
 export interface UseDiagnosticStorageOptions {
@@ -79,6 +82,7 @@ type P1MetaStoredV1_3 = {
   lastStepId?: string;
   panoramaCompleted?: boolean;
   completedBlocks?: string[];
+  followups?: P1FollowupsMeta;
 };
 
 type StoredScoresPayload = {
@@ -99,7 +103,7 @@ const P1_META_KEY_V1_3 = 'pp_journey_p1_meta_v1_3';
 const P1_SCORES_KEY_V1_2 = 'pp_journey_p1_scores_v1';
 const P1_META_KEY_V1_2 = 'pp_journey_p1_meta_v1';
 const TTL_MS = 1000 * 60 * 60 * 24 * 30; // ~30 jours
-const PANORAMA_AXES: P1Axis[] = ['human', 'governance', 'organization', 'resources'];
+const PANORAMA_AXES: P1PanoramaAxis[] = ['human', 'movement', 'decisions', 'structure'];
 
 const STORAGE_KEYS: Record<
   string,
@@ -225,9 +229,9 @@ const buildPanoramaFromAxes = (axes?: P1AxisScoresV1_3[] | null): P1PanoramaScor
   if (!Array.isArray(axes)) return null;
   const panorama: P1PanoramaScores = {
     human: 0,
-    governance: 0,
-    organization: 0,
-    resources: 0,
+    movement: 0,
+    decisions: 0,
+    structure: 0,
     answeredCount: 0,
     skippedCount: 0
   };

@@ -65,7 +65,7 @@ import JourneyQuestionBlock from '~/components/journey/JourneyQuestionBlock.vue'
 import LikertScale from '~/components/journey/LikertScale.vue';
 import { useJourneyDiagnostics, type LikertValue } from '~/composables/useJourneyDiagnostics';
 import { useDiagnosticStorage } from '~/composables/useDiagnosticStorage';
-import { p1Copy, p1PanoramaQuestions } from '~/config/journeys/p1QuestionsConfig';
+import { p1Copy, p1PanoramaQuestions, type P1PanoramaAxisId } from '~/config/journeys/p1QuestionsConfig';
 import { P1_SCALE_COPY, P1_SKIP_COPY } from '@/config/journeys/p1CopyV1_3';
 
 const props = defineProps<{
@@ -74,7 +74,7 @@ const props = defineProps<{
 
 const questions = p1PanoramaQuestions;
 
-const panoramaAxisMap = questions.reduce<Record<string, 'human' | 'governance' | 'organization' | 'resources'>>(
+const panoramaAxisMap = questions.reduce<Record<string, P1PanoramaAxisId>>(
   (acc, q) => {
     acc[q.id] = q.axisId;
     return acc;

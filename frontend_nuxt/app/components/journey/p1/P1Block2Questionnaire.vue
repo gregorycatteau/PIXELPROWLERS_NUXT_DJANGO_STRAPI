@@ -18,7 +18,7 @@
           :title="question.label"
           :question-id="question.id"
           :data-journey-question-index="`b2-${question.id}`"
-          :question-index="question.order ?? questions.indexOf(question) + 1"
+          :question-index="questions.indexOf(question) + 1"
           :total-questions="questions.length"
           :theme-key="question.axisId"
           :status="getStatus(answers[question.id])"

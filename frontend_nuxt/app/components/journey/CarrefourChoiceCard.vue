@@ -1,7 +1,7 @@
 <template>
 <article class="CarrefourChoiceCard pp-card pp-journey-card-interactive">
     <header class="space-y-1">
-      <p class="CarrefourChoiceLabel">{{ id }}</p>
+      <p class="CarrefourChoiceLabel">{{ id.toUpperCase() }}</p>
       <p class="CarrefourChoiceTitle">{{ title }}</p>
     </header>
     <p class="CarrefourChoiceDescription">{{ description }}</p>
@@ -15,7 +15,7 @@
 import { toRefs } from 'vue';
 
 const props = defineProps<{
-  id: 'autonomie' | 'relinium' | 'fit';
+  id: 'n1' | 'n2' | 'n3' | 'n4';
   title: string;
   description: string;
   ctaLabel: string;
@@ -23,7 +23,7 @@ const props = defineProps<{
 }>();
 
 defineEmits<{
-  (e: 'select', id: 'autonomie' | 'relinium' | 'fit'): void;
+  (e: 'select', id: 'n1' | 'n2' | 'n3' | 'n4'): void;
 }>();
 
 const { id, title, description, ctaLabel } = toRefs(props);

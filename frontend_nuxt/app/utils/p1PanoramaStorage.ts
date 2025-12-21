@@ -1,4 +1,4 @@
-import type { P1Axis, P1PanoramaScores } from '~/composables/useJourneyDiagnostics';
+import type { P1PanoramaAxis, P1PanoramaScores } from '~/composables/useJourneyDiagnostics';
 import type { P1ScoresStorage } from '~/composables/useDiagnosticStorage';
 
 type P1StoredScoresLike = P1ScoresStorage & {
@@ -11,22 +11,32 @@ type P1StoredScoresLike = P1ScoresStorage & {
   }>;
 };
 
-const PANORAMA_AXES: P1Axis[] = ['human', 'governance', 'organization', 'resources'];
+const PANORAMA_AXES: P1PanoramaAxis[] = ['human', 'movement', 'decisions', 'structure'];
 
 export const getP1PanoramaScoresFromStored = (stored: P1StoredScoresLike | null | undefined): P1PanoramaScores | null => {
   if (!stored) return null;
 
   const runtimePanorama = (stored as P1ScoresStorage).panorama ?? (stored as any)?.runtime?.panorama;
-  if (runtimePanorama) return runtimePanorama;
+  if (runtimePanorama) {
+    return {
+      human: runtimePanorama.human ?? 0,
+      movement: runtimePanorama.movement ?? 0,
+      decisions: runtimePanorama.decisions ?? 0,
+      structure: runtimePanorama.structure ?? 0,
+      answeredCount: runtimePanorama.answeredCount ?? 0,
+      skippedCount: runtimePanorama.skippedCount ?? 0,
+      byAxis: runtimePanorama.byAxis
+    };
+  }
 
   const axes = (stored as any)?.axes;
   if (!Array.isArray(axes)) return null;
 
   const scores: P1PanoramaScores = {
     human: 0,
-    governance: 0,
-    organization: 0,
-    resources: 0,
+    movement: 0,
+    decisions: 0,
+    structure: 0,
     answeredCount: 0,
     skippedCount: 0
   };

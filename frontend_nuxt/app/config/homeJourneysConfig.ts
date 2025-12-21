@@ -10,6 +10,9 @@ export interface HomeJourneyConfig {
   isAvailable: boolean;
   badgeLabel?: string;
   isEmphasized?: boolean;
+  problemTitle?: string;
+  problemBody?: string[];
+  solutionBody?: string[];
 }
 
 /**
@@ -24,7 +27,14 @@ export const HOME_JOURNEYS: HomeJourneyConfig[] = [
       'Réunions lourdes, décisions floues, tensions qui s’installent… et l’impression de tenir la structure à bout de bras.',
     outcome:
       'Tu poses un diagnostic structuré de tes dysfonctionnements, tu clarifies où ça bloque vraiment et tu repars avec des pistes d’action réalistes.',
-    ctaLabel: 'Explorer ce parcours',
+    problemBody: [
+      'Réunions lourdes, décisions floues, tensions qui durent. Tu as l’impression de porter la structure sur tes épaules sans vraiment comprendre comment elle fonctionne.'
+    ],
+    solutionBody: [
+      'Tu vas poser un diagnostic simple et structuré de ta structure, sans accuser les personnes.',
+      'Tu repars avec quelques priorités claires et des pistes d’action réalistes à tester, seul·e ou avec ton équipe.'
+    ],
+    ctaLabel: 'Commencer le diagnostic',
     isAvailable: true
   },
   {
@@ -35,6 +45,12 @@ export const HOME_JOURNEYS: HomeJourneyConfig[] = [
       'Drive, messageries, tableurs, formulaires… Tu passes plus de temps à jongler entre les outils qu’à faire ton vrai travail.',
     outcome:
       'Tu cartographies tes outils, tu repères les redondances et tu imagines un outillage plus simple, plus éthique et plus soutenable.',
+    problemBody: [
+      'Drive, messageries, tableurs… Tu passes plus de temps à jongler entre les outils qu’à faire ton vrai travail.'
+    ],
+    solutionBody: [
+      'Tu vas cartographier tes outils, repérer les redondances et clarifier un outillage plus simple et soutenable.'
+    ],
     ctaLabel: 'Explorer ce parcours',
     isAvailable: false
   },
@@ -46,6 +62,12 @@ export const HOME_JOURNEYS: HomeJourneyConfig[] = [
       'Ton job, ta structure ou toi-même ont changé. Tu sens que quelque chose ne colle plus, sans savoir par où prendre le sujet.',
     outcome:
       'Tu mets à plat ce que tu veux garder, ce que tu veux faire évoluer, et tu ouvres des pistes concrètes pour la suite.',
+    problemBody: [
+      'Ton job, ta structure ou toi-même ont changé et tu ne sais plus vraiment par où avancer.'
+    ],
+    solutionBody: [
+      'Tu vas mettre à plat ce que tu veux garder ou faire évoluer et ouvrir des pistes concrètes pour la suite.'
+    ],
     ctaLabel: 'Explorer ce parcours',
     isAvailable: false
   },
@@ -57,6 +79,12 @@ export const HOME_JOURNEYS: HomeJourneyConfig[] = [
       'Tu portes une idée qui te tient à cœur, mais tu as du mal à l’expliquer, à embarquer des alliés ou à la rendre concrète.',
     outcome:
       'Tu clarifies pour qui est ton idée, à quoi elle sert et comment la tester à petite échelle sans tout brûler.',
+    problemBody: [
+      'Tu portes une idée forte mais tu peines à l’expliquer, à embarquer des alliés ou à la rendre concrète.'
+    ],
+    solutionBody: [
+      'Tu vas clarifier pour qui est l’idée, à quoi elle sert et comment la tester à petite échelle sans tout brûler.'
+    ],
     ctaLabel: 'Explorer ce parcours',
     isAvailable: false
   },
@@ -68,6 +96,12 @@ export const HOME_JOURNEYS: HomeJourneyConfig[] = [
       'Rien n’est totalement cassé… mais rien n’est vraiment fluide non plus. Tu sens que ça ne peut pas continuer comme ça.',
     outcome:
       'Tu prends un premier recul pour nommer ce qui coince et tu identifies par quel type de parcours commencer.',
+    problemBody: [
+      'Rien n’est totalement cassé mais rien n’est vraiment fluide, et tu sens que ça ne peut pas continuer ainsi.'
+    ],
+    solutionBody: [
+      'Tu prends du recul pour nommer ce qui coince et choisir par quel type de parcours commencer.'
+    ],
     ctaLabel: 'Explorer ce parcours',
     isAvailable: false
   }
