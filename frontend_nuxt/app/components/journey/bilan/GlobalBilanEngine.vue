@@ -511,6 +511,7 @@
         </details>
       </div>
     </div>
+      </template>
   </JourneyLayout>
 </template>
 
