@@ -7,7 +7,7 @@
     "dev": "nuxt dev",
     "build": "nuxt build",
     "start": "nuxt preview",
-    "typecheck": "vue-tsc --noEmit",
+    "typecheck": "npx nuxi typecheck",
     "bilan:guard": "tsx tools/bilan_adapter_guard.ts"
   },
   "keywords": [

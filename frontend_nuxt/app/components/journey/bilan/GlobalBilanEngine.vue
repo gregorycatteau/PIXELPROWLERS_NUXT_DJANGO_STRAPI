@@ -16,43 +16,43 @@
             {{ BILAN_ENGINE_COPY.partialVm.message }}
           </p>
         </div>
-      <section class="pp-globalbilan-header">
-        <JourneyStepHeader
-          :title="vm.copy.title"
-          :subtitle="vm.copy.subtitle"
-          heading-id="journey-step-heading-E_global_bilan"
-        />
-        <div class="pp-globalbilan-summary-chips">
-          <div
-            v-for="chip in axisSummary"
-            :key="chip.id"
-            class="pp-globalbilan-summary-chip"
-          >
-            <span class="text-[10px] uppercase tracking-[0.14em] text-[color:var(--color-text-muted)]">{{ chip.label }}</span>
-            <span class="text-sm font-semibold">{{ chip.value }}</span>
-          </div>
-          <div class="pp-globalbilan-summary-chip">
-            <span class="text-[10px] uppercase tracking-[0.14em] text-[color:var(--color-text-muted)]">Blocs</span>
-            <span class="text-sm font-semibold">{{ vm.completedBlocksLabel }}</span>
-          </div>
-          <div
-            v-if="maturityLabel"
-            class="pp-globalbilan-summary-chip"
-          >
-            <span class="text-[10px] uppercase tracking-[0.14em] text-[color:var(--color-text-muted)]">Maturité</span>
-            <span class="text-sm font-semibold">{{ BILAN_ENGINE_COPY.maturityLabel[maturityLabel] }}</span>
-          </div>
-        </div>
-      </section>
-
-      <div class="pp-globalbilan-layout lg:grid lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-10 lg:items-start">
-        <div class="space-y-12 min-w-0">
-          <section id="gb_reperes" class="pp-globalbilan-section">
-            <div class="pp-globalbilan-section-header">
-              <h2 class="pp-globalbilan-section-title">
-                Repères (version publique)
-              </h2>
+        <section class="pp-globalbilan-header">
+          <JourneyStepHeader
+            :title="vm.copy.title"
+            :subtitle="vm.copy.subtitle"
+            heading-id="journey-step-heading-E_global_bilan"
+          />
+          <div class="pp-globalbilan-summary-chips">
+            <div
+              v-for="chip in axisSummary"
+              :key="chip.id"
+              class="pp-globalbilan-summary-chip"
+            >
+              <span class="text-[10px] uppercase tracking-[0.14em] text-[color:var(--color-text-muted)]">{{ chip.label }}</span>
+              <span class="text-sm font-semibold">{{ chip.value }}</span>
             </div>
+            <div class="pp-globalbilan-summary-chip">
+              <span class="text-[10px] uppercase tracking-[0.14em] text-[color:var(--color-text-muted)]">Blocs</span>
+              <span class="text-sm font-semibold">{{ vm.completedBlocksLabel }}</span>
+            </div>
+            <div
+              v-if="maturityLabel"
+              class="pp-globalbilan-summary-chip"
+            >
+              <span class="text-[10px] uppercase tracking-[0.14em] text-[color:var(--color-text-muted)]">Maturité</span>
+              <span class="text-sm font-semibold">{{ BILAN_ENGINE_COPY.maturityLabel[maturityLabel] }}</span>
+            </div>
+          </div>
+        </section>
+
+        <div class="pp-globalbilan-layout lg:grid lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-10 lg:items-start">
+          <div class="space-y-12 min-w-0">
+            <section id="gb_reperes" class="pp-globalbilan-section">
+              <div class="pp-globalbilan-section-header">
+                <h2 class="pp-globalbilan-section-title">
+                  Repères (version publique)
+                </h2>
+              </div>
 
             <div class="pp-globalbilan-card pp-globalbilan-card--primary space-y-5 max-w-3xl mx-auto">
               <div class="space-y-2 text-left">
@@ -510,9 +510,9 @@
           </div>
         </details>
       </div>
-    </div>
-      </template>
-  </JourneyLayout>
+    </template>
+  </div>
+</JourneyLayout>
 </template>
 
 <script setup lang="ts">
