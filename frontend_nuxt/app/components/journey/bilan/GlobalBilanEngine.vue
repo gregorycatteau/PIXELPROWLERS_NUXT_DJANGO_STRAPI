@@ -1,6 +1,23 @@
 <template>
   <JourneyLayout>
     <div class="pp-globalbilan-page" role="region" aria-labelledby="journey-step-heading-E_global_bilan">
+      <div v-if="!vm" class="pp-globalbilan-section space-y-3">
+        <p class="text-sm text-[color:var(--color-text-muted)]">
+          Bilan indisponible pour ce parcours.
+        </p>
+        <button type="button" class="pp-journey-cta-secondary text-xs" @click="goToStep('E2_panorama_bilan')">
+          Retour
+        </button>
+      </div>
+      <div v-else-if="vm.meta?.isEmpty" class="pp-globalbilan-section space-y-3">
+        <p class="text-sm text-[color:var(--color-text-muted)]">
+          Bilan indisponible pour ce parcours.
+        </p>
+        <button type="button" class="pp-journey-cta-secondary text-xs" @click="goToStep('E2_panorama_bilan')">
+          Retour
+        </button>
+      </div>
+      <template v-else>
       <section class="pp-globalbilan-header">
         <JourneyStepHeader
           :title="vm.copy.title"
@@ -517,20 +534,22 @@ const props = defineProps<{
 }>();
 
 const adapter = getBilanAdapter(props.journeyId);
-const vm = computed(() => adapter.buildViewModel());
+const vm = computed(() => adapter?.buildViewModel() ?? null);
 
 const storage = useDiagnosticStorage({ journeyId: props.journeyId });
 const axisSummary = computed(() =>
-  vm.value.panorama.axes.map((axis) => ({ id: axis.id, label: axis.label, value: axis.score }))
+  vm.value?.panorama.axes.map((axis) => ({ id: axis.id, label: axis.label, value: axis.score })) ?? []
 );
 const panoramaAxes = computed(() =>
-  vm.value.panorama.axes.map((axis) => ({
-    ...axis,
-    emoji: axis.emoji ?? '',
-    isPriority: axis.isPriority ?? false,
-    priorityLabel: axis.priorityLabel ?? '',
-    filledSegments: axis.filledSegments ?? 0
-  }))
+  vm.value
+    ? vm.value.panorama.axes.map((axis) => ({
+        ...axis,
+        emoji: axis.emoji ?? '',
+        isPriority: axis.isPriority ?? false,
+        priorityLabel: axis.priorityLabel ?? '',
+        filledSegments: axis.filledSegments ?? 0
+      }))
+    : []
 );
 
 const { mainCards, secondaryCards } = useP1SystemicLanding();
@@ -565,7 +584,7 @@ const finalizeSystemicFollowups = () => {
   systemicFollowups.finalizeAndPersistStatuses();
 };
 
-const focusDetails = ref(vm.value.issues.focusDetails);
+const focusDetails = ref(vm.value?.issues.focusDetails ?? false);
 const repereOpen = ref(false);
 const exportMode = ref<'minimal' | 'full'>('minimal');
 
@@ -594,7 +613,7 @@ const {
 });
 
 const selectedHypotheses = computed(() =>
-  vm.value.hypotheses.list.filter((h) => selectedHypothesisIds.value.includes(h.id))
+  (vm.value?.hypotheses.list ?? []).filter((h) => selectedHypothesisIds.value.includes(h.id))
 );
 
 const expandedIssueIds = ref<Set<string>>(new Set());
@@ -602,7 +621,7 @@ const isIssueExpanded = (issueId: string) => expandedIssueIds.value.has(issueId)
 const setAllIssuesExpanded = (expanded: boolean) => {
   const next = new Set<string>();
   if (expanded) {
-    vm.value.issues.list.forEach((issue) => next.add(issue.id));
+    (vm.value?.issues.list ?? []).forEach((issue) => next.add(issue.id));
   }
   expandedIssueIds.value = next;
 };
@@ -617,53 +636,51 @@ const toggleIssue = (issueId: string) => {
 };
 
 const issuesForCard = computed(() =>
-  vm.value.issues.list.map((issue) => ({
+  vm.value?.issues.list.map((issue) => ({
     ...issue,
     icon: issue.icon ?? '',
     expanded: isIssueExpanded(issue.id)
-  }))
+  })) ?? []
 );
 const watchlistForCard = computed(() =>
-  vm.value.issues.watchlist.map((issue) => ({ ...issue, icon: issue.icon ?? '' }))
+  vm.value?.issues.watchlist.map((issue) => ({ ...issue, icon: issue.icon ?? '' })) ?? []
 );
 
 const blocksForCard = computed(() =>
-  vm.value.panorama.blocks.map((block) => ({
+  vm.value?.panorama.blocks.map((block) => ({
     ...block,
     detailsOpen: isBlockDetailsOpen(block.id),
     themes: block.themes ?? []
-  }))
+  })) ?? []
 );
 
 const hypothesesForCard = computed(() =>
-  vm.value.hypotheses.list.map((hypo) => ({
+  vm.value?.hypotheses.list.map((hypo) => ({
     ...hypo,
     selected: isHypothesisSelected(hypo.id),
     disabled: isHypothesisDisabled(hypo.id),
     detailsOpen: isHypothesisExpanded(hypo.id)
-  }))
+  })) ?? []
 );
 
-const secondaryHypothesesForCard = computed(() => vm.value.hypotheses.secondary);
+const secondaryHypothesesForCard = computed(() => vm.value?.hypotheses.secondary ?? []);
 
 const verificationPlansForCard = computed(() =>
   selectedHypotheses.value.map((hypo) => ({
     id: hypo.id,
     title: hypo.title,
-    steps: vm.value.hypotheses.verificationPlans.find((p) => p.id === hypo.id)?.steps ?? []
+    steps: vm.value?.hypotheses.verificationPlans.find((p) => p.id === hypo.id)?.steps ?? []
   }))
 );
 
 const landingPlansForPanel = computed(() =>
   selectedHypotheses.value
     .map((hypo) => {
-      const plan = vm.value.landing.plans.find((p) => p.id === hypo.id);
+      const plan = vm.value?.landing.plans.find((p) => p.id === hypo.id);
       if (!plan) return null;
       return { ...plan, done: isLandingDone(hypo.id) };
     })
-    .filter(
-      (plan): plan is (typeof vm.value.landing.plans)[number] => Boolean(plan)
-    )
+    .filter((plan): plan is NonNullable<typeof plan> => Boolean(plan))
 );
 
 const expandedBlockIds = ref<Set<string>>(new Set());
@@ -686,11 +703,11 @@ const toggleBlockDetails = (blockId: string, force?: boolean) => {
   expandedBlockIds.value = next;
 };
 
-const hasHeavy = computed(() => vm.value.issues.list.length > 0);
-const hasWatch = computed(() => vm.value.issues.watchlist.length > 0);
-const hasSupports = computed(() => vm.value.supports.main.length > 0);
+const hasHeavy = computed(() => (vm.value?.issues.list.length ?? 0) > 0);
+const hasWatch = computed(() => (vm.value?.issues.watchlist.length ?? 0) > 0);
+const hasSupports = computed(() => (vm.value?.supports.main.length ?? 0) > 0);
 
-const exportText = computed(() => vm.value.exportPanel.exportText);
+const exportText = computed(() => vm.value?.exportPanel.exportText ?? '');
 const copied = ref(false);
 const clearMessage = ref('');
 const exportModeWarning = computed(() =>

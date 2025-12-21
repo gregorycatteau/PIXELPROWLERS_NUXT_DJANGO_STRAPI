@@ -1,5 +1,6 @@
 import type { JourneyBilanAdapter } from './types';
 import type { GlobalBilanViewModel } from '@/types/bilan';
+import { assertNoRawAnswers } from '@/utils/bilan/assertNoRawAnswers';
 
 const emptyVm: GlobalBilanViewModel = {
   copy: {
@@ -62,6 +63,7 @@ const emptyVm: GlobalBilanViewModel = {
 export const p2BilanAdapter: JourneyBilanAdapter = {
   journeyId: 'p2',
   buildViewModel(): GlobalBilanViewModel {
+    assertNoRawAnswers(emptyVm);
     return emptyVm;
   }
 };

@@ -22,6 +22,7 @@ import { useP1Resources } from '@/composables/useP1Resources';
 import { P1_SYSTEM_SCALPELS_COPY } from '@/config/journeys/p1SystemScalpelsCopyV1_3';
 import type { JourneyBilanAdapter } from './types';
 import type { GlobalBilanViewModel, BilanIssueBullet } from '@/types/bilan';
+import { assertNoRawAnswers } from '@/utils/bilan/assertNoRawAnswers';
 
 type SystemicScalpelCopy = (typeof P1_SYSTEM_SCALPELS_COPY)[keyof typeof P1_SYSTEM_SCALPELS_COPY];
 type AxisId = 'human' | 'movement' | 'decisions' | 'structure';
@@ -456,7 +457,7 @@ export const p1BilanAdapter: JourneyBilanAdapter = {
     ];
     const splitParagraphs = (text: string) => text.split('\n\n').filter(Boolean);
 
-    return {
+    const vm: GlobalBilanViewModel = {
       copy: p1Copy.global,
       axisSummaryLabel: axisSummaryLabel.value,
       completedBlocksLabel: completedBlocksLabel.value,
@@ -523,5 +524,8 @@ export const p1BilanAdapter: JourneyBilanAdapter = {
         exportMode: exportMode.value
       }
     } as GlobalBilanViewModel;
+
+    assertNoRawAnswers(vm);
+    return vm;
   }
 };
