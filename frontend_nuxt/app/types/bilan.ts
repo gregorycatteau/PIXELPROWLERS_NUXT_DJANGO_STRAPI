@@ -66,6 +66,12 @@ export type BilanResourcesPreviewVM = {
   resources: any[];
 };
 
+export type BilanActionGroupVM = {
+  hasAnyAction: boolean;
+  filteredActionsByHorizon: Record<string, any[]>;
+  copy: any;
+};
+
 export type BilanActionVM = {
   id: string;
   label: string;
@@ -112,6 +118,16 @@ export type GlobalBilanViewModel = {
   resources: any[];
   blocksSummaryHeading: string;
   completedBlocks: string;
+  actions?: BilanActionGroupVM;
+  engagement?: {
+    intro: string[];
+    synthesis: string[];
+    levelN1: string[];
+    levelN2: string[];
+    levelN3: string[];
+    levelN4: string[];
+  };
+  meta?: Record<string, any>;
   exportPanel: {
     exportText: string;
     clearMessage: string;
