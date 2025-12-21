@@ -3,17 +3,17 @@
     <div class="pp-globalbilan-page" role="region" aria-labelledby="journey-step-heading-E_global_bilan">
       <div v-if="engineState !== 'ready' && engineState !== 'partial_vm'" class="pp-globalbilan-section space-y-3">
         <p class="text-sm text-[color:var(--color-text-muted)]">
-          <span v-if="engineState === 'missing_adapter'">Bilan indisponible pour ce parcours (adapter manquant).</span>
-          <span v-else-if="engineState === 'empty_vm'">Bilan indisponible pour ce parcours.</span>
+          <span v-if="engineState === 'missing_adapter'">{{ BILAN_ENGINE_COPY.missingAdapter.message }}</span>
+          <span v-else-if="engineState === 'empty_vm'">{{ BILAN_ENGINE_COPY.emptyVm.message }}</span>
         </p>
         <button type="button" class="pp-journey-cta-secondary text-xs" @click="goToStep('E2_panorama_bilan')">
-          Retour
+          {{ BILAN_ENGINE_COPY.missingAdapter.cta }}
         </button>
       </div>
       <template v-else>
         <div v-if="engineState === 'partial_vm'" class="pp-globalbilan-section space-y-2">
           <p class="text-sm text-[color:var(--color-text-muted)]">
-            Bilan partiel : certaines sections ne sont pas disponibles pour ce parcours.
+            {{ BILAN_ENGINE_COPY.partialVm.message }}
           </p>
         </div>
       <section class="pp-globalbilan-header">
@@ -529,6 +529,7 @@ import { useP1SystemicFollowups } from '@/composables/useP1SystemicFollowups';
 import { useP1SystemicLanding } from '@/composables/useP1SystemicLanding';
 import { P1_SYSTEMIC_FOLLOWUPS } from '@/config/journeys/p1SystemicFollowupsV1_3';
 import type { GlobalBilanViewModel } from '@/types/bilan';
+import { BILAN_ENGINE_COPY } from '@/config/bilan/bilanEngineCopy';
 
 const props = defineProps<{
   journeyId: string;
