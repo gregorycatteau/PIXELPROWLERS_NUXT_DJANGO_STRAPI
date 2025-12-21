@@ -36,4 +36,5 @@ State UI (sélections, toggles, scroll) reste dans l’engine/composables.
 3. Ne **pas** enregistrer de template vide dans le registry.
 4. Ajouter l’adapter au switch du `registry.ts`.
 5. Lancer `npm run --prefix frontend_nuxt typecheck`.
-6. Faire un smoke test ciblé (voir `docs/50-qa/P1_GLOBAL_BILAN_SMOKE_TESTS.md` comme référence).
+6. Lancer `npm run --prefix frontend_nuxt bilan:guard` (tripwire anti “raw answers” en CI).
+7. Faire un smoke test ciblé (voir `docs/50-qa/P1_GLOBAL_BILAN_SMOKE_TESTS.md` comme référence).

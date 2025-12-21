@@ -7,6 +7,9 @@ const registry: Record<string, JourneyBilanAdapter> = {
   p2: p2BilanAdapter
 };
 
+export const bilanAdapters: JourneyBilanAdapter[] = Object.values(registry);
+export const bilanAdapterIds = Object.keys(registry);
+
 export function getBilanAdapter(journeyId: string): JourneyBilanAdapter | null {
   return registry[journeyId] ?? null;
 }
