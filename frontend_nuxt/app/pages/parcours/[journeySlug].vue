@@ -60,7 +60,7 @@
 import { computed } from 'vue';
 import ResourceList from '@/components/resources/ResourceList.vue';
 import P1JourneyOrchestrator from '~/components/journey/p1/P1JourneyOrchestrator.vue';
-import { P1_RESOURCES_V1_3 } from '@/config/resources/p1ResourcesV1_3';
+import { P1_RESOURCES_V1_3, type P1Resource, type P1ResourceId } from '@/config/resources/p1ResourcesV1_3';
 import { p1JourneySchema } from '~/config/journeys/p1JourneySchema';
 
 definePageMeta({
@@ -86,11 +86,12 @@ const initialStepId = computed(() => {
 
 const showLanding = computed(() => journeyId.value === 'p1' && !initialStepId.value);
 
-const resourcePreview = computed(() => {
-  const ids = ['kit_p1_demarrage', 'kit_mission_cash', 'kit_gouvernance_veto'] as const;
-  return ids
-    .map((id) => P1_RESOURCES_V1_3.find((res) => res.id === id))
-    .filter(Boolean);
+const resourcePreview = computed<P1Resource[]>(() => {
+  const ids: P1ResourceId[] = ['kit_p1_demarrage', 'kit_mission_cash', 'kit_gouvernance_veto'];
+  return ids.flatMap((id) => {
+    const res = P1_RESOURCES_V1_3.find((r) => r.id === id);
+    return res ? [res] : [];
+  });
 });
 
 const startLink = computed(() => '/parcours/ma-structure-dysfonctionne?step=E0_intro');
