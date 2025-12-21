@@ -38,3 +38,7 @@ cms_strapi/.env*
 # Dev pid files
 .nuxt-dev.pid
 frontend_nuxt/.nuxt-dev.pid
+
+# dev pid
+.nuxt-dev.pid
+frontend_nuxt/.nuxt-dev.pid
