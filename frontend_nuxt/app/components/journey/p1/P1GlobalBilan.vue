@@ -844,45 +844,21 @@
         </div>
       </section>
 
-      <section id="gb_export" class="pp-globalbilan-section space-y-3">
-        <div class="pp-globalbilan-section-header">
-          <h2 class="pp-globalbilan-section-title">{{ copy.exportHeading }}</h2>
-        </div>
-        <div class="pp-globalbilan-card space-y-3">
-          <details :open="focusDetails">
-            <summary class="text-sm text-[color:var(--color-text)] cursor-pointer">Voir le texte exportable</summary>
-            <div class="mt-3 space-y-2">
-              <textarea class="w-full text-xs p-3 h-40 rounded-lg border border-[color:var(--color-stroke)] bg-[color:var(--color-panel-soft)]" readonly>{{ exportText }}</textarea>
-              <p class="text-sm text-[color:var(--color-text-muted)]">
-                {{ copy.exportNotice }}
-              </p>
-              <p class="text-sm text-[color:var(--color-text-muted)]">{{ copy.sovereigntyNote }}</p>
-            </div>
-          </details>
-        </div>
-        <div class="pp-globalbilan-actions-bar">
-          <button type="button" class="pp-journey-cta-primary" @click="handleCopy">
-            {{ copy.copyCta }}
-          </button>
-          <button type="button" class="pp-journey-cta-secondary" @click="handlePrint">{{ copy.printCta }}</button>
-          <button type="button" class="pp-journey-cta-secondary" @click="goToStep('E2_panorama_bilan')">
-            {{ copy.backToHub }}
-          </button>
-          <button type="button" class="pp-journey-cta-secondary" @click="handleClear">
-            {{ P1_ERASE_COPY.buttonLabel }}
-          </button>
-          <span v-if="copied" class="text-sm text-[color:var(--color-text-muted)]">Copié dans le presse-papier.</span>
-        </div>
-        <p v-if="globalSkipSummary.text" class="text-sm text-[color:var(--color-text-muted)]">
-          {{ globalSkipSummary.text }}
-        </p>
-        <p v-if="hasGlobalMissing" class="text-sm text-[color:var(--color-text-muted)]">
-          {{ P1_MISSING_COPY.info }}
-        </p>
-        <p v-if="clearMessage" class="text-sm text-[color:var(--color-text-muted)]">
-          {{ clearMessage }}
-        </p>
-      </section>
+      <GlobalBilanExportPanel
+        :copy="copy"
+        :export-text="exportText"
+        :focus-details="focusDetails"
+        :erase-copy-label="P1_ERASE_COPY.buttonLabel"
+        :copied="copied"
+        :global-skip-text="globalSkipSummary.text"
+        :has-global-missing="hasGlobalMissing"
+        :missing-info="P1_MISSING_COPY.info"
+        :clear-message="clearMessage"
+        @copy="handleCopy"
+        @print="handlePrint"
+        @back-to-hub="goToStep('E2_panorama_bilan')"
+        @clear="handleClear"
+      />
 
       <section id="gb_options" class="pp-globalbilan-section">
         <div class="pp-globalbilan-section-header">
@@ -1020,6 +996,7 @@ import { P1_SYSTEM_SCALPELS_COPY } from '@/config/journeys/p1SystemScalpelsCopyV
 import { useP1Resources } from '@/composables/useP1Resources';
 import P1GlobalBilanAside from '@/components/journey/p1/P1GlobalBilanAside.vue';
 import P1SystemicLandingSection from '@/components/journey/p1/P1SystemicLandingSection.vue';
+import GlobalBilanExportPanel from '@/components/journey/bilan/GlobalBilanExportPanel.vue';
 import ResourceList from '@/components/resources/ResourceList.vue';
 
 type SystemicScalpelCopy = (typeof P1_SYSTEM_SCALPELS_COPY)[keyof typeof P1_SYSTEM_SCALPELS_COPY];
