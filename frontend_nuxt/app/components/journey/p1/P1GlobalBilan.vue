@@ -219,72 +219,14 @@
         @go-atterrissage="goToAtterrissage"
       />
 
-      <section id="gb_atterrissage" class="pp-globalbilan-section">
-        <div :id="'p1-atterrissage'" class="pp-globalbilan-section-header" :class="highlightTarget === 'p1-atterrissage' ? 'ring-2 ring-[color:var(--color-primary)] rounded-lg' : ''">
-          <h2 class="pp-globalbilan-section-title">Atterrissage systémique</h2>
-          <p class="text-sm text-[color:var(--color-text-muted)]">
-            Objectif : vérifier et stabiliser, pas “tout résoudre” en une fois.
-          </p>
-        </div>
-        <div class="space-y-4">
-          <div v-if="!selectedHypotheses.length" class="pp-globalbilan-card space-y-3 max-w-3xl">
-            <p class="text-sm text-[color:var(--color-text-muted)]">
-              Choisis 1–2 hypothèses structurantes pour générer un protocole d’atterrissage ciblé.
-            </p>
-            <button type="button" class="pp-journey-cta-secondary text-xs w-fit" @click="scrollToSection('gb_hypotheses')">
-              Revenir aux hypothèses
-            </button>
-          </div>
-          <div v-else class="space-y-4">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <p class="text-sm font-semibold text-[color:var(--color-text)]">Protocole basé sur tes hypothèses gardées</p>
-              <button type="button" class="pp-journey-cta-secondary text-xs" @click="scrollToSection('gb_hypotheses')">
-                Revenir aux hypothèses
-              </button>
-            </div>
-            <div v-if="selectedHypotheses.length > 1" class="pp-globalbilan-card text-sm text-[color:var(--color-text-muted)] space-y-1 max-w-3xl">
-              <p class="font-semibold text-[color:var(--color-text)]">Ordre suggéré</p>
-              <ol class="list-decimal list-inside space-y-0.5">
-                <li v-for="(hypo, idx) in selectedHypotheses" :key="hypo.id">{{ idx + 1 }} — {{ hypo.title }}</li>
-              </ol>
-            </div>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
-              <article
-                v-for="hypo in selectedHypotheses"
-                :key="hypo.id"
-                class="flex flex-col gap-3 rounded-xl border border-white/20 bg-[color:var(--color-panel-soft)] p-4"
-                :class="isLandingDone(hypo.id) ? 'border-[color:var(--color-primary)] ring-1 ring-[color:var(--color-primary)]' : ''"
-              >
-                <div class="flex items-start justify-between gap-2">
-                  <div class="space-y-1 max-w-[56ch]">
-                    <p class="text-sm font-semibold text-[color:var(--color-text)] leading-snug">{{ landingPlan(hypo).title }}</p>
-                    <p class="text-xs text-[color:var(--color-text-muted)]">Temps estimé : {{ landingPlan(hypo).timeEstimate }}</p>
-                  </div>
-                  <button
-                    type="button"
-                    class="pp-journey-cta-secondary text-[11px]"
-                    @click="toggleLandingDone(hypo.id)"
-                  >
-                    {{ isLandingDone(hypo.id) ? 'Marqué fait' : 'Marquer fait' }}
-                  </button>
-                </div>
-                <ol class="list-decimal list-inside space-y-1.5 text-sm text-[color:var(--color-text)] leading-relaxed max-w-[60ch]">
-                  <li v-for="step in landingPlan(hypo).steps" :key="step" class="line-clamp-2">
-                    {{ step }}
-                  </li>
-                </ol>
-                <div class="text-sm text-[color:var(--color-text-muted)]">
-                  Résultat attendu : <span class="text-[color:var(--color-text)]">{{ landingPlan(hypo).expectedOutcome }}</span>
-                </div>
-                <div class="flex flex-wrap items-center gap-2 pt-2">
-                  <button type="button" class="pp-journey-cta-secondary text-xs font-medium" @click="scrollToSection('gb_ressources')">
-                    Voir ressources liées
-                  </button>
-                </div>
-              </article>
-            </div>
-          </div>
-        </div>
+      <BilanLandingPanel
+        id="gb_atterrissage"
+        :plans="landingPlansForPanel"
+        :highlight="highlightTarget === 'p1-atterrissage'"
+        @toggle-done="toggleLandingDone"
+        @go-resources="scrollToSection('gb_ressources')"
+        @back-to-hypotheses="scrollToSection('gb_hypotheses')"
+      >
         <P1SystemicLandingSection
           :main-cards="mainCards"
           :secondary-cards="secondaryCards"
@@ -302,7 +244,7 @@
             Marquer ces vérifs comme faites
           </button>
         </div>
-      </section>
+      </BilanLandingPanel>
 
       <section id="gb_ressources" class="pp-globalbilan-section space-y-3">
         <div class="pp-globalbilan-section-header">
@@ -580,6 +522,7 @@ import BilanPanoramaCard from '@/components/journey/bilan/BilanPanoramaCard.vue'
 import BilanBlocksSummary from '@/components/journey/bilan/BilanBlocksSummary.vue';
 import BilanIssuesList from '@/components/journey/bilan/BilanIssuesList.vue';
 import BilanHypothesesSection from '@/components/journey/bilan/BilanHypothesesSection.vue';
+import BilanLandingPanel from '@/components/journey/bilan/BilanLandingPanel.vue';
 import { useBilanHypothesesState } from '@/composables/bilan/useBilanHypothesesState';
 import ResourceList from '@/components/resources/ResourceList.vue';
 
@@ -971,6 +914,12 @@ const verificationPlansForCard = computed(() =>
     title: hypo.title,
     steps: verificationPlan(hypo)
   }))
+);
+const landingPlansForPanel = computed(() =>
+  selectedHypotheses.value.map((hypo) => {
+    const plan = landingPlan(hypo);
+    return { ...plan, id: hypo.id, done: isLandingDone(hypo.id) };
+  })
 );
 const blockCompletion = (block: BlockSummary) => {
   const total = (block.answeredCount ?? 0) + (block.skippedCount ?? 0) + (block.unseenCount ?? 0);
