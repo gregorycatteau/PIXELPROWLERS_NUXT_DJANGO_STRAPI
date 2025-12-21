@@ -146,7 +146,7 @@
             :answered-count="vm.panorama.answeredCount"
             :skipped-count="vm.panorama.skippedCount"
             :completeness-label="vm.panorama.completenessLabel"
-            :axes="vm.panorama.axes"
+            :axes="panoramaAxes"
           >
             <BilanBlocksSummary
               :heading="vm.blocksSummaryHeading"
@@ -523,6 +523,15 @@ const storage = useDiagnosticStorage({ journeyId: props.journeyId });
 const axisSummary = computed(() =>
   vm.value.panorama.axes.map((axis) => ({ id: axis.id, label: axis.label, value: axis.score }))
 );
+const panoramaAxes = computed(() =>
+  vm.value.panorama.axes.map((axis) => ({
+    ...axis,
+    emoji: axis.emoji ?? '',
+    isPriority: axis.isPriority ?? false,
+    priorityLabel: axis.priorityLabel ?? '',
+    filledSegments: axis.filledSegments ?? 0
+  }))
+);
 
 const { mainCards, secondaryCards } = useP1SystemicLanding();
 const systemicFollowups = useP1SystemicFollowups(() => mainCards.value.map((c) => c.id));
@@ -610,15 +619,19 @@ const toggleIssue = (issueId: string) => {
 const issuesForCard = computed(() =>
   vm.value.issues.list.map((issue) => ({
     ...issue,
+    icon: issue.icon ?? '',
     expanded: isIssueExpanded(issue.id)
   }))
 );
-const watchlistForCard = computed(() => vm.value.issues.watchlist);
+const watchlistForCard = computed(() =>
+  vm.value.issues.watchlist.map((issue) => ({ ...issue, icon: issue.icon ?? '' }))
+);
 
 const blocksForCard = computed(() =>
   vm.value.panorama.blocks.map((block) => ({
     ...block,
-    detailsOpen: isBlockDetailsOpen(block.id)
+    detailsOpen: isBlockDetailsOpen(block.id),
+    themes: block.themes ?? []
   }))
 );
 
