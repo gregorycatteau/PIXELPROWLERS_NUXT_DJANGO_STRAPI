@@ -47,6 +47,7 @@ const collectP1Actions = (): Action[] => {
         mode?: string;
         effort?: number;
         safetyNote?: string;
+        filePath?: string;
       };
       if (!candidate.id || !candidate.label || !candidate.description || !candidate.horizon) return;
       const tags = addJourneyTag([], 'p1');
