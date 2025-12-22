@@ -38,7 +38,7 @@
     </div>
     <div class="pp-journey-question-controls">
       <slot
-        v-if="$slots.default"
+        v-if="hasDefaultSlot"
         :label-id="labelId"
         :description-id="descriptionId"
         :helper-text-id="helperTextId"
@@ -66,7 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, toRefs } from 'vue';
+import { Comment, Text, computed, toRefs, useSlots } from 'vue';
 import type { LikertValue } from '~/composables/useJourneyDiagnostics';
 import LikertScaleFiveSteps from '~/components/journey/questionnaire/LikertScaleFiveSteps.vue';
 import QuestionSkipControl from '~/components/journey/questionnaire/QuestionSkipControl.vue';
@@ -88,6 +88,7 @@ const props = defineProps<{
 }>();
 
 const { title, description, questionId } = toRefs(props);
+const slots = useSlots();
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: LikertValue | null): void;
@@ -103,6 +104,16 @@ const describedById = computed(() => {
     .filter(Boolean)
     .join(' ');
   return ids || undefined;
+});
+
+const hasDefaultSlot = computed(() => {
+  const content = slots.default?.() ?? [];
+  return content.some((node) => {
+    if (node.type === Comment) return false;
+    if (node.type === Text) return String(node.children ?? '').trim().length > 0;
+    if (typeof node.children === 'string') return node.children.trim().length > 0;
+    return true;
+  });
 });
 
 const themeLabelMap: Record<string, string> = {
