@@ -154,7 +154,10 @@ function validateObjectKeys(obj: Record<string, unknown>, path: string) {
       enforceKeys(new Set(['hasAnyAction', 'filteredActionsByHorizon', 'copy']));
       break;
     case 'modules.engagement':
-      enforceKeys(new Set(['intro', 'synthesis', 'levelN1', 'levelN2', 'levelN3', 'levelN4']));
+      enforceKeys(new Set(['intro', 'levels']));
+      break;
+    case 'modules.engagement.levels[]':
+      enforceKeys(new Set(['id', 'title', 'body', 'ctaLabel', 'ctaTarget', 'routePath', 'tags', 'isRecommended']));
       break;
     case 'modules.skipSignal':
       enforceKeys(new Set(['globalSkippedCount', 'byAxis', 'copy']));
