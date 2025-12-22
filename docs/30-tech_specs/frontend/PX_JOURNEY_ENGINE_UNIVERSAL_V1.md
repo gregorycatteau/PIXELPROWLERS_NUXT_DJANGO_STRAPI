@@ -12,6 +12,7 @@ Objectifs :
 - Un renderer de steps commun (E0, E1, E2, Global).
 - Des manifests data-only comme source of truth.
 - Privacy hard gate : uniquement des agregats persistes.
+PixelProwlers ne construit pas de profils utilisateurs : il produit des miroirs locaux exportables.
 
 ## Pipeline (SSOT)
 
