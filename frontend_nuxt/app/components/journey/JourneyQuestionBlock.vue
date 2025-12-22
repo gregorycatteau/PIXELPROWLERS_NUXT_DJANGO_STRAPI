@@ -71,7 +71,7 @@ import type { LikertValue } from '~/composables/useJourneyDiagnostics';
 import LikertScaleFiveSteps from '~/components/journey/questionnaire/LikertScaleFiveSteps.vue';
 import QuestionSkipControl from '~/components/journey/questionnaire/QuestionSkipControl.vue';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   title: string;
   description?: string;
   helperText?: string;
@@ -85,7 +85,9 @@ const props = defineProps<{
   allowSkip?: boolean;
   disabled?: boolean;
   describedBy?: string;
-}>();
+}>(), {
+  allowSkip: true
+});
 
 const { title, description, questionId } = toRefs(props);
 const slots = useSlots();
@@ -97,7 +99,7 @@ const emit = defineEmits<{
 const labelId = computed(() => `${questionId?.value || title.value}-label`);
 const descriptionId = computed(() => `${questionId?.value || title.value}-desc`);
 const helperTextId = computed(() => `${questionId?.value || title.value}-helper`);
-const allowSkip = computed(() => props.allowSkip ?? true);
+const allowSkip = computed(() => props.allowSkip);
 const controlName = computed(() => props.name ?? `question-${questionId?.value || title.value}`);
 const describedById = computed(() => {
   const ids = [description.value ? descriptionId.value : null, props.helperText ? helperTextId.value : null, props.describedBy ?? null]
