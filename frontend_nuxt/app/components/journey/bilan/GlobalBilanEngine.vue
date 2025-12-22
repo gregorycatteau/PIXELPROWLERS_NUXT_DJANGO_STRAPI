@@ -161,16 +161,7 @@
               >
                 <div class="space-y-2">
                   <p
-                    v-for="paragraph in modules.engagement?.intro || []"
-                    :key="paragraph"
-                    class="text-sm text-[color:var(--color-text-muted)] leading-relaxed"
-                  >
-                    {{ paragraph }}
-                  </p>
-                </div>
-                <div class="space-y-2">
-                  <p
-                    v-for="paragraph in modules.engagement?.synthesis || []"
+                    v-for="paragraph in engagementIntroParagraphs"
                     :key="paragraph"
                     class="text-sm text-[color:var(--color-text-muted)] leading-relaxed"
                   >
@@ -471,75 +462,12 @@
             @clear="handleClear"
           />
 
-          <section id="gb_options" class="pp-globalbilan-section">
-            <div class="pp-globalbilan-section-header">
-              <h2 class="pp-globalbilan-section-title">
-                Ce que tu peux choisir maintenant
-              </h2>
-            </div>
-            <div class="pp-globalbilan-options-grid">
-              <article class="pp-globalbilan-option-card">
-                <div class="space-y-2">
-                  <p class="text-[11px] uppercase tracking-[0.14em] text-[color:var(--color-text-muted)]">
-                    Niveau 1 — Auto-défense solo
-                  </p>
-                  <p
-                    v-for="paragraph in modules.engagement?.levelN1 || []"
-                    :key="paragraph"
-                    class="text-sm text-[color:var(--color-text-muted)] leading-relaxed"
-                  >
-                    {{ paragraph }}
-                  </p>
-                </div>
-                <span class="pp-globalbilan-summary-chip">Option possible</span>
-              </article>
-              <article class="pp-globalbilan-option-card">
-                <div class="space-y-2">
-                  <p class="text-[11px] uppercase tracking-[0.14em] text-[color:var(--color-text-muted)]">
-                    Niveau 2 — Miroir sécurisé
-                  </p>
-                  <p
-                    v-for="paragraph in modules.engagement?.levelN2 || []"
-                    :key="paragraph"
-                    class="text-sm text-[color:var(--color-text-muted)] leading-relaxed"
-                  >
-                    {{ paragraph }}
-                  </p>
-                </div>
-                <span class="pp-globalbilan-summary-chip">Option possible</span>
-              </article>
-              <article class="pp-globalbilan-option-card">
-                <div class="space-y-2">
-                  <p class="text-[11px] uppercase tracking-[0.14em] text-[color:var(--color-text-muted)]">
-                    Niveau 3 — Atelier tactique
-                  </p>
-                  <p
-                    v-for="paragraph in modules.engagement?.levelN3 || []"
-                    :key="paragraph"
-                    class="text-sm text-[color:var(--color-text-muted)] leading-relaxed"
-                  >
-                    {{ paragraph }}
-                  </p>
-                </div>
-                <span class="pp-globalbilan-summary-chip">Option possible</span>
-              </article>
-              <article class="pp-globalbilan-option-card">
-                <div class="space-y-2">
-                  <p class="text-[11px] uppercase tracking-[0.14em] text-[color:var(--color-text-muted)]">
-                    Niveau 4 — Re-architecture accompagnée
-                  </p>
-                  <p
-                    v-for="paragraph in modules.engagement?.levelN4 || []"
-                    :key="paragraph"
-                    class="text-sm text-[color:var(--color-text-muted)] leading-relaxed"
-                  >
-                    {{ paragraph }}
-                  </p>
-                </div>
-                <span class="pp-globalbilan-summary-chip">Option possible</span>
-              </article>
-            </div>
-          </section>
+          <EngagementLevelsPanel
+            v-if="modules.engagement?.levels?.length"
+            :intro="modules.engagement?.intro"
+            :levels="modules.engagement.levels"
+            @go-export="scrollToSection('gb_export')"
+          />
         </div>
         <div class="pp-globalbilan-aside hidden lg:block lg:sticky lg:top-24">
           <P1GlobalBilanAside
@@ -593,6 +521,7 @@ import BilanBlocksSummary from '@/components/journey/bilan/BilanBlocksSummary.vu
 import BilanIssuesList from '@/components/journey/bilan/BilanIssuesList.vue';
 import BilanHypothesesSection from '@/components/journey/bilan/BilanHypothesesSection.vue';
 import BilanLandingPanel from '@/components/journey/bilan/BilanLandingPanel.vue';
+import EngagementLevelsPanel from '@/components/journey/bilan/EngagementLevelsPanel.vue';
 import { useBilanHypothesesState } from '@/composables/bilan/useBilanHypothesesState';
 import ResourceList from '@/components/resources/ResourceList.vue';
 import { P1_EXPORT_COPY } from '@/config/journeys/p1ExportCopyV1_3';
@@ -661,6 +590,9 @@ const resourcesForList = computed(() => (modules.value.resources ?? []) as any[]
 const maturityLabel = computed(() => vm.value.meta?.maturity && vm.value.meta.maturity !== 'prod' ? vm.value.meta.maturity : null);
 const skipSignal = computed(() => modules.value.skipSignal);
 const skipSignalCopy = computed(() => skipSignal.value?.copy ?? BILAN_SKIP_SIGNAL_COPY);
+const engagementIntroParagraphs = computed(() =>
+  (modules.value.engagement?.intro ?? '').split(/\n\n+/).filter(Boolean)
+);
 const axisLabelById = computed<Record<string, string>>(() =>
   (vm.value?.panorama.axes ?? []).reduce<Record<string, string>>((acc, axis) => {
     acc[axis.id] = axis.label;

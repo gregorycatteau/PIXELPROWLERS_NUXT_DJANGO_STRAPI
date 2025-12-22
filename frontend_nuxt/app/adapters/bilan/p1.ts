@@ -6,7 +6,7 @@ import type { P1BlockScores, P1BlockBands, P1TensionBand } from '~/composables/u
 import { useP1ActionPlan } from '@/composables/useP1ActionPlan';
 import { useP1GlobalNarrative } from '@/composables/useP1GlobalNarrative';
 import { P1_BLOCK_IDS, p1BlockContent, p1BlockThemes, p1Copy } from '~/config/journeys/p1QuestionsConfig';
-import { p1EngagementCopy } from '~/config/journeys/p1EngagementCopy';
+import { getEngagementPack } from '@/config/engagement/registry';
 import {
   P1_ERASE_COPY,
   P1_GLOBAL_SKIP_SUMMARY,
@@ -342,6 +342,23 @@ export const p1BilanAdapter: JourneyBilanAdapter = {
         copy: BILAN_SKIP_SIGNAL_COPY
       };
     });
+    const engagementPack = getEngagementPack('p1');
+    const engagementModule = engagementPack
+      ? {
+          intro: engagementPack.intro,
+          levels: (Object.entries(engagementPack.levels) as Array<
+            [keyof typeof engagementPack.levels, (typeof engagementPack.levels)[keyof typeof engagementPack.levels]]
+          >).map(([id, level]) => ({
+            id,
+            title: level.title,
+            body: level.body,
+            ctaLabel: level.ctaLabel,
+            ctaTarget: level.ctaTarget,
+            routePath: level.routePath,
+            tags: level.tags
+          }))
+        }
+      : undefined;
     const alerts = computed(() =>
       mainIssues.value.filter((issue) => issue.band === 'very_high' || issue.band === 'high')
     );
@@ -526,14 +543,7 @@ export const p1BilanAdapter: JourneyBilanAdapter = {
           filteredActionsByHorizon: filteredActionsByHorizon.value,
           copy: P1_ACTION_PLAN_COPY
         },
-        engagement: {
-          intro: splitParagraphs(p1EngagementCopy.globalBilan.intro),
-          synthesis: splitParagraphs(p1EngagementCopy.globalBilan.synthesis),
-          levelN1: splitParagraphs(p1EngagementCopy.globalBilan.levelN1),
-          levelN2: splitParagraphs(p1EngagementCopy.globalBilan.levelN2),
-          levelN3: splitParagraphs(p1EngagementCopy.globalBilan.levelN3),
-          levelN4: splitParagraphs(p1EngagementCopy.globalBilan.levelN4)
-        },
+        engagement: engagementModule,
         skipSignal: skipSignal.value
       },
       exportPanel: {

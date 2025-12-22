@@ -6,6 +6,7 @@ import { useCoreJourneyStorage } from '~/composables/useCoreJourneyStorage';
 import { p2Copy } from '~/config/journeys/p2CopyV1_0';
 import { p2PanoramaAxesMeta, P2_PANORAMA_AXIS_ORDER, type P2PanoramaAxisId } from '~/config/journeys/p2QuestionsV1_0';
 import { BILAN_SKIP_SIGNAL_COPY } from '@/config/bilan/bilanSkipSignalCopy';
+import { getEngagementPack } from '@/config/engagement/registry';
 
 export const p2BilanAdapter: JourneyBilanAdapter = {
   journeyId: 'p2',
@@ -78,6 +79,21 @@ export const p2BilanAdapter: JourneyBilanAdapter = {
         copy: BILAN_SKIP_SIGNAL_COPY
       };
     });
+    const engagementPack = getEngagementPack('p2');
+    const engagementModule = engagementPack
+      ? {
+          intro: engagementPack.intro,
+          levels: Object.entries(engagementPack.levels).map(([id, level]) => ({
+            id,
+            title: level.title,
+            body: level.body,
+            ctaLabel: level.ctaLabel,
+            ctaTarget: level.ctaTarget,
+            routePath: level.routePath,
+            tags: level.tags
+          }))
+        }
+      : undefined;
 
     const vm: GlobalBilanViewModel = {
       copy: p2Copy.global,
@@ -99,7 +115,8 @@ export const p2BilanAdapter: JourneyBilanAdapter = {
         completedLabel: completedBlocksLabel.value
       },
       modules: {
-        skipSignal: skipSignal.value
+        skipSignal: skipSignal.value,
+        engagement: engagementModule
       },
       exportPanel: {
         exportText: `${p2Copy.export.title}\n${p2Copy.export.panoramaHeading}\nScore: ${axisSummaryLabel.value}\n${p2Copy.export.blocksHeading}\nBloc exploratoire\n${p2Copy.export.closingLine}`,

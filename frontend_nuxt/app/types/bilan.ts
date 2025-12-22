@@ -1,3 +1,4 @@
+import type { EngagementLevelId, CtaTarget } from '~/config/engagement/types';
 import type { RecommendationItem } from '~/utils/reco/types';
 
 export type BilanAxisVM = {
@@ -149,12 +150,17 @@ export type GlobalBilanViewModel = {
       library: RecommendationItem[];
     };
     engagement?: {
-      intro: string[];
-      synthesis: string[];
-      levelN1: string[];
-      levelN2: string[];
-      levelN3: string[];
-      levelN4: string[];
+      intro?: string;
+      levels: Array<{
+        id: EngagementLevelId;
+        title: string;
+        body: string;
+        ctaLabel: string;
+        ctaTarget: CtaTarget;
+        routePath?: string;
+        tags?: string[];
+        isRecommended?: boolean;
+      }>;
     };
     skipSignal?: BilanSkipSignalVM;
   };

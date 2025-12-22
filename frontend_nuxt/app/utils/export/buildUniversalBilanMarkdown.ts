@@ -2,6 +2,7 @@ import type { JourneyManifestV1 } from '~/config/journeys/manifests/types';
 import type { GlobalBilanViewModel } from '~/types/bilan';
 import type { RecommendationResult } from '~/utils/reco/types';
 import { isAllowlistedResourcePath } from '~/config/resources/allowlist';
+import { isAllowlistedEngagementRoute } from '~/config/engagement/allowlist';
 
 export type UniversalMarkdownOptions = {
   manifest: JourneyManifestV1 | null;
@@ -15,6 +16,11 @@ const formatLine = (label: string, value: string | number) => `- ${label}: ${val
 const formatFilePath = (filePath?: string) => {
   if (!filePath) return '';
   return isAllowlistedResourcePath(filePath) ? filePath : '';
+};
+
+const formatRoutePath = (routePath?: string) => {
+  if (!routePath) return '';
+  return isAllowlistedEngagementRoute(routePath) ? routePath : '';
 };
 
 const formatList = (items: string[]) => (items.length ? items.join('\n') : '- Aucun');
@@ -63,6 +69,20 @@ export const buildUniversalBilanMarkdown = (options: UniversalMarkdownOptions): 
     lines.push('- Aucun');
   }
   lines.push('');
+
+  if (vm.modules?.engagement?.levels?.length) {
+    lines.push('## Options de suite (N1-N4)');
+    if (vm.modules.engagement.intro) {
+      lines.push(vm.modules.engagement.intro);
+    }
+    vm.modules.engagement.levels.forEach((level) => {
+      const routePath = formatRoutePath(level.routePath);
+      const target = [level.ctaTarget, routePath].filter(Boolean).join(' | ');
+      lines.push(`- ${level.title}: ${level.body}`);
+      lines.push(`  - CTA: ${level.ctaLabel} (${target})`);
+    });
+    lines.push('');
+  }
 
   const recommended = recommendations?.recommended ?? [];
   lines.push('## Recommandations');

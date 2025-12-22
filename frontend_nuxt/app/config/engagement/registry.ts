@@ -73,3 +73,6 @@ const engagementRegistry: Record<string, EngagementPack> = {
 export const getEngagementPack = (journeyId: string): EngagementPack | null => {
   return engagementRegistry[journeyId] ?? null;
 };
+
+export const listEngagementPacks = (): Array<{ journeyId: string; pack: EngagementPack }> =>
+  Object.entries(engagementRegistry).map(([journeyId, pack]) => ({ journeyId, pack }));

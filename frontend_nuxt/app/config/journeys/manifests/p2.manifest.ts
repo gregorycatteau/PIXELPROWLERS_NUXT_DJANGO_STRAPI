@@ -13,7 +13,8 @@ export const p2Manifest: JourneyManifestV1 = {
   modules: {
     panorama: true,
     blocks: true,
-    export: true
+    export: true,
+    engagement: true
   },
   pointers: {
     questions: 'app/config/journeys/p2QuestionsV1_0',

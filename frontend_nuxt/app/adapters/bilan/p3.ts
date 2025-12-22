@@ -6,6 +6,7 @@ import { useCoreJourneyStorage } from '~/composables/useCoreJourneyStorage';
 import { p3Copy } from '~/config/journeys/p3CopyV1_0';
 import { p3PanoramaAxesMeta, P3_PANORAMA_AXIS_ORDER, type P3PanoramaAxisId } from '~/config/journeys/p3QuestionsV1_0';
 import { BILAN_SKIP_SIGNAL_COPY } from '@/config/bilan/bilanSkipSignalCopy';
+import { getEngagementPack } from '@/config/engagement/registry';
 
 export const p3BilanAdapter: JourneyBilanAdapter = {
   journeyId: 'p3',
@@ -78,6 +79,21 @@ export const p3BilanAdapter: JourneyBilanAdapter = {
         copy: BILAN_SKIP_SIGNAL_COPY
       };
     });
+    const engagementPack = getEngagementPack('p3');
+    const engagementModule = engagementPack
+      ? {
+          intro: engagementPack.intro,
+          levels: Object.entries(engagementPack.levels).map(([id, level]) => ({
+            id,
+            title: level.title,
+            body: level.body,
+            ctaLabel: level.ctaLabel,
+            ctaTarget: level.ctaTarget,
+            routePath: level.routePath,
+            tags: level.tags
+          }))
+        }
+      : undefined;
 
     const vm: GlobalBilanViewModel = {
       copy: p3Copy.global,
@@ -99,7 +115,8 @@ export const p3BilanAdapter: JourneyBilanAdapter = {
         completedLabel: completedBlocksLabel.value
       },
       modules: {
-        skipSignal: skipSignal.value
+        skipSignal: skipSignal.value,
+        engagement: engagementModule
       },
       exportPanel: {
         exportText: `${p3Copy.export.title}\n${p3Copy.export.panoramaHeading}\nScore: ${axisSummaryLabel.value}\n${p3Copy.export.blocksHeading}\nBloc exploratoire\n${p3Copy.export.closingLine}`,

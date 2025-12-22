@@ -6,6 +6,7 @@ import { useCoreJourneyStorage } from '~/composables/useCoreJourneyStorage';
 import { p4Copy } from '~/config/journeys/p4CopyV1_0';
 import { p4PanoramaAxesMeta, P4_PANORAMA_AXIS_ORDER, type P4PanoramaAxisId } from '~/config/journeys/p4QuestionsV1_0';
 import { BILAN_SKIP_SIGNAL_COPY } from '@/config/bilan/bilanSkipSignalCopy';
+import { getEngagementPack } from '@/config/engagement/registry';
 
 export const p4BilanAdapter: JourneyBilanAdapter = {
   journeyId: 'p4',
@@ -78,6 +79,21 @@ export const p4BilanAdapter: JourneyBilanAdapter = {
         copy: BILAN_SKIP_SIGNAL_COPY
       };
     });
+    const engagementPack = getEngagementPack('p4');
+    const engagementModule = engagementPack
+      ? {
+          intro: engagementPack.intro,
+          levels: Object.entries(engagementPack.levels).map(([id, level]) => ({
+            id,
+            title: level.title,
+            body: level.body,
+            ctaLabel: level.ctaLabel,
+            ctaTarget: level.ctaTarget,
+            routePath: level.routePath,
+            tags: level.tags
+          }))
+        }
+      : undefined;
 
     const vm: GlobalBilanViewModel = {
       copy: p4Copy.global,
@@ -99,7 +115,8 @@ export const p4BilanAdapter: JourneyBilanAdapter = {
         completedLabel: completedBlocksLabel.value
       },
       modules: {
-        skipSignal: skipSignal.value
+        skipSignal: skipSignal.value,
+        engagement: engagementModule
       },
       exportPanel: {
         exportText: `${p4Copy.export.title}\n${p4Copy.export.panoramaHeading}\nScore: ${axisSummaryLabel.value}\n${p4Copy.export.blocksHeading}\nBloc exploratoire\n${p4Copy.export.closingLine}`,
