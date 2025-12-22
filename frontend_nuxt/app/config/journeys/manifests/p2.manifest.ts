@@ -4,12 +4,20 @@ export const p2Manifest: JourneyManifestV1 = {
   id: 'p2',
   slug: 'nos-outils-numeriques-nous-epuisent',
   maturity: 'core',
+  axes: [
+    { axisId: 'overload', label: 'Charge numerique' },
+    { axisId: 'fragmentation', label: 'Fragmentation des outils' },
+    { axisId: 'sovereignty', label: 'Souverainete et maitrise' }
+  ],
   modules: {
     panorama: true,
     blocks: true,
     export: true
   },
-  pointers: {},
+  pointers: {
+    questions: 'app/config/journeys/p2QuestionsV1_0',
+    copy: 'app/config/journeys/p2CopyV1_0'
+  },
   adapters: {
     globalBilanAdapterId: 'p2'
   },

@@ -4,6 +4,12 @@ export const p1Manifest: JourneyManifestV1 = {
   id: 'p1',
   slug: 'ma-structure-dysfonctionne',
   maturity: 'prod',
+  axes: [
+    { axisId: 'human', label: 'Humain' },
+    { axisId: 'movement', label: 'Mouvement' },
+    { axisId: 'decisions', label: 'Decisions' },
+    { axisId: 'structure', label: 'Structure' }
+  ],
   modules: {
     panorama: true,
     blocks: true,

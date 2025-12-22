@@ -1,6 +1,7 @@
 import { computed, ref } from 'vue';
 import type { JourneySchema, JourneyStepMeta } from '~/config/journeys/p1JourneySchema';
 import { p1JourneySchema } from '~/config/journeys/p1JourneySchema';
+import { p2JourneySchema } from '~/config/journeys/p2JourneySchema';
 
 interface UseJourneyEngineOptions {
   journeyId: string;
@@ -20,7 +21,8 @@ interface UseJourneyEngineResult {
 }
 
 const schemasRegistry: Record<string, JourneySchema> = {
-  p1: p1JourneySchema
+  p1: p1JourneySchema,
+  p2: p2JourneySchema
 };
 
 const resolveSchema = (journeyId: string): JourneySchema => {

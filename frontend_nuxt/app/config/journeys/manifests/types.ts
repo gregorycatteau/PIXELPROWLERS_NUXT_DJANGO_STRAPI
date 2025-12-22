@@ -23,6 +23,13 @@ export type JourneyManifestAdapters = {
   globalBilanAdapterId?: string;
 };
 
+export type JourneyManifestAxis = {
+  axisId: string;
+  label: string;
+  description?: string;
+  renderHint?: string;
+};
+
 export type JourneyManifestStorage = {
   schemaVersion: string;
   scoresKey: string;
@@ -34,6 +41,7 @@ export type JourneyManifestV1 = {
   id: string;
   slug: string;
   maturity: JourneyManifestMaturity;
+  axes?: JourneyManifestAxis[];
   modules: JourneyManifestModules;
   pointers: JourneyManifestPointers;
   adapters: JourneyManifestAdapters;

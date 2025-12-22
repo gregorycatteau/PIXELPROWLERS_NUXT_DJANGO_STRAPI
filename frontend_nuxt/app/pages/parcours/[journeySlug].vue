@@ -48,6 +48,7 @@
       </main>
       <P1JourneyOrchestrator v-else :initial-step-id="initialStepId" />
     </template>
+    <P2JourneyOrchestrator v-else-if="journeyId === 'p2'" :initial-step-id="initialStepId" />
     <div v-else class="pp-card p-6 space-y-3">
       <p class="text-lg font-semibold">{{ manifest ? 'Parcours indisponible' : 'Parcours introuvable' }}</p>
       <p class="text-sm text-[color:var(--color-text-muted)]">
@@ -62,8 +63,10 @@
 import { computed } from 'vue';
 import ResourceList from '@/components/resources/ResourceList.vue';
 import P1JourneyOrchestrator from '~/components/journey/p1/P1JourneyOrchestrator.vue';
+import P2JourneyOrchestrator from '~/components/journey/p2/P2JourneyOrchestrator.vue';
 import { P1_RESOURCES_V1_3, type P1Resource, type P1ResourceId } from '@/config/resources/p1ResourcesV1_3';
 import { p1JourneySchema } from '~/config/journeys/p1JourneySchema';
+import { p2JourneySchema } from '~/config/journeys/p2JourneySchema';
 import { getManifestBySlug } from '~/config/journeys/manifests/registry';
 
 definePageMeta({
@@ -76,10 +79,15 @@ const journeySlug = computed(() => route.params.journeySlug as string);
 const manifest = computed(() => getManifestBySlug(journeySlug.value));
 const journeyId = computed(() => manifest.value?.id ?? null);
 
-const allowedSteps = p1JourneySchema.steps.map((s) => s.stepId);
+const journeySchemas: Record<string, { steps: { stepId: string }[] }> = {
+  p1: p1JourneySchema,
+  p2: p2JourneySchema
+};
+const allowedSteps = computed(() => journeySchemas[journeyId.value ?? '']?.steps.map((s) => s.stepId) ?? []);
 const initialStepId = computed(() => {
   const stepParam = typeof route.query.step === 'string' ? route.query.step : null;
-  if (stepParam && allowedSteps.includes(stepParam)) {
+  const steps = allowedSteps.value;
+  if (stepParam && steps.includes(stepParam)) {
     return stepParam;
   }
   return null;

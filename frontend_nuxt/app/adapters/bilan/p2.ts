@@ -1,56 +1,108 @@
+import { computed } from 'vue';
 import type { JourneyBilanAdapter } from './types';
 import type { GlobalBilanViewModel } from '@/types/bilan';
 import { assertNoRawAnswers } from '@/utils/bilan/assertNoRawAnswers';
-
-const panoramaAxes = [
-  { id: 'engagement', label: 'Engagement', emoji: '🔥', score: 3, isPriority: true, filledSegments: 3 },
-  { id: 'process', label: 'Process', emoji: '🧭', score: 2, isPriority: false, filledSegments: 2 },
-  { id: 'relation', label: 'Relation', emoji: '🤝', score: 4, isPriority: true, filledSegments: 4 },
-  { id: 'structure', label: 'Structure', emoji: '🧱', score: 1, isPriority: false, filledSegments: 1 }
-];
-
-const blocks = [
-  {
-    id: 'B1',
-    title: 'Bloc exploratoire',
-    answeredCount: 4,
-    skippedCount: 0,
-    unseenCount: 0,
-    completion: 100,
-    isComplete: true,
-    detailsOpen: false,
-    themes: []
-  }
-];
+import { useCoreJourneyStorage } from '~/composables/useCoreJourneyStorage';
+import { p2Copy } from '~/config/journeys/p2CopyV1_0';
+import { p2PanoramaAxesMeta, P2_PANORAMA_AXIS_ORDER, type P2PanoramaAxisId } from '~/config/journeys/p2QuestionsV1_0';
+import { BILAN_SKIP_SIGNAL_COPY } from '@/config/bilan/bilanSkipSignalCopy';
 
 export const p2BilanAdapter: JourneyBilanAdapter = {
   journeyId: 'p2',
   buildViewModel(): GlobalBilanViewModel {
+    const storage = useCoreJourneyStorage({ journeyId: 'p2' });
+    try {
+      storage.loadFromStorage();
+    } catch {
+      // ignore storage read errors
+    }
+    const panoramaScores = computed(() => storage.scores.value?.panorama ?? null);
+    const axisOrder = P2_PANORAMA_AXIS_ORDER;
+    const panoramaAxes = computed(() =>
+      axisOrder.map((axisId: P2PanoramaAxisId) => {
+        const stats = panoramaScores.value?.byAxis?.[axisId];
+        const score = stats?.score ?? 0;
+        const filled = Math.max(0, Math.min(5, Math.round(score)));
+        return {
+          id: axisId,
+          label: p2PanoramaAxesMeta[axisId].label,
+          emoji: '🧭',
+          score,
+          isPriority: false,
+          filledSegments: filled
+        };
+      })
+    );
+    const panoramaAnsweredCount = computed(() => panoramaScores.value?.answeredCount ?? 0);
+    const panoramaSkippedCount = computed(() => panoramaScores.value?.skippedCount ?? 0);
+    const panoramaTotalCount = computed(() => panoramaAnsweredCount.value + panoramaSkippedCount.value);
+    const panoramaCompletenessLabel = computed(() => {
+      const answered = panoramaAnsweredCount.value;
+      const skipped = panoramaSkippedCount.value;
+      const total = panoramaTotalCount.value;
+      if (!total) return 'Panorama partiel (0/0)';
+      if (skipped === 0) return `Panorama complet (${answered}/${total})`;
+      return `Panorama partiel (${answered}/${total})`;
+    });
+    const axisSummaryLabel = computed(() => panoramaAxes.value.map((a) => `${a.label}:${a.score}`).join(' · '));
+    const completedBlocksLabel = computed(() => (panoramaAnsweredCount.value > 0 ? 'Bloc exploratoire' : 'aucun'));
+    const blocks = computed(() => [
+      {
+        id: 'B1',
+        title: 'Bloc exploratoire',
+        answeredCount: panoramaAnsweredCount.value,
+        skippedCount: panoramaSkippedCount.value,
+        unseenCount: 0,
+        completion: panoramaTotalCount.value ? Math.round((panoramaAnsweredCount.value / panoramaTotalCount.value) * 100) : 0,
+        isComplete: panoramaTotalCount.value > 0 && panoramaSkippedCount.value === 0,
+        detailsOpen: false,
+        themes: []
+      }
+    ]);
+    const skipSignal = computed(() => {
+      const axisSignals = axisOrder.map((axisId) => {
+        const stats = panoramaScores.value?.byAxis?.[axisId];
+        const skippedCount = stats?.skippedCount ?? 0;
+        const totalCount = stats?.totalCount ?? 0;
+        const ratio = totalCount > 0 ? skippedCount / totalCount : 0;
+        return {
+          axisId,
+          skippedCount,
+          totalCount,
+          show: skippedCount >= 2 || ratio >= 0.2
+        };
+      });
+      return {
+        globalSkippedCount: panoramaSkippedCount.value,
+        byAxis: axisSignals,
+        copy: BILAN_SKIP_SIGNAL_COPY
+      };
+    });
+
     const vm: GlobalBilanViewModel = {
-      copy: {
-        title: 'Bilan P2',
-        subtitle: 'Panorama rapide'
-      },
-      axisSummaryLabel: panoramaAxes.map((a) => `${a.label}:${a.score}`).join(' · '),
-      completedBlocksLabel: 'Bloc exploratoire',
-      panoramaAnsweredLabel: 'R 4 / NR 0',
+      copy: p2Copy.global,
+      axisSummaryLabel: axisSummaryLabel.value,
+      completedBlocksLabel: completedBlocksLabel.value,
+      panoramaAnsweredLabel: `R ${panoramaAnsweredCount.value} / NR ${panoramaSkippedCount.value}`,
       summaryNav: [
-        { id: 'gb_panorama', label: 'Panorama & blocs' },
+        { id: 'gb_panorama', label: 'Panorama & bloc' },
         { id: 'gb_export', label: 'Export' }
       ],
-      blocksSummaryHeading: 'Blocs P2',
-      completedBlocks: 'Bloc exploratoire',
+      blocksSummaryHeading: 'Bloc exploratoire',
+      completedBlocks: completedBlocksLabel.value,
       panorama: {
-        answeredCount: 4,
-        skippedCount: 0,
-        completenessLabel: 'Panorama partiel (4/4)',
-        axes: panoramaAxes,
-        blocks,
-        completedLabel: 'Bloc exploratoire'
+        answeredCount: panoramaAnsweredCount.value,
+        skippedCount: panoramaSkippedCount.value,
+        completenessLabel: panoramaCompletenessLabel.value,
+        axes: panoramaAxes.value,
+        blocks: blocks.value,
+        completedLabel: completedBlocksLabel.value
       },
-      modules: {},
+      modules: {
+        skipSignal: skipSignal.value
+      },
       exportPanel: {
-        exportText: 'Bilan P2 (panorama + blocs)',
+        exportText: `${p2Copy.export.title}\n${p2Copy.export.panoramaHeading}\nScore: ${axisSummaryLabel.value}\n${p2Copy.export.blocksHeading}\nBloc exploratoire\n${p2Copy.export.closingLine}`,
         clearMessage: '',
         copied: false,
         missingInfo: {},
@@ -61,7 +113,7 @@ export const p2BilanAdapter: JourneyBilanAdapter = {
         globalMissing: 0
       },
       meta: {
-        isEmpty: false,
+        isEmpty: panoramaTotalCount.value === 0,
         partial: true,
         maturity: 'core'
       }

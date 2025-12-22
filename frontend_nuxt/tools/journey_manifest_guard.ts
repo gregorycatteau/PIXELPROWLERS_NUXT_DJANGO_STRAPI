@@ -13,7 +13,7 @@ const forbiddenPatterns = [
   /raw/i
 ];
 
-const allowedRootKeys = new Set(['id', 'slug', 'maturity', 'modules', 'pointers', 'adapters', 'storage']);
+const allowedRootKeys = new Set(['id', 'slug', 'maturity', 'axes', 'modules', 'pointers', 'adapters', 'storage']);
 const allowedModulesKeys = new Set([
   'panorama',
   'blocks',
@@ -28,6 +28,7 @@ const allowedModulesKeys = new Set([
 const allowedPointersKeys = new Set(['questions', 'copy', 'resources', 'actions']);
 const allowedAdaptersKeys = new Set(['globalBilanAdapterId']);
 const allowedStorageKeys = new Set(['schemaVersion', 'scoresKey', 'metaKey', 'ttlPolicy']);
+const allowedAxisKeys = new Set(['axisId', 'label', 'description', 'renderHint']);
 
 const isNonEmptyString = (value: unknown): value is string => typeof value === 'string' && value.trim().length > 0;
 const isVersionedKey = (value: string) => /v\d/i.test(value);
@@ -65,6 +66,20 @@ const assertValidPointers = (pointers: JourneyManifestPointers) => {
 const assertValidAdapters = (adapters: JourneyManifestAdapters) => {
   for (const [key, value] of Object.entries(adapters)) {
     if (!allowedAdaptersKeys.has(key) || !isNonEmptyString(value)) {
+      throw new Error('Journey manifest guard failed.');
+    }
+  }
+};
+
+const assertValidAxes = (axes: JourneyManifestV1['axes']) => {
+  if (!axes) return;
+  for (const axis of axes) {
+    for (const key of Object.keys(axis)) {
+      if (!allowedAxisKeys.has(key)) {
+        throw new Error('Journey manifest guard failed.');
+      }
+    }
+    if (!isNonEmptyString(axis.axisId) || !isNonEmptyString(axis.label)) {
       throw new Error('Journey manifest guard failed.');
     }
   }
@@ -144,6 +159,7 @@ const assertManifestShape = (manifest: JourneyManifestV1) => {
   if (!manifest.maturity) throw new Error('Journey manifest guard failed.');
 
   assertValidModules(manifest.modules);
+  assertValidAxes(manifest.axes);
   assertValidPointers(manifest.pointers);
   assertValidAdapters(manifest.adapters);
   assertValidStorage(manifest.storage);

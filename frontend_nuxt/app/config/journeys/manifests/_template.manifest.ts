@@ -4,6 +4,7 @@ export const journeyManifestTemplate: JourneyManifestV1 = {
   id: 'px',
   slug: 'mon-parcours',
   maturity: 'stub',
+  axes: [],
   modules: {
     panorama: false,
     blocks: false,
