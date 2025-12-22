@@ -4,9 +4,20 @@ const suspiciousKeyPatterns = [
   /answers/i,
   /responses/i,
   /questionId/i,
+  /answersBy/i,
+  /rawAnswers/i,
   /^p[0-9]+_q/i,
   /journeyAnswers/i,
   /raw/i
+];
+const suspiciousValuePatterns = [
+  /questionId/i,
+  /answersBy/i,
+  /rawAnswers/i,
+  /\\bp\\d+_q\\d+\\b/i,
+  /\\bq\\d+\\b/i,
+  /\"p\\d+_q\\d+\"\\s*:/i,
+  /p\\d+_q\\d+\\s*=/i
 ];
 
 const allowedRootKeys = new Set([
@@ -205,6 +216,12 @@ function validateObjectKeys(obj: Record<string, unknown>, path: string) {
 
 function walk(node: unknown, path: string) {
   if (node === null || node === undefined) return;
+  if (typeof node === 'string') {
+    if (suspiciousValuePatterns.some((re) => re.test(node))) {
+      throw new Error('Invalid VM shape.');
+    }
+    return;
+  }
   if (Array.isArray(node)) {
     node.forEach((child) => walk(child, `${path}[]`));
     return;

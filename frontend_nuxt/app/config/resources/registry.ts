@@ -1,4 +1,5 @@
 import { P1_RESOURCES_V1_3 } from './p1ResourcesV1_3';
+import { validateFilePath } from './allowlist';
 import type { Action, Resource, ResourceFormat } from './types';
 import * as p1ActionPlans from '../journeys/p1ActionPlansV1_0';
 
@@ -16,15 +17,18 @@ const addJourneyTag = (tags: string[] | undefined, journeyId: string): string[] 
   return base;
 };
 
-export const RESOURCE_LIBRARY: Resource[] = P1_RESOURCES_V1_3.map((resource) => ({
-  id: resource.id,
-  title: resource.title,
-  summary: resource.summary,
-  filePath: resource.filePath,
-  tags: addJourneyTag(resource.tags, 'p1'),
-  format: normalizeFormat(resource.format),
-  timeToUse: resource.timeToUse
-}));
+export const RESOURCE_LIBRARY: Resource[] = P1_RESOURCES_V1_3.map((resource) => {
+  validateFilePath(resource.filePath);
+  return {
+    id: resource.id,
+    title: resource.title,
+    summary: resource.summary,
+    filePath: resource.filePath,
+    tags: addJourneyTag(resource.tags, 'p1'),
+    format: normalizeFormat(resource.format),
+    timeToUse: resource.timeToUse
+  };
+});
 
 const collectP1Actions = (): Action[] => {
   const packs = Object.values(p1ActionPlans);
@@ -48,6 +52,7 @@ const collectP1Actions = (): Action[] => {
       const tags = addJourneyTag([], 'p1');
       if (candidate.blockId) tags.push(`block:${candidate.blockId}`);
       if (candidate.mode) tags.push(`mode:${candidate.mode}`);
+      if (candidate.filePath) validateFilePath(candidate.filePath);
       actions.push({
         id: candidate.id,
         label: candidate.label,
@@ -55,7 +60,8 @@ const collectP1Actions = (): Action[] => {
         horizon: candidate.horizon,
         tags,
         effort: candidate.effort,
-        safetyNote: candidate.safetyNote
+        safetyNote: candidate.safetyNote,
+        filePath: candidate.filePath
       });
     });
   });
