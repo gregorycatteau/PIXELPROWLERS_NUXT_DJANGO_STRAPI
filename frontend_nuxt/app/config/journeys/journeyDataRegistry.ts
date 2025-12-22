@@ -1,6 +1,7 @@
 import type { JourneyManifestV1 } from './manifests/types';
 import { p2Copy } from './p2CopyV1_0';
 import { p3Copy } from './p3CopyV1_0';
+import { p4Copy } from './p4CopyV1_0';
 import {
   p2PanoramaAxesMeta,
   p2PanoramaQuestions,
@@ -11,6 +12,11 @@ import {
   p3PanoramaQuestions,
   P3_PANORAMA_AXIS_ORDER
 } from './p3QuestionsV1_0';
+import {
+  p4PanoramaAxesMeta,
+  p4PanoramaQuestions,
+  P4_PANORAMA_AXIS_ORDER
+} from './p4QuestionsV1_0';
 
 export type JourneyCopyIntro = {
   title: string;
@@ -63,7 +69,8 @@ export type PanoramaQuestionsBundle = {
 
 const copyRegistry: Record<string, JourneyCopyBundle> = {
   'app/config/journeys/p2CopyV1_0': p2Copy,
-  'app/config/journeys/p3CopyV1_0': p3Copy
+  'app/config/journeys/p3CopyV1_0': p3Copy,
+  'app/config/journeys/p4CopyV1_0': p4Copy
 };
 
 const questionsRegistry: Record<string, PanoramaQuestionsBundle> = {
@@ -76,6 +83,11 @@ const questionsRegistry: Record<string, PanoramaQuestionsBundle> = {
     questions: p3PanoramaQuestions,
     axisOrder: P3_PANORAMA_AXIS_ORDER,
     axesMeta: p3PanoramaAxesMeta
+  },
+  'app/config/journeys/p4QuestionsV1_0': {
+    questions: p4PanoramaQuestions,
+    axisOrder: P4_PANORAMA_AXIS_ORDER,
+    axesMeta: p4PanoramaAxesMeta
   }
 };
 
