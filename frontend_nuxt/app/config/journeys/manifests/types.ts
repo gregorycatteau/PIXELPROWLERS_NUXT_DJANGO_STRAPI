@@ -46,5 +46,7 @@ export type JourneyManifestV1 = {
   modules: JourneyManifestModules;
   pointers: JourneyManifestPointers;
   adapters: JourneyManifestAdapters;
+  resourceIds?: string[];
+  actionIds?: string[];
   storage: JourneyManifestStorage;
 };

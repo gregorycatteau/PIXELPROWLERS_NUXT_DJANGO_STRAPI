@@ -27,6 +27,15 @@ export const p1Manifest: JourneyManifestV1 = {
     resources: 'app/config/resources/p1ResourcesV1_3',
     actions: 'app/config/journeys/p1ActionPlansV1_0'
   },
+  resourceIds: [
+    'kit_p1_demarrage',
+    'kit_mission_cash',
+    'kit_gouvernance_veto',
+    'kit_dependance_mortelle',
+    'kit_capacite_reelle',
+    'kit_pilotage_reporting',
+    'kit_controles_internes'
+  ],
   adapters: {
     globalBilanAdapterId: 'p1'
   },

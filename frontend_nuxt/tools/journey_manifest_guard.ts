@@ -1,6 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { listManifests } from '../app/config/journeys/manifests/registry';
+import { getActionById, getResourceById, listActions, listResources } from '../app/config/resources/registry';
+import { isAllowlistedResourcePath } from '../app/config/resources/allowlist';
 import type { JourneyManifestV1, JourneyManifestModules, JourneyManifestPointers, JourneyManifestAdapters } from '../app/config/journeys/manifests/types';
 
 const forbiddenPatterns = [
@@ -13,7 +15,19 @@ const forbiddenPatterns = [
   /raw/i
 ];
 
-const allowedRootKeys = new Set(['id', 'slug', 'engine', 'maturity', 'axes', 'modules', 'pointers', 'adapters', 'storage']);
+const allowedRootKeys = new Set([
+  'id',
+  'slug',
+  'engine',
+  'maturity',
+  'axes',
+  'modules',
+  'pointers',
+  'adapters',
+  'resourceIds',
+  'actionIds',
+  'storage'
+]);
 const allowedEngineValues = new Set(['legacy', 'universal']);
 const allowedModulesKeys = new Set([
   'panorama',
@@ -151,6 +165,47 @@ const assertSkipAlwaysOn = () => {
   }
 };
 
+const assertValidReferences = (manifest: JourneyManifestV1) => {
+  if (manifest.resourceIds) {
+    if (!Array.isArray(manifest.resourceIds)) {
+      throw new Error('Journey manifest guard failed.');
+    }
+    manifest.resourceIds.forEach((id) => {
+      if (!isNonEmptyString(id) || !getResourceById(id)) {
+        throw new Error('Journey manifest guard failed.');
+      }
+    });
+  }
+
+  if (manifest.actionIds) {
+    if (!Array.isArray(manifest.actionIds)) {
+      throw new Error('Journey manifest guard failed.');
+    }
+    manifest.actionIds.forEach((id) => {
+      if (!isNonEmptyString(id) || !getActionById(id)) {
+        throw new Error('Journey manifest guard failed.');
+      }
+    });
+  }
+};
+
+const assertResourceAllowlist = () => {
+  const resources = listResources();
+  const actions = listActions();
+
+  resources.forEach((resource) => {
+    if (!isAllowlistedResourcePath(resource.filePath)) {
+      throw new Error('Journey manifest guard failed.');
+    }
+  });
+
+  actions.forEach((action) => {
+    if (action.filePath && !isAllowlistedResourcePath(action.filePath)) {
+      throw new Error('Journey manifest guard failed.');
+    }
+  });
+};
+
 const assertManifestShape = (manifest: JourneyManifestV1) => {
   const raw = manifest as unknown as Record<string, unknown>;
   assertValidRootKeys(raw);
@@ -166,6 +221,7 @@ const assertManifestShape = (manifest: JourneyManifestV1) => {
   assertValidAxes(manifest.axes);
   assertValidPointers(manifest.pointers);
   assertValidAdapters(manifest.adapters);
+  assertValidReferences(manifest);
   assertValidStorage(manifest.storage);
 
   scanForbiddenPatterns(manifest);
@@ -185,6 +241,7 @@ async function main() {
       slugs.add(manifest.slug);
       assertManifestShape(manifest);
     }
+    assertResourceAllowlist();
     assertSkipAlwaysOn();
 
     console.log('Journey manifest guard OK');
