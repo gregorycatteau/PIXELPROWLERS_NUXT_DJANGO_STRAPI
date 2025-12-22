@@ -1,17 +1,13 @@
-# P3 Global Bilan — Smoke tests (core-only)
+# P3 Global Bilan — Smoke tests (engine + adapter)
 
-1. **Empty/missing adapter fallback**
-   - Action: forcer un parcours inconnu ou VM `meta.isEmpty=true`.
-   - Attendu: message “Bilan indisponible” + bouton Retour, aucun crash.
+## 1) E1 -> E2 -> Global
+- Action: ouvrir `/parcours/je-suis-en-transition` puis repondre a 1-2 questions.
+- Attendu: E2 affiche un bilan panorama (scores par axe), bouton vers bilan global OK.
 
-2. **Panorama + bloc P3**
-   - Action: ouvrir P3 via `GlobalBilanEngine` (journeyId=`p3`).
-   - Attendu: 4 axes affichés (scores 1–4), un bloc “Bloc de base P3” avec complétion 75%, sommaire limité (Panorama/Export), aucune section issues/hypothèses/atterrissage/actions.
+## 2) Skip signal (Option C)
+- Action: ignorer 2 questions d un meme axe, aller en E2 puis Global Bilan.
+- Attendu: bandeau skip global visible; mention par axe si seuil atteint.
 
-3. **Partial state**
-   - Action: vérifier la mention “Bilan partiel” en haut (modules absents).
-   - Attendu: aucune CTA d’actions/ressources/hypothèses; pas d’erreur console.
-
-4. **Export**
-   - Action: lancer l’export P3.
-   - Attendu: texte “Bilan P3 (panorama + blocs)” copié, pas de données brutes ni d’erreur.
+## 3) Export + reload
+- Action: ouvrir Global Bilan, copier l export, puis recharger la page.
+- Attendu: export genere cote client, aucune reponse brute, recharge conserve les agregats.

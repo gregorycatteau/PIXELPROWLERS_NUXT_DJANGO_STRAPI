@@ -1,15 +1,15 @@
 # P2 Global Bilan — Smoke tests (engine + adapter)
 
-Scénarios rapides pour valider l’adapter P2 minimal (panorama + blocs + export).
+Scénarios rapides pour valider le flow P2 core (E1 -> E2 -> Global + export).
 
-## 1) Empty state
-- Action: forcer un parcours sans adapter (journeyId inconnu) ou VM `meta.isEmpty=true`.
-- Attendu: écran “Bilan indisponible pour ce parcours” + bouton Retour, aucun crash, aucune requête réseau.
+## 1) E1 -> E2 -> Global
+- Action: ouvrir `/parcours/nos-outils-numeriques-nous-epuisent` puis repondre a 1-2 questions.
+- Attendu: E2 affiche un bilan panorama (scores par axe), bouton vers bilan global OK.
 
-## 2) Bilan minimal (panorama + bloc)
-- Action: ouvrir P2 via `GlobalBilanEngine` (journeyId=`p2`).
-- Attendu: 4 axes affichés (scores 1–4) et 1 bloc “Bloc exploratoire” complété; sections issues/hypothèses/atterrissage vides; sommaire réduit (Panorama/Export).
+## 2) Skip signal (Option C)
+- Action: ignorer 2 questions d un meme axe, aller en E2 puis Global Bilan.
+- Attendu: bandeau skip global visible; mention par axe si seuil atteint.
 
-## 3) Export
-- Action: lancer Export (copie markdown) en P2.
-- Attendu: texte exporté “Bilan P2 (panorama + blocs)” sans données brutes ni réponses; pas d’erreur console.
+## 3) Export + reload
+- Action: ouvrir Global Bilan, copier l export, puis recharger la page.
+- Attendu: export genere cote client, aucune reponse brute, recharge conserve les agregats.
