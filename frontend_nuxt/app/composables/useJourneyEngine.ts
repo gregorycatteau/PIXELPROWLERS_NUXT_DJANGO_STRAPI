@@ -1,8 +1,6 @@
 import { computed, ref } from 'vue';
 import type { JourneySchema, JourneyStepMeta } from '~/config/journeys/p1JourneySchema';
-import { p1JourneySchema } from '~/config/journeys/p1JourneySchema';
-import { p2JourneySchema } from '~/config/journeys/p2JourneySchema';
-import { p3JourneySchema } from '~/config/journeys/p3JourneySchema';
+import { getJourneySchemaById } from '~/config/journeys/schemaRegistry';
 
 interface UseJourneyEngineOptions {
   journeyId: string;
@@ -21,14 +19,8 @@ interface UseJourneyEngineResult {
   onStepCompleted: (cb: (stepId: string) => void) => void;
 }
 
-const schemasRegistry: Record<string, JourneySchema> = {
-  p1: p1JourneySchema,
-  p2: p2JourneySchema,
-  p3: p3JourneySchema
-};
-
 const resolveSchema = (journeyId: string): JourneySchema => {
-  const schema = schemasRegistry[journeyId];
+  const schema = getJourneySchemaById(journeyId);
   if (!schema) {
     throw new Error(`Journey schema not found for id: ${journeyId}`);
   }
