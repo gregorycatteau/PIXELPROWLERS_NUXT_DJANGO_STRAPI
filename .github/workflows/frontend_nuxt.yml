@@ -45,3 +45,6 @@ jobs:
 
       - name: Bilan guard
         run: npm run bilan:guard
+
+      - name: Journey manifest guard
+        run: npm run journey:guard

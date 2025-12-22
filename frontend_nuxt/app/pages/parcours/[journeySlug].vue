@@ -49,8 +49,10 @@
       <P1JourneyOrchestrator v-else :initial-step-id="initialStepId" />
     </template>
     <div v-else class="pp-card p-6 space-y-3">
-      <p class="text-lg font-semibold">Parcours indisponible</p>
-      <p class="text-sm text-[color:var(--color-text-muted)]">Le parcours demandé n’existe pas encore.</p>
+      <p class="text-lg font-semibold">{{ manifest ? 'Parcours indisponible' : 'Parcours introuvable' }}</p>
+      <p class="text-sm text-[color:var(--color-text-muted)]">
+        {{ manifest ? 'Le parcours demandé n’existe pas encore.' : 'Le parcours demandé est introuvable.' }}
+      </p>
       <NuxtLink to="/" class="pp-cta-secondary inline-flex w-auto">Retour à l’accueil</NuxtLink>
     </div>
   </div>
@@ -62,6 +64,7 @@ import ResourceList from '@/components/resources/ResourceList.vue';
 import P1JourneyOrchestrator from '~/components/journey/p1/P1JourneyOrchestrator.vue';
 import { P1_RESOURCES_V1_3, type P1Resource, type P1ResourceId } from '@/config/resources/p1ResourcesV1_3';
 import { p1JourneySchema } from '~/config/journeys/p1JourneySchema';
+import { getManifestBySlug } from '~/config/journeys/manifests/registry';
 
 definePageMeta({
   layout: 'journey'
@@ -70,10 +73,8 @@ definePageMeta({
 const route = useRoute();
 
 const journeySlug = computed(() => route.params.journeySlug as string);
-const journeyId = computed(() => {
-  if (journeySlug.value === 'ma-structure-dysfonctionne') return 'p1';
-  return null;
-});
+const manifest = computed(() => getManifestBySlug(journeySlug.value));
+const journeyId = computed(() => manifest.value?.id ?? null);
 
 const allowedSteps = p1JourneySchema.steps.map((s) => s.stepId);
 const initialStepId = computed(() => {
@@ -94,5 +95,5 @@ const resourcePreview = computed<P1Resource[]>(() => {
   });
 });
 
-const startLink = computed(() => '/parcours/ma-structure-dysfonctionne?step=E0_intro');
+const startLink = computed(() => `/parcours/${manifest.value?.slug ?? 'ma-structure-dysfonctionne'}?step=E0_intro`);
 </script>
