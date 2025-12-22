@@ -57,3 +57,9 @@ jobs:
 
       - name: Engagement guard
         run: npm run engagement:guard
+
+      - name: No v-html guard
+        run: npm run no-v-html:guard
+
+      - name: Data-only strings guard
+        run: npm run data-only:guard

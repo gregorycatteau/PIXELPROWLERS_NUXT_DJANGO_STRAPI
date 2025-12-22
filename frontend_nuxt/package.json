@@ -12,7 +12,9 @@
     "journey:guard": "tsx tools/journey_manifest_guard.ts",
     "journey:nodup": "tsx tools/journey_no_wrappers_guard.ts",
     "no-console:guard": "tsx tools/no_console_guard.ts",
-    "engagement:guard": "tsx tools/engagement_guard.ts"
+    "engagement:guard": "tsx tools/engagement_guard.ts",
+    "no-v-html:guard": "tsx tools/no_v_html_guard.ts",
+    "data-only:guard": "tsx tools/data_only_strings_guard.ts"
   },
   "keywords": [
     "nuxt",
