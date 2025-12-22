@@ -12,6 +12,11 @@ Scénarios à exécuter à chaque incrément du parcours P1. Objectif : vérifie
 - B1 Questionnaire: ignorer une question puis repondre, la selection doit remplacer le skip.
 - B3 ou B4: ignorer puis repondre, navigation et progression intactes.
 
+## Smoke test skip signal (Option C)
+- E1 Panorama: ignorer au moins 1 question, aller en E2 -> bandeau global visible.
+- E1 Panorama: ignorer 2 questions d'un meme axe -> mention axe visible en E2.
+- Global Bilan: bandeau global + mentions axes respectent les seuils.
+
 ## Abandon E1 puis reprise
 - Démarrer un questionnaire en E1, quitter la page (reload).
 - Au retour, vérifier l’affichage du bandeau de reprise (reprendre ou recommencer).
