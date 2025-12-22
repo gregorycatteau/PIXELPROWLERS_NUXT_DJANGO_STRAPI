@@ -23,23 +23,12 @@
             :total-questions="totalQuestions"
             :theme-key="question.axisId"
             :status="getStatus(answers[question.id])"
-            v-slot="{ labelId, descriptionId }"
+            :helper-text="feelHint"
+            :model-value="answers[question.id] ?? null"
+            :name="`b3-${question.id}`"
+            :described-by="skipNoticeId"
+            @update:model-value="(val) => handleAnswer(question.id, val as LikertValue | null)"
           >
-            <p class="pp-journey-feel-hint">
-              Réponds au ressenti : il n’y a pas de bonne ou de mauvaise réponse.
-            </p>
-            <LikertScaleFiveSteps
-              :name="`b3-${question.id}`"
-              :model-value="answers[question.id] ?? null"
-              :aria-labelled-by="labelId"
-              :aria-described-by="buildDescribedBy(descriptionId)"
-              @update:model-value="(val) => handleAnswer(question.id, val as LikertValue | null)"
-            />
-            <QuestionSkipControl
-              :is-skipped="answers[question.id] === null"
-              :described-by="skipNoticeId"
-              @skip="() => handleAnswer(question.id, null)"
-            />
           </JourneyQuestionBlock>
         </div>
 
@@ -81,20 +70,11 @@
               :total-questions="totalQuestions"
               :theme-key="question.subAxis || pack.subAxisId"
               :status="getStatus(answers[question.id])"
-              v-slot="{ labelId, descriptionId }"
+              :model-value="answers[question.id] ?? null"
+              :name="`b3-${question.id}`"
+              :described-by="skipNoticeId"
+              @update:model-value="(val) => handleAnswer(question.id, val as LikertValue | null)"
             >
-              <LikertScaleFiveSteps
-                :name="`b3-${question.id}`"
-                :model-value="answers[question.id] ?? null"
-                :aria-labelled-by="labelId"
-                :aria-described-by="buildDescribedBy(descriptionId)"
-                @update:model-value="(val) => handleAnswer(question.id, val as LikertValue | null)"
-              />
-              <QuestionSkipControl
-                :is-skipped="answers[question.id] === null"
-                :described-by="skipNoticeId"
-                @skip="() => handleAnswer(question.id, null)"
-              />
             </JourneyQuestionBlock>
           </div>
 
@@ -113,20 +93,11 @@
               :total-questions="totalQuestions"
               :theme-key="question.subAxis || pack.subAxisId"
               :status="getStatus(answers[question.id])"
-              v-slot="{ labelId, descriptionId }"
+              :model-value="answers[question.id] ?? null"
+              :name="`b3-${question.id}`"
+              :described-by="skipNoticeId"
+              @update:model-value="(val) => handleAnswer(question.id, val as LikertValue | null)"
             >
-              <LikertScaleFiveSteps
-                :name="`b3-${question.id}`"
-                :model-value="answers[question.id] ?? null"
-                :aria-labelled-by="labelId"
-                :aria-described-by="buildDescribedBy(descriptionId)"
-                @update:model-value="(val) => handleAnswer(question.id, val as LikertValue | null)"
-              />
-              <QuestionSkipControl
-                :is-skipped="answers[question.id] === null"
-                :described-by="skipNoticeId"
-                @skip="() => handleAnswer(question.id, null)"
-              />
             </JourneyQuestionBlock>
           </div>
 
@@ -157,8 +128,6 @@
 import JourneyLayout from '~/components/journey/JourneyLayout.vue';
 import JourneyStepHeader from '~/components/journey/JourneyStepHeader.vue';
 import JourneyQuestionBlock from '~/components/journey/JourneyQuestionBlock.vue';
-import LikertScaleFiveSteps from '~/components/journey/questionnaire/LikertScaleFiveSteps.vue';
-import QuestionSkipControl from '~/components/journey/questionnaire/QuestionSkipControl.vue';
 import { computed, ref } from 'vue';
 import { useJourneyDiagnostics, type LikertValue } from '~/composables/useJourneyDiagnostics';
 import { useDiagnosticStorage } from '~/composables/useDiagnosticStorage';
@@ -181,6 +150,7 @@ const copy = computed(() => p1Copy.blockQuestionnaire);
 const skipHelper = P1_SKIP_COPY.helperText;
 const skipNoticeId = 'p1-skip-notice-b3';
 const showAllFollowups = ref(false);
+const feelHint = 'Réponds au ressenti : il n’y a pas de bonne ou de mauvaise réponse.';
 
 const answers = computed(() => diagnostics.blockAnswers.value[blockId] ?? {});
 const baseQuestionBySubAxis = computed(() =>
@@ -278,8 +248,6 @@ const handleAnswer = (questionId: string, value: LikertValue | null) => {
   diagnostics.setBlockAnswer(blockId, questionId, value);
 };
 
-const buildDescribedBy = (descriptionId?: string) =>
-  [descriptionId, skipNoticeId].filter(Boolean).join(' ') || undefined;
 
 const skipPack = (pack: (typeof visibleFollowupPacks.value)[number]) => {
   const ids = [...(pack.showPrecision ? pack.precision : []), ...(pack.showDeep ? pack.deep : [])].map((q) => q.id);

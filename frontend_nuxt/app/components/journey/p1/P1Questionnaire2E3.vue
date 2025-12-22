@@ -24,23 +24,12 @@
           :total-questions="questions.length"
           :theme-key="question.axis"
           :status="getStatus(getAnswer(question.id))"
-          v-slot="{ labelId, descriptionId }"
+          :helper-text="feelHint"
+          :model-value="getAnswer(question.id)"
+          :name="`p1-q2-${question.id}`"
+          :described-by="skipNoticeId"
+          @update:model-value="onUpdate(question.id, $event)"
         >
-          <p class="pp-journey-feel-hint">
-            Réponds au ressenti : il n’y a pas de bonne ou de mauvaise réponse.
-          </p>
-          <LikertScaleFiveSteps
-            :model-value="getAnswer(question.id)"
-            :name="`p1-q2-${question.id}`"
-            :aria-labelled-by="labelId"
-            :aria-described-by="buildDescribedBy(descriptionId)"
-            @update:model-value="onUpdate(question.id, $event)"
-          />
-          <QuestionSkipControl
-            :is-skipped="getAnswer(question.id) === null"
-            :described-by="skipNoticeId"
-            @skip="onUpdate(question.id, null)"
-          />
         </JourneyQuestionBlock>
       </div>
       <div class="flex flex-wrap gap-3">
@@ -67,8 +56,6 @@ import JourneyLayout from '~/components/journey/JourneyLayout.vue';
 import JourneyProgressBar from '~/components/journey/JourneyProgressBar.vue';
 import JourneyQuestionBlock from '~/components/journey/JourneyQuestionBlock.vue';
 import JourneyStepHeader from '~/components/journey/JourneyStepHeader.vue';
-import LikertScaleFiveSteps from '~/components/journey/questionnaire/LikertScaleFiveSteps.vue';
-import QuestionSkipControl from '~/components/journey/questionnaire/QuestionSkipControl.vue';
 import P1SovereigntyNotice from '~/components/journey/p1/P1SovereigntyNotice.vue';
 import type { VucaAnswer, LikertValue } from '~/composables/useJourneyDiagnostics';
 import { P1_SKIP_COPY } from '@/config/journeys/p1CopyV1_3';
@@ -98,6 +85,7 @@ const axisLabels: Record<P1Questionnaire2Item['axis'], string> = {
 
 const skipHelper = P1_SKIP_COPY.helperText;
 const skipNoticeId = 'p1-skip-notice-q2';
+const feelHint = 'Réponds au ressenti : il n’y a pas de bonne ou de mauvaise réponse.';
 
 const getAnswer = (questionId: string): LikertValue | null => {
   const found = props.answers.find((a) => a.questionId === questionId);
@@ -115,8 +103,6 @@ const onUpdate = (questionId: string, value: LikertValue | null) => {
   emitAnswer(questionId, value);
 };
 
-const buildDescribedBy = (descriptionId?: string) =>
-  [descriptionId, skipNoticeId].filter(Boolean).join(' ') || undefined;
 
 const getStatus = (value: LikertValue | null): 'answered' | 'skipped' | 'empty' => {
   if (typeof value === 'number') return 'answered';
