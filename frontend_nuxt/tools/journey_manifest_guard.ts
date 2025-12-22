@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { listManifests } from '../app/config/journeys/manifests/registry';
 import type { JourneyManifestV1, JourneyManifestModules, JourneyManifestPointers, JourneyManifestAdapters } from '../app/config/journeys/manifests/types';
 
@@ -29,6 +31,11 @@ const allowedStorageKeys = new Set(['schemaVersion', 'scoresKey', 'metaKey', 'tt
 
 const isNonEmptyString = (value: unknown): value is string => typeof value === 'string' && value.trim().length > 0;
 const isVersionedKey = (value: string) => /v\d/i.test(value);
+const skipDisablePatterns = [
+  /allowSkip\s*:\s*false/,
+  /:allowSkip\s*=\s*["']false["']/,
+  /allowSkip\s*=\s*["']false["']/
+];
 
 const assertValidRootKeys = (manifest: Record<string, unknown>) => {
   for (const key of Object.keys(manifest)) {
@@ -102,6 +109,31 @@ const scanForbiddenPatterns = (node: unknown) => {
   }
 };
 
+const collectFiles = (dir: string, files: string[] = []) => {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    if (entry.name.startsWith('.')) continue;
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      collectFiles(fullPath, files);
+    } else if (entry.isFile()) {
+      files.push(fullPath);
+    }
+  }
+  return files;
+};
+
+const assertSkipAlwaysOn = () => {
+  const appDir = path.join(process.cwd(), 'app');
+  const files = collectFiles(appDir);
+  for (const file of files) {
+    const content = fs.readFileSync(file, 'utf8');
+    if (skipDisablePatterns.some((re) => re.test(content))) {
+      throw new Error('Journey manifest guard failed.');
+    }
+  }
+};
+
 const assertManifestShape = (manifest: JourneyManifestV1) => {
   const raw = manifest as unknown as Record<string, unknown>;
   assertValidRootKeys(raw);
@@ -132,6 +164,7 @@ async function main() {
       slugs.add(manifest.slug);
       assertManifestShape(manifest);
     }
+    assertSkipAlwaysOn();
 
     console.log('Journey manifest guard OK');
   } catch {
