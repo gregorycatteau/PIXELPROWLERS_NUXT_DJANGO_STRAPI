@@ -82,6 +82,31 @@ export type BilanActionVM = {
   safetyNote?: string;
 };
 
+export type ResourcesActionsCtaType = 'contact' | 'resources' | 'route' | 'file' | 'export' | 'none';
+
+export type ResourcesActionsItemVM = {
+  id: string;
+  kind: 'resource' | 'action';
+  title: string;
+  description?: string;
+  tags?: string[];
+  horizon?: string;
+  effort?: number;
+  format?: string;
+  cta: {
+    type: ResourcesActionsCtaType;
+    label: string;
+    target?: string;
+  };
+  reason?: string;
+};
+
+export type ResourcesActionsModuleVM = {
+  recommended: ResourcesActionsItemVM[];
+  library: ResourcesActionsItemVM[];
+  tags: string[];
+};
+
 export type BilanSkipSignalAxisVM = {
   axisId: string;
   skippedCount: number;
@@ -149,6 +174,7 @@ export type GlobalBilanViewModel = {
       recommended: RecommendationItem[];
       library: RecommendationItem[];
     };
+    resourcesActions?: ResourcesActionsModuleVM;
     engagement?: {
       intro?: string;
       levels: Array<{

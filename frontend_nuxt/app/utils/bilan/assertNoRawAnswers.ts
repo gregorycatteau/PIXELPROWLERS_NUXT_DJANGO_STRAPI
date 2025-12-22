@@ -94,6 +94,7 @@ const allowedModulesKeys = new Set([
   'resources',
   'actions',
   'engagement',
+  'resourcesActions',
   'skipSignal'
 ]);
 const allowedMetaKeys = new Set(['isEmpty', 'partial', 'maturity', 'exportMode']);
@@ -155,6 +156,17 @@ function validateObjectKeys(obj: Record<string, unknown>, path: string) {
       break;
     case 'modules.engagement':
       enforceKeys(new Set(['intro', 'levels']));
+      break;
+    case 'modules.resourcesActions':
+      enforceKeys(new Set(['recommended', 'library', 'tags']));
+      break;
+    case 'modules.resourcesActions.recommended[]':
+    case 'modules.resourcesActions.library[]':
+      enforceKeys(new Set(['id', 'kind', 'title', 'description', 'tags', 'horizon', 'effort', 'format', 'cta', 'reason']));
+      break;
+    case 'modules.resourcesActions.recommended[].cta':
+    case 'modules.resourcesActions.library[].cta':
+      enforceKeys(new Set(['type', 'label', 'target']));
       break;
     case 'modules.engagement.levels[]':
       enforceKeys(new Set(['id', 'title', 'body', 'ctaLabel', 'ctaTarget', 'routePath', 'tags', 'isRecommended']));
