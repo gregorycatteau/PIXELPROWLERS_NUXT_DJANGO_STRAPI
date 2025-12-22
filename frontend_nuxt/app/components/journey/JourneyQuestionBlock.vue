@@ -53,7 +53,7 @@
           @update:model-value="(val) => emit('update:modelValue', val)"
         />
         <QuestionSkipControl
-          v-if="allowSkip"
+          v-if="!disabled"
           :is-skipped="modelValue === null"
           :disabled="disabled"
           :described-by="describedById"
@@ -71,7 +71,7 @@ import type { LikertValue } from '~/composables/useJourneyDiagnostics';
 import LikertScaleFiveSteps from '~/components/journey/questionnaire/LikertScaleFiveSteps.vue';
 import QuestionSkipControl from '~/components/journey/questionnaire/QuestionSkipControl.vue';
 
-const props = withDefaults(defineProps<{
+const props = defineProps<{
   title: string;
   description?: string;
   helperText?: string;
@@ -82,12 +82,9 @@ const props = withDefaults(defineProps<{
   status?: 'answered' | 'skipped' | 'empty';
   modelValue?: LikertValue | null;
   name?: string;
-  allowSkip?: boolean;
   disabled?: boolean;
   describedBy?: string;
-}>(), {
-  allowSkip: true
-});
+}>();
 
 const { title, description, questionId } = toRefs(props);
 const slots = useSlots();
@@ -99,7 +96,6 @@ const emit = defineEmits<{
 const labelId = computed(() => `${questionId?.value || title.value}-label`);
 const descriptionId = computed(() => `${questionId?.value || title.value}-desc`);
 const helperTextId = computed(() => `${questionId?.value || title.value}-helper`);
-const allowSkip = computed(() => props.allowSkip);
 const controlName = computed(() => props.name ?? `question-${questionId?.value || title.value}`);
 const describedById = computed(() => {
   const ids = [description.value ? descriptionId.value : null, props.helperText ? helperTextId.value : null, props.describedBy ?? null]
