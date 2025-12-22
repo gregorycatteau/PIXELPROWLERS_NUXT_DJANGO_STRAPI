@@ -51,3 +51,6 @@ jobs:
 
       - name: Journey no-wrapper guard
         run: npm run journey:nodup
+
+      - name: No-console guard
+        run: npm run no-console:guard
