@@ -7,6 +7,7 @@ import { p3Copy } from '~/config/journeys/p3CopyV1_0';
 import { p3PanoramaAxesMeta, P3_PANORAMA_AXIS_ORDER, type P3PanoramaAxisId } from '~/config/journeys/p3QuestionsV1_0';
 import { BILAN_SKIP_SIGNAL_COPY } from '@/config/bilan/bilanSkipSignalCopy';
 import { getEngagementPack } from '@/config/engagement/registry';
+import type { EngagementLevelId } from '@/config/engagement/types';
 
 export const p3BilanAdapter: JourneyBilanAdapter = {
   journeyId: 'p3',
@@ -83,7 +84,9 @@ export const p3BilanAdapter: JourneyBilanAdapter = {
     const engagementModule = engagementPack
       ? {
           intro: engagementPack.intro,
-          levels: Object.entries(engagementPack.levels).map(([id, level]) => ({
+          levels: (Object.entries(engagementPack.levels) as Array<
+            [EngagementLevelId, (typeof engagementPack.levels)[EngagementLevelId]]
+          >).map(([id, level]) => ({
             id,
             title: level.title,
             body: level.body,

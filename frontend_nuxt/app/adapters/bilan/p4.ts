@@ -7,6 +7,7 @@ import { p4Copy } from '~/config/journeys/p4CopyV1_0';
 import { p4PanoramaAxesMeta, P4_PANORAMA_AXIS_ORDER, type P4PanoramaAxisId } from '~/config/journeys/p4QuestionsV1_0';
 import { BILAN_SKIP_SIGNAL_COPY } from '@/config/bilan/bilanSkipSignalCopy';
 import { getEngagementPack } from '@/config/engagement/registry';
+import type { EngagementLevelId } from '@/config/engagement/types';
 
 export const p4BilanAdapter: JourneyBilanAdapter = {
   journeyId: 'p4',
@@ -83,7 +84,9 @@ export const p4BilanAdapter: JourneyBilanAdapter = {
     const engagementModule = engagementPack
       ? {
           intro: engagementPack.intro,
-          levels: Object.entries(engagementPack.levels).map(([id, level]) => ({
+          levels: (Object.entries(engagementPack.levels) as Array<
+            [EngagementLevelId, (typeof engagementPack.levels)[EngagementLevelId]]
+          >).map(([id, level]) => ({
             id,
             title: level.title,
             body: level.body,

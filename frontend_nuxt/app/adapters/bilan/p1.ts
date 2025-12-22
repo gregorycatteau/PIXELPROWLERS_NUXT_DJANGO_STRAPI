@@ -7,6 +7,7 @@ import { useP1ActionPlan } from '@/composables/useP1ActionPlan';
 import { useP1GlobalNarrative } from '@/composables/useP1GlobalNarrative';
 import { P1_BLOCK_IDS, p1BlockContent, p1BlockThemes, p1Copy } from '~/config/journeys/p1QuestionsConfig';
 import { getEngagementPack } from '@/config/engagement/registry';
+import type { EngagementLevelId } from '@/config/engagement/types';
 import {
   P1_ERASE_COPY,
   P1_GLOBAL_SKIP_SUMMARY,
@@ -347,7 +348,7 @@ export const p1BilanAdapter: JourneyBilanAdapter = {
       ? {
           intro: engagementPack.intro,
           levels: (Object.entries(engagementPack.levels) as Array<
-            [keyof typeof engagementPack.levels, (typeof engagementPack.levels)[keyof typeof engagementPack.levels]]
+            [EngagementLevelId, (typeof engagementPack.levels)[EngagementLevelId]]
           >).map(([id, level]) => ({
             id,
             title: level.title,
