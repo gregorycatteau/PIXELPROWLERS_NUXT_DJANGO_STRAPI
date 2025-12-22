@@ -32,9 +32,34 @@
       <p v-if="description" :id="descriptionId" class="JourneyQuestionDescription">
         {{ description }}
       </p>
+      <p v-if="helperText" :id="helperTextId" class="pp-journey-feel-hint">
+        {{ helperText }}
+      </p>
     </div>
     <div class="pp-journey-question-controls">
-      <slot :label-id="labelId" :description-id="descriptionId" />
+      <slot
+        v-if="$slots.default"
+        :label-id="labelId"
+        :description-id="descriptionId"
+        :helper-text-id="helperTextId"
+      />
+      <template v-else>
+        <LikertScaleFiveSteps
+          :name="controlName"
+          :model-value="modelValue ?? null"
+          :disabled="disabled"
+          :aria-labelled-by="labelId"
+          :aria-described-by="describedById"
+          @update:model-value="(val) => emit('update:modelValue', val)"
+        />
+        <QuestionSkipControl
+          v-if="allowSkip"
+          :is-skipped="modelValue === null"
+          :disabled="disabled"
+          :described-by="describedById"
+          @skip="() => emit('update:modelValue', null)"
+        />
+      </template>
     </div>
   </div>
 </section>
@@ -42,21 +67,43 @@
 
 <script setup lang="ts">
 import { computed, toRefs } from 'vue';
+import type { LikertValue } from '~/composables/useJourneyDiagnostics';
+import LikertScaleFiveSteps from '~/components/journey/questionnaire/LikertScaleFiveSteps.vue';
+import QuestionSkipControl from '~/components/journey/questionnaire/QuestionSkipControl.vue';
 
 const props = defineProps<{
   title: string;
   description?: string;
+  helperText?: string;
   questionId?: string;
   questionIndex?: number;
   totalQuestions?: number;
   themeKey?: string;
   status?: 'answered' | 'skipped' | 'empty';
+  modelValue?: LikertValue | null;
+  name?: string;
+  allowSkip?: boolean;
+  disabled?: boolean;
+  describedBy?: string;
 }>();
 
 const { title, description, questionId } = toRefs(props);
 
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: LikertValue | null): void;
+}>();
+
 const labelId = computed(() => `${questionId?.value || title.value}-label`);
 const descriptionId = computed(() => `${questionId?.value || title.value}-desc`);
+const helperTextId = computed(() => `${questionId?.value || title.value}-helper`);
+const allowSkip = computed(() => props.allowSkip ?? true);
+const controlName = computed(() => props.name ?? `question-${questionId?.value || title.value}`);
+const describedById = computed(() => {
+  const ids = [description.value ? descriptionId.value : null, props.helperText ? helperTextId.value : null, props.describedBy ?? null]
+    .filter(Boolean)
+    .join(' ');
+  return ids || undefined;
+});
 
 const themeLabelMap: Record<string, string> = {
   human: 'Humain / coopération',
