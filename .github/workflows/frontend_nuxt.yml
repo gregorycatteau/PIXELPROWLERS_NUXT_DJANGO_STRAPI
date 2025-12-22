@@ -28,16 +28,18 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Typecheck (Nuxt)
+        run: npm run typecheck
+
       # Debug TEMPORAIRE (à virer quand c'est green)
-      - name: Debug paths
+      - name: Debug Nuxt types
         run: |
           pwd
           ls -la
+          echo "---- .nuxt ----"
           ls -la .nuxt || true
-          node -e "console.log('cwd=', process.cwd())"
-
-      - name: Typecheck
-        run: npm run typecheck
+          echo "---- .nuxt/tsconfig.json (head) ----"
+          test -f .nuxt/tsconfig.json && cat .nuxt/tsconfig.json | head -n 40 || true
 
       - name: Bilan guard
         run: npm run bilan:guard
