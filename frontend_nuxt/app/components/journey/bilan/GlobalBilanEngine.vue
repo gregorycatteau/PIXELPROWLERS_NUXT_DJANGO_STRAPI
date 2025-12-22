@@ -483,6 +483,7 @@ import { BILAN_SKIP_SIGNAL_COPY } from '@/config/bilan/bilanSkipSignalCopy';
 import { getManifestById } from '@/config/journeys/manifests/registry';
 import { useUniversalRecommendationsState } from '@/composables/reco/useUniversalRecommendations';
 import { buildUniversalBilanMarkdown } from '@/utils/export/buildUniversalBilanMarkdown';
+import { safeFilePath } from '@/utils/cta/safeCta';
 
 const props = defineProps<{
   journeyId: string;
@@ -559,10 +560,19 @@ const resourcesActionsModule = computed(() => {
     )
   ).sort((a, b) => a.localeCompare(b));
 
+  const safeFileTarget = (filePath?: string) => {
+    if (!filePath) return null;
+    try {
+      return safeFilePath(filePath);
+    } catch {
+      return null;
+    }
+  };
+
   const mapItem = (item: (typeof recommended)[number]) => {
-    const hasFile = Boolean(item.filePath);
-    const cta = hasFile
-      ? { type: 'file' as const, label: 'Ouvrir', target: item.filePath }
+    const safeTarget = safeFileTarget(item.filePath);
+    const cta = safeTarget
+      ? { type: 'file' as const, label: 'Ouvrir', target: safeTarget }
       : { type: 'none' as const, label: 'Indisponible' };
     return {
       id: item.id,

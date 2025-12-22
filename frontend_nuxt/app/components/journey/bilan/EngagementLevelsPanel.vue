@@ -38,7 +38,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import type { CtaTarget, EngagementLevelId } from '~/config/engagement/types';
-import { isAllowlistedEngagementRoute } from '~/config/engagement/allowlist';
+import { safeRoutePath } from '~/utils/cta/safeCta';
 
 type EngagementLevel = {
   id: EngagementLevelId;
@@ -62,9 +62,21 @@ const emit = defineEmits<{
 
 const introParagraphs = computed(() => (props.intro ?? '').split(/\n\n+/).filter(Boolean));
 
+const CONTACT_ROUTE = safeRoutePath('/contact');
+const RESOURCES_ROUTE = safeRoutePath('/ressources');
+
+const safeRouteTarget = (target?: string | null) => {
+  if (!target) return null;
+  try {
+    return safeRoutePath(target);
+  } catch {
+    return null;
+  }
+};
+
 const isCtaAllowed = (level: EngagementLevel) => {
   if (level.ctaTarget === 'route') {
-    return Boolean(level.routePath && isAllowlistedEngagementRoute(level.routePath));
+    return Boolean(safeRouteTarget(level.routePath));
   }
   return true;
 };
@@ -77,9 +89,13 @@ const ctaComponent = (level: EngagementLevel) => {
 };
 
 const ctaProps = (level: EngagementLevel) => {
-  if (level.ctaTarget === 'contact') return { to: '/contact' };
-  if (level.ctaTarget === 'resources') return { to: '/ressources' };
-  if (level.ctaTarget === 'route' && isCtaAllowed(level)) return { to: level.routePath };
+  if (level.ctaTarget === 'contact') return { to: CONTACT_ROUTE };
+  if (level.ctaTarget === 'resources') return { to: RESOURCES_ROUTE };
+  if (level.ctaTarget === 'route' && isCtaAllowed(level)) {
+    const to = safeRouteTarget(level.routePath);
+    if (!to) return { type: 'button' };
+    return { to };
+  }
   return { type: 'button' };
 };
 

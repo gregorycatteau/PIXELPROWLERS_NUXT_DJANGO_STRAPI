@@ -118,8 +118,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import type { ResourcesActionsItemVM } from '~/types/bilan';
-import { isAllowlistedResourcePath } from '~/config/resources/allowlist';
-import { isAllowlistedEngagementRoute } from '~/config/engagement/allowlist';
+import { safeFilePath, safeRoutePath } from '~/utils/cta/safeCta';
 
 const props = defineProps<{
   recommended: ResourcesActionsItemVM[];
@@ -151,10 +150,31 @@ const filteredLibrary = computed(() => {
   });
 });
 
+const CONTACT_ROUTE = safeRoutePath('/contact');
+const RESOURCES_ROUTE = safeRoutePath('/ressources');
+
+const safeRouteTarget = (target?: string | null) => {
+  if (!target) return null;
+  try {
+    return safeRoutePath(target);
+  } catch {
+    return null;
+  }
+};
+
+const safeFileTarget = (target?: string | null) => {
+  if (!target) return null;
+  try {
+    return safeFilePath(target);
+  } catch {
+    return null;
+  }
+};
+
 const isCtaEnabled = (item: ResourcesActionsItemVM) => {
   if (item.cta.type === 'none') return false;
-  if (item.cta.type === 'file') return Boolean(item.cta.target && isAllowlistedResourcePath(item.cta.target));
-  if (item.cta.type === 'route') return Boolean(item.cta.target && isAllowlistedEngagementRoute(item.cta.target));
+  if (item.cta.type === 'file') return Boolean(safeFileTarget(item.cta.target));
+  if (item.cta.type === 'route') return Boolean(safeRouteTarget(item.cta.target));
   return true;
 };
 
@@ -167,11 +187,17 @@ const ctaComponent = (item: ResourcesActionsItemVM) => {
 };
 
 const ctaProps = (item: ResourcesActionsItemVM) => {
-  if (item.cta.type === 'contact') return { to: '/contact' };
-  if (item.cta.type === 'resources') return { to: '/ressources' };
-  if (item.cta.type === 'route' && isCtaEnabled(item)) return { to: item.cta.target };
+  if (item.cta.type === 'contact') return { to: CONTACT_ROUTE };
+  if (item.cta.type === 'resources') return { to: RESOURCES_ROUTE };
+  if (item.cta.type === 'route' && isCtaEnabled(item)) {
+    const to = safeRouteTarget(item.cta.target);
+    if (!to) return { type: 'button' };
+    return { to };
+  }
   if (item.cta.type === 'file' && isCtaEnabled(item)) {
-    return { href: item.cta.target, target: '_blank', rel: 'noopener' };
+    const href = safeFileTarget(item.cta.target);
+    if (!href) return { type: 'button' };
+    return { href, target: '_blank', rel: 'noopener' };
   }
   return { type: 'button' };
 };

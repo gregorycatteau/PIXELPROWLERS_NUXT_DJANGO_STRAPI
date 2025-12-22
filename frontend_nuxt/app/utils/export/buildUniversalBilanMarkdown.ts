@@ -1,8 +1,7 @@
 import type { JourneyManifestV1 } from '~/config/journeys/manifests/types';
 import type { GlobalBilanViewModel } from '~/types/bilan';
 import type { RecommendationResult } from '~/utils/reco/types';
-import { isAllowlistedResourcePath } from '~/config/resources/allowlist';
-import { isAllowlistedEngagementRoute } from '~/config/engagement/allowlist';
+import { safeFilePath, safeRoutePath } from '~/utils/cta/safeCta';
 
 export type UniversalMarkdownOptions = {
   manifest: JourneyManifestV1 | null;
@@ -15,12 +14,20 @@ const formatLine = (label: string, value: string | number) => `- ${label}: ${val
 
 const formatFilePath = (filePath?: string) => {
   if (!filePath) return '';
-  return isAllowlistedResourcePath(filePath) ? filePath : '';
+  try {
+    return safeFilePath(filePath);
+  } catch {
+    return '';
+  }
 };
 
 const formatRoutePath = (routePath?: string) => {
   if (!routePath) return '';
-  return isAllowlistedEngagementRoute(routePath) ? routePath : '';
+  try {
+    return safeRoutePath(routePath);
+  } catch {
+    return '';
+  }
 };
 
 const formatList = (items: string[]) => (items.length ? items.join('\n') : '- Aucun');
@@ -85,7 +92,7 @@ export const buildUniversalBilanMarkdown = (options: UniversalMarkdownOptions): 
   }
 
   const recommended = recommendations?.recommended ?? [];
-  lines.push('## Recommandations');
+  lines.push('## Recommandations (V2)');
   if (!recommended.length) {
     lines.push('- Aucune');
   } else {
