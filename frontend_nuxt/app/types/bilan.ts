@@ -1,3 +1,5 @@
+import type { RecommendationItem } from '~/utils/reco/types';
+
 export type BilanAxisVM = {
   id: string;
   label: string;
@@ -142,6 +144,10 @@ export type GlobalBilanViewModel = {
     };
     resources?: any[];
     actions?: BilanActionGroupVM;
+    recommendations?: {
+      recommended: RecommendationItem[];
+      library: RecommendationItem[];
+    };
     engagement?: {
       intro: string[];
       synthesis: string[];

@@ -10,6 +10,7 @@ export type JourneyManifestModules = {
   resources?: boolean;
   engagement?: boolean;
   export?: boolean;
+  recommendations?: boolean;
 };
 
 export type JourneyManifestPointers = {

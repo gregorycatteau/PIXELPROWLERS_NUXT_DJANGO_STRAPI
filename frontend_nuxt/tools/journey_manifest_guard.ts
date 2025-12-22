@@ -38,7 +38,8 @@ const allowedModulesKeys = new Set([
   'actions',
   'resources',
   'engagement',
-  'export'
+  'export',
+  'recommendations'
 ]);
 const allowedPointersKeys = new Set(['questions', 'copy', 'resources', 'actions']);
 const allowedAdaptersKeys = new Set(['globalBilanAdapterId']);

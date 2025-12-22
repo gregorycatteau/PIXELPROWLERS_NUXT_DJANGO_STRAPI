@@ -302,6 +302,53 @@
             </NuxtLink>
           </section>
 
+          <section
+            v-if="recommendationsEnabled && recommendedItems.length"
+            id="gb_recommendations"
+            class="pp-globalbilan-section space-y-3"
+          >
+            <div class="pp-globalbilan-section-header">
+              <h2 class="pp-globalbilan-section-title">Recommandations</h2>
+              <p class="text-sm text-[color:var(--color-text-muted)]">
+                Des pistes neutres, a adapter a ton contexte.
+              </p>
+            </div>
+
+            <div class="grid gap-3 md:grid-cols-2">
+              <article
+                v-for="item in recommendedItems"
+                :key="item.id"
+                class="pp-journey-card-soft space-y-2"
+              >
+                <p class="text-xs uppercase tracking-[0.14em] text-[color:var(--color-text-muted)]">
+                  {{ item.kind === 'resource' ? 'Ressource' : 'Action' }}
+                  <span v-if="item.horizon">· {{ item.horizon }}</span>
+                </p>
+                <p class="text-sm font-semibold">{{ item.title }}</p>
+                <p v-if="item.summary" class="text-sm text-[color:var(--color-text-muted)]">
+                  {{ item.summary }}
+                </p>
+                <p v-if="item.reason" class="text-xs text-[color:var(--color-text-muted)]">
+                  {{ item.reason }}
+                </p>
+                <p v-if="item.filePath" class="text-xs text-[color:var(--color-text-muted)]">
+                  Fichier: {{ item.filePath }}
+                </p>
+              </article>
+            </div>
+
+            <details v-if="libraryItems.length > recommendedItems.length" class="pp-journey-card-soft">
+              <summary class="text-sm text-[color:var(--color-text)] cursor-pointer">
+                Voir toute la bibliotheque ({{ libraryItems.length }})
+              </summary>
+              <div class="mt-3 space-y-2">
+                <div v-for="item in libraryItems" :key="item.id" class="text-xs text-[color:var(--color-text-muted)]">
+                  {{ item.title }} ({{ item.kind }})
+                </div>
+              </div>
+            </details>
+          </section>
+
           <section v-if="modules.actions" id="gb_actions" class="pp-globalbilan-section space-y-4">
             <div class="pp-globalbilan-section-header">
               <h2 class="pp-globalbilan-section-title">
@@ -556,6 +603,8 @@ import { P1_SYSTEMIC_FOLLOWUPS } from '@/config/journeys/p1SystemicFollowupsV1_3
 import type { GlobalBilanViewModel } from '@/types/bilan';
 import { BILAN_ENGINE_COPY } from '@/config/bilan/bilanEngineCopy';
 import { BILAN_SKIP_SIGNAL_COPY } from '@/config/bilan/bilanSkipSignalCopy';
+import { getManifestById } from '@/config/journeys/manifests/registry';
+import { useUniversalRecommendationsState } from '@/composables/reco/useUniversalRecommendations';
 
 const props = defineProps<{
   journeyId: string;
@@ -563,6 +612,7 @@ const props = defineProps<{
 }>();
 
 const adapter = getBilanAdapter(props.journeyId);
+const manifest = computed(() => getManifestById(props.journeyId));
 const emptyVm: GlobalBilanViewModel = {
   copy: { title: '', subtitle: '' },
   axisSummaryLabel: '',
@@ -617,6 +667,10 @@ const axisLabelById = computed<Record<string, string>>(() =>
 const skipAxisSignals = computed(() => (skipSignal.value?.byAxis ?? []).filter((axis) => axis.show && axis.totalCount > 0));
 
 const storage = useDiagnosticStorage({ journeyId: props.journeyId });
+const recommendationsState = useUniversalRecommendationsState(() => vm.value, () => manifest.value);
+const recommendationsEnabled = computed(() => Boolean(manifest.value?.modules?.recommendations));
+const recommendedItems = computed(() => recommendationsState.value.recommended ?? []);
+const libraryItems = computed(() => recommendationsState.value.library ?? []);
 const axisSummary = computed(() =>
   vm.value?.panorama.axes.map((axis) => ({ id: axis.id, label: axis.label, value: axis.score })) ?? []
 );

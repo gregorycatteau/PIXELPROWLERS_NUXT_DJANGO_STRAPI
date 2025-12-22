@@ -19,7 +19,8 @@ export const p1Manifest: JourneyManifestV1 = {
     actions: true,
     resources: true,
     engagement: true,
-    export: true
+    export: true,
+    recommendations: true
   },
   pointers: {
     questions: 'app/config/journeys/p1QuestionsV1_3',
