@@ -40,6 +40,7 @@ export type JourneyManifestStorage = {
 export type JourneyManifestV1 = {
   id: string;
   slug: string;
+  engine?: 'legacy' | 'universal';
   maturity: JourneyManifestMaturity;
   axes?: JourneyManifestAxis[];
   modules: JourneyManifestModules;

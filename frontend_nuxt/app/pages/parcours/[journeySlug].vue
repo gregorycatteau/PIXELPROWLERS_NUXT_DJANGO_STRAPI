@@ -48,6 +48,11 @@
       </main>
       <P1JourneyOrchestrator v-else :initial-step-id="initialStepId" />
     </template>
+    <JourneyEngineUniversal
+      v-else-if="manifest?.engine === 'universal'"
+      :manifest="manifest"
+      :initial-step-id="initialStepId"
+    />
     <P2JourneyOrchestrator v-else-if="journeyId === 'p2'" :initial-step-id="initialStepId" />
     <P3JourneyOrchestrator v-else-if="journeyId === 'p3'" :initial-step-id="initialStepId" />
     <div v-else class="pp-card p-6 space-y-3">
@@ -64,6 +69,7 @@
 import { computed } from 'vue';
 import ResourceList from '@/components/resources/ResourceList.vue';
 import P1JourneyOrchestrator from '~/components/journey/p1/P1JourneyOrchestrator.vue';
+import JourneyEngineUniversal from '~/components/journey/JourneyEngineUniversal.vue';
 import P2JourneyOrchestrator from '~/components/journey/p2/P2JourneyOrchestrator.vue';
 import P3JourneyOrchestrator from '~/components/journey/p3/P3JourneyOrchestrator.vue';
 import { P1_RESOURCES_V1_3, type P1Resource, type P1ResourceId } from '@/config/resources/p1ResourcesV1_3';

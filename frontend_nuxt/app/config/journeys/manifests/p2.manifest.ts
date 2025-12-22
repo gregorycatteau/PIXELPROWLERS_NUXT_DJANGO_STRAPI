@@ -3,6 +3,7 @@ import type { JourneyManifestV1 } from './types';
 export const p2Manifest: JourneyManifestV1 = {
   id: 'p2',
   slug: 'nos-outils-numeriques-nous-epuisent',
+  engine: 'universal',
   maturity: 'core',
   axes: [
     { axisId: 'overload', label: 'Charge numerique' },

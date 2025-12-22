@@ -13,7 +13,8 @@ const forbiddenPatterns = [
   /raw/i
 ];
 
-const allowedRootKeys = new Set(['id', 'slug', 'maturity', 'axes', 'modules', 'pointers', 'adapters', 'storage']);
+const allowedRootKeys = new Set(['id', 'slug', 'engine', 'maturity', 'axes', 'modules', 'pointers', 'adapters', 'storage']);
+const allowedEngineValues = new Set(['legacy', 'universal']);
 const allowedModulesKeys = new Set([
   'panorama',
   'blocks',
@@ -157,6 +158,9 @@ const assertManifestShape = (manifest: JourneyManifestV1) => {
   if (!isNonEmptyString(manifest.id)) throw new Error('Journey manifest guard failed.');
   if (!isNonEmptyString(manifest.slug)) throw new Error('Journey manifest guard failed.');
   if (!manifest.maturity) throw new Error('Journey manifest guard failed.');
+  if (manifest.engine && !allowedEngineValues.has(manifest.engine)) {
+    throw new Error('Journey manifest guard failed.');
+  }
 
   assertValidModules(manifest.modules);
   assertValidAxes(manifest.axes);
