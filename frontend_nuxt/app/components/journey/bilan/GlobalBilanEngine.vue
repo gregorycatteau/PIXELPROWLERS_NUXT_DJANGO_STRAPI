@@ -455,7 +455,9 @@
 
           <GlobalBilanExportPanel
             :copy="vm.copy"
-            :export-text="exportText"
+            :manifest="manifest"
+            :vm="vm"
+            :recommendations="recommendationsState"
             :focus-details="focusDetails"
             :erase-copy-label="P1_ERASE_COPY.buttonLabel"
             :copied="copied"
@@ -605,6 +607,7 @@ import { BILAN_ENGINE_COPY } from '@/config/bilan/bilanEngineCopy';
 import { BILAN_SKIP_SIGNAL_COPY } from '@/config/bilan/bilanSkipSignalCopy';
 import { getManifestById } from '@/config/journeys/manifests/registry';
 import { useUniversalRecommendationsState } from '@/composables/reco/useUniversalRecommendations';
+import { buildUniversalBilanMarkdown } from '@/utils/export/buildUniversalBilanMarkdown';
 
 const props = defineProps<{
   journeyId: string;
@@ -841,7 +844,13 @@ const hasHeavy = computed(() => (modules.value.issues?.list.length ?? 0) > 0);
 const hasWatch = computed(() => (modules.value.issues?.watchlist.length ?? 0) > 0);
 const hasSupports = computed(() => (modules.value.supports?.main.length ?? 0) > 0);
 
-const exportText = computed(() => vm.value?.exportPanel.exportText ?? '');
+const exportText = computed(() =>
+  buildUniversalBilanMarkdown({
+    manifest: manifest.value,
+    vm: vm.value,
+    recommendations: recommendationsState.value
+  })
+);
 const copied = ref(false);
 const clearMessage = ref('');
 const exportModeWarning = computed(() =>

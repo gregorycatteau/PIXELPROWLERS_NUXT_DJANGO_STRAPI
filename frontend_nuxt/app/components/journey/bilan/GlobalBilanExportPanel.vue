@@ -41,6 +41,12 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
+import type { JourneyManifestV1 } from '~/config/journeys/manifests/types';
+import type { GlobalBilanViewModel } from '~/types/bilan';
+import type { RecommendationResult } from '~/utils/reco/types';
+import { buildUniversalBilanMarkdown } from '~/utils/export/buildUniversalBilanMarkdown';
+
 type GlobalCopy = {
   exportHeading: string;
   exportNotice: string;
@@ -52,7 +58,9 @@ type GlobalCopy = {
 
 const props = defineProps<{
   copy: GlobalCopy;
-  exportText: string;
+  manifest: JourneyManifestV1 | null;
+  vm: GlobalBilanViewModel;
+  recommendations?: RecommendationResult | null;
   focusDetails: boolean;
   eraseCopyLabel: string;
   copied: boolean;
@@ -61,6 +69,14 @@ const props = defineProps<{
   missingInfo: string;
   clearMessage: string;
 }>();
+
+const exportText = computed(() =>
+  buildUniversalBilanMarkdown({
+    manifest: props.manifest,
+    vm: props.vm,
+    recommendations: props.recommendations ?? null
+  })
+);
 
 const emit = defineEmits<{
   (e: 'copy'): void;
