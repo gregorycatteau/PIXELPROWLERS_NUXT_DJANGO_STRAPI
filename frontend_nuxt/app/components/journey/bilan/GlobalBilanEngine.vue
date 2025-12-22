@@ -278,67 +278,13 @@
             </div>
           </BilanLandingPanel>
 
-          <section id="gb_ressources" class="pp-globalbilan-section space-y-3">
-            <div class="pp-globalbilan-section-header">
-              <h2 class="pp-globalbilan-section-title">
-                Ressources à télécharger
-              </h2>
-              <p class="text-sm text-[color:var(--color-text-muted)]">
-                Tu peux agir sans attendre : prends un kit et teste une première vérif.
-              </p>
-            </div>
-            <ResourceList :resources="resourcesForList" variant="compact" />
-            <NuxtLink to="/ressources?focus=p1" class="pp-journey-cta-secondary inline-flex w-auto text-xs">
-              Voir toutes les ressources
-            </NuxtLink>
-          </section>
-
-          <section
-            v-if="recommendationsEnabled && recommendedItems.length"
-            id="gb_recommendations"
-            class="pp-globalbilan-section space-y-3"
-          >
-            <div class="pp-globalbilan-section-header">
-              <h2 class="pp-globalbilan-section-title">Recommandations</h2>
-              <p class="text-sm text-[color:var(--color-text-muted)]">
-                Des pistes neutres, a adapter a ton contexte.
-              </p>
-            </div>
-
-            <div class="grid gap-3 md:grid-cols-2">
-              <article
-                v-for="item in recommendedItems"
-                :key="item.id"
-                class="pp-journey-card-soft space-y-2"
-              >
-                <p class="text-xs uppercase tracking-[0.14em] text-[color:var(--color-text-muted)]">
-                  {{ item.kind === 'resource' ? 'Ressource' : 'Action' }}
-                  <span v-if="item.horizon">· {{ item.horizon }}</span>
-                </p>
-                <p class="text-sm font-semibold">{{ item.title }}</p>
-                <p v-if="item.summary" class="text-sm text-[color:var(--color-text-muted)]">
-                  {{ item.summary }}
-                </p>
-                <p v-if="item.reason" class="text-xs text-[color:var(--color-text-muted)]">
-                  {{ item.reason }}
-                </p>
-                <p v-if="item.filePath" class="text-xs text-[color:var(--color-text-muted)]">
-                  Fichier: {{ item.filePath }}
-                </p>
-              </article>
-            </div>
-
-            <details v-if="libraryItems.length > recommendedItems.length" class="pp-journey-card-soft">
-              <summary class="text-sm text-[color:var(--color-text)] cursor-pointer">
-                Voir toute la bibliotheque ({{ libraryItems.length }})
-              </summary>
-              <div class="mt-3 space-y-2">
-                <div v-for="item in libraryItems" :key="item.id" class="text-xs text-[color:var(--color-text-muted)]">
-                  {{ item.title }} ({{ item.kind }})
-                </div>
-              </div>
-            </details>
-          </section>
+          <ResourcesActionsPanel
+            v-if="resourcesActionsModule"
+            :recommended="resourcesActionsModule.recommended"
+            :library="resourcesActionsModule.library"
+            :tags="resourcesActionsModule.tags"
+            @go-export="scrollToSection('gb_export')"
+          />
 
           <section v-if="modules.actions" id="gb_actions" class="pp-globalbilan-section space-y-4">
             <div class="pp-globalbilan-section-header">
@@ -523,7 +469,7 @@ import BilanHypothesesSection from '@/components/journey/bilan/BilanHypothesesSe
 import BilanLandingPanel from '@/components/journey/bilan/BilanLandingPanel.vue';
 import EngagementLevelsPanel from '@/components/journey/bilan/EngagementLevelsPanel.vue';
 import { useBilanHypothesesState } from '@/composables/bilan/useBilanHypothesesState';
-import ResourceList from '@/components/resources/ResourceList.vue';
+import ResourcesActionsPanel from '@/components/journey/bilan/ResourcesActionsPanel.vue';
 import { P1_EXPORT_COPY } from '@/config/journeys/p1ExportCopyV1_3';
 import { P1_ERASE_COPY } from '@/config/journeys/p1CopyV1_3';
 import { useDiagnosticStorage } from '~/composables/useDiagnosticStorage';
@@ -586,7 +532,7 @@ const engineState = computed<'missing_adapter' | 'empty_vm' | 'partial_vm' | 're
   return 'ready';
 });
 const modules = computed(() => vm.value.modules ?? {});
-const resourcesForList = computed(() => (modules.value.resources ?? []) as any[]);
+const resourcesActionsEnabled = computed(() => Boolean(manifest.value?.modules?.recommendations));
 const maturityLabel = computed(() => vm.value.meta?.maturity && vm.value.meta.maturity !== 'prod' ? vm.value.meta.maturity : null);
 const skipSignal = computed(() => modules.value.skipSignal);
 const skipSignalCopy = computed(() => skipSignal.value?.copy ?? BILAN_SKIP_SIGNAL_COPY);
@@ -603,9 +549,40 @@ const skipAxisSignals = computed(() => (skipSignal.value?.byAxis ?? []).filter((
 
 const storage = useDiagnosticStorage({ journeyId: props.journeyId });
 const recommendationsState = useUniversalRecommendationsState(() => vm.value, () => manifest.value);
-const recommendationsEnabled = computed(() => Boolean(manifest.value?.modules?.recommendations));
-const recommendedItems = computed(() => recommendationsState.value.recommended ?? []);
-const libraryItems = computed(() => recommendationsState.value.library ?? []);
+const resourcesActionsModule = computed(() => {
+  if (!resourcesActionsEnabled.value) return null;
+  const recommended = recommendationsState.value.recommended ?? [];
+  const library = recommendationsState.value.library ?? [];
+  const tags = Array.from(
+    new Set(
+      library.flatMap((item) => (Array.isArray(item.tags) ? item.tags : []))
+    )
+  ).sort((a, b) => a.localeCompare(b));
+
+  const mapItem = (item: (typeof recommended)[number]) => {
+    const hasFile = Boolean(item.filePath);
+    const cta = hasFile
+      ? { type: 'file' as const, label: 'Ouvrir', target: item.filePath }
+      : { type: 'none' as const, label: 'Indisponible' };
+    return {
+      id: item.id,
+      kind: item.kind,
+      title: item.title,
+      description: item.summary,
+      tags: item.tags,
+      horizon: item.horizon,
+      format: item.format,
+      cta,
+      reason: item.reason
+    };
+  };
+
+  return {
+    recommended: recommended.map(mapItem),
+    library: library.map(mapItem),
+    tags
+  };
+});
 const axisSummary = computed(() =>
   vm.value?.panorama.axes.map((axis) => ({ id: axis.id, label: axis.label, value: axis.score })) ?? []
 );

@@ -14,7 +14,8 @@ export const p3Manifest: JourneyManifestV1 = {
     panorama: true,
     blocks: true,
     export: true,
-    engagement: true
+    engagement: true,
+    recommendations: true
   },
   pointers: {
     questions: 'app/config/journeys/p3QuestionsV1_0',
