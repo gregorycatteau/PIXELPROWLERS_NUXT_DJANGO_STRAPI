@@ -9,6 +9,10 @@
 Industrialiser une UX questionnaire universelle, reutilisable et safe privacy, avant la production des parcours P2/P3.
 
 ## 1) Patterns UI obligatoires
+### 1.0 Source unique de rendu
+- Aucun layout bespoke par parcours.
+- JourneyQuestionBlock est l'unique renderer questionnaire (titre + aide + likert + skip).
+
 ### 1.1 Echelle 1-5 en segmented control
 - 5 segments alignes (pas de boutons empiles).
 - Valeurs numeriques visibles (1..5).
