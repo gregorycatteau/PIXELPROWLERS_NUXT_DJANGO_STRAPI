@@ -33,6 +33,19 @@
                     {{ paragraph }}
                   </p>
                 </div>
+                <div v-if="hasGlobalSkipSignal" class="pp-journey-card-soft space-y-2">
+                  <p class="text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+                    {{ skipSignalCopy.globalNotice }}
+                  </p>
+                  <p class="text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+                    {{ skipSignalCopy.optionalDetail }}
+                  </p>
+                  <ul v-if="axisSkipSignals.length" class="space-y-1 text-xs text-[color:var(--color-text-muted)]">
+                    <li v-for="axis in axisSkipSignals" :key="axis.axisId">
+                      Axe {{ axis.label }} : {{ axis.skippedCount }} / {{ axis.totalCount }} questions laissees de cote.
+                    </li>
+                  </ul>
+                </div>
               </div>
               <div class="pp-bilan-axis-summary-row">
                 <button
@@ -268,6 +281,7 @@ import {
 import { p1EngagementCopy } from '~/config/journeys/p1EngagementCopy';
 import { getP1PanoramaScoresFromStored } from '~/utils/p1PanoramaStorage';
 import { hasP1GlobalBilanAccess } from '~/utils/p1GlobalBilanAccess';
+import { BILAN_SKIP_SIGNAL_COPY } from '~/config/bilan/bilanSkipSignalCopy';
 
 const props = defineProps<{
   goToStep: (stepId: string) => void;
@@ -384,6 +398,7 @@ const interpretationCards = computed(() =>
 const panoramaIntroParagraphs = computed(() => p1EngagementCopy.panoramaE2.intro.split('\n\n').filter(Boolean));
 const n1BlockParagraphs = computed(() => p1EngagementCopy.panoramaE2.n1Block.split('\n\n').filter(Boolean));
 const n2BlockParagraphs = computed(() => p1EngagementCopy.panoramaE2.n2Block.split('\n\n').filter(Boolean));
+const skipSignalCopy = BILAN_SKIP_SIGNAL_COPY;
 
 const copy = computed(() => ({
   ...p1Copy.hub,
@@ -442,6 +457,30 @@ const axes = computed(() =>
     };
   })
 );
+
+const hasGlobalSkipSignal = computed(() => (panoramaScores.value?.skippedCount ?? 0) > 0);
+const axisSkipSignals = computed(() => {
+  const byAxis =
+    (panoramaScores.value?.byAxis ??
+      {}) as Record<P1PanoramaAxisId, { answeredCount: number; skippedCount: number; missingCount: number; totalCount: number }>;
+  return axisOrder
+    .map((axisId) => {
+      const stats = byAxis[axisId];
+      const skippedCount = stats?.skippedCount ?? 0;
+      const totalCount =
+        stats?.totalCount ?? (stats?.answeredCount ?? 0) + (stats?.skippedCount ?? 0) + (stats?.missingCount ?? 0);
+      const ratio = totalCount > 0 ? skippedCount / totalCount : 0;
+      const show = skippedCount >= 2 || ratio >= 0.2;
+      return {
+        axisId,
+        label: axesMeta[axisId].label,
+        skippedCount,
+        totalCount,
+        show
+      };
+    })
+    .filter((axis) => axis.show && axis.totalCount > 0);
+});
 
 const axisSectionRefs = ref<Record<string, HTMLElement | null>>({});
 const activeAxisId = ref<string | null>(null);
