@@ -10,7 +10,6 @@ export type P1SystemicFollowupQuestion = {
   polarity: 'positive' | 'negative';
   weight: 1 | 2 | 3;
   critical: boolean;
-  allowSkip: boolean;
   uiHint: 'neutral' | 'sensitive';
   order: number;
 };
@@ -38,7 +37,6 @@ export const P1_SYSTEMIC_FOLLOWUPS: P1SystemicFollowupPack[] = [
         polarity: 'positive',
         weight: 2,
         critical: true,
-        allowSkip: true,
         uiHint: 'neutral'
       },
       {
@@ -49,7 +47,6 @@ export const P1_SYSTEMIC_FOLLOWUPS: P1SystemicFollowupPack[] = [
         polarity: 'positive',
         weight: 2,
         critical: true,
-        allowSkip: true,
         uiHint: 'sensitive'
       }
     ]
@@ -66,7 +63,6 @@ export const P1_SYSTEMIC_FOLLOWUPS: P1SystemicFollowupPack[] = [
         polarity: 'positive',
         weight: 2,
         critical: true,
-        allowSkip: true,
         uiHint: 'neutral'
       },
       {
@@ -77,7 +73,6 @@ export const P1_SYSTEMIC_FOLLOWUPS: P1SystemicFollowupPack[] = [
         polarity: 'positive',
         weight: 2,
         critical: true,
-        allowSkip: true,
         uiHint: 'neutral'
       }
     ]
@@ -94,7 +89,6 @@ export const P1_SYSTEMIC_FOLLOWUPS: P1SystemicFollowupPack[] = [
         polarity: 'positive',
         weight: 2,
         critical: true,
-        allowSkip: true,
         uiHint: 'neutral'
       },
       {
@@ -104,7 +98,6 @@ export const P1_SYSTEMIC_FOLLOWUPS: P1SystemicFollowupPack[] = [
         polarity: 'positive',
         weight: 2,
         critical: true,
-        allowSkip: true,
         uiHint: 'neutral'
       }
     ]
@@ -121,7 +114,6 @@ export const P1_SYSTEMIC_FOLLOWUPS: P1SystemicFollowupPack[] = [
         polarity: 'positive',
         weight: 2,
         critical: true,
-        allowSkip: true,
         uiHint: 'neutral'
       },
       {
@@ -132,7 +124,6 @@ export const P1_SYSTEMIC_FOLLOWUPS: P1SystemicFollowupPack[] = [
         polarity: 'positive',
         weight: 2,
         critical: true,
-        allowSkip: true,
         uiHint: 'neutral'
       }
     ]
@@ -149,7 +140,6 @@ export const P1_SYSTEMIC_FOLLOWUPS: P1SystemicFollowupPack[] = [
         polarity: 'positive',
         weight: 2,
         critical: false,
-        allowSkip: true,
         uiHint: 'neutral'
       },
       {
@@ -159,7 +149,6 @@ export const P1_SYSTEMIC_FOLLOWUPS: P1SystemicFollowupPack[] = [
         polarity: 'positive',
         weight: 2,
         critical: true,
-        allowSkip: true,
         uiHint: 'sensitive'
       }
     ]
@@ -176,7 +165,6 @@ export const P1_SYSTEMIC_FOLLOWUPS: P1SystemicFollowupPack[] = [
         polarity: 'positive',
         weight: 2,
         critical: true,
-        allowSkip: true,
         uiHint: 'neutral'
       },
       {
@@ -186,7 +174,6 @@ export const P1_SYSTEMIC_FOLLOWUPS: P1SystemicFollowupPack[] = [
         polarity: 'positive',
         weight: 2,
         critical: true,
-        allowSkip: true,
         uiHint: 'neutral'
       }
     ]

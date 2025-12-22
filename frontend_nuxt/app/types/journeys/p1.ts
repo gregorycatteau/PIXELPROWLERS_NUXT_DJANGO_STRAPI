@@ -23,7 +23,6 @@ export type P1Question = {
   weight: 1 | 2 | 3;
   critical: boolean;
 
-  allowSkip: boolean;
   uiHint: 'slider' | 'radio' | 'other' | 'sensitive' | 'neutral';
 
   order: number;

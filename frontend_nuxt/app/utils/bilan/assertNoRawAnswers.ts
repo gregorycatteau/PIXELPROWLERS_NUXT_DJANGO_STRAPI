@@ -93,7 +93,8 @@ const allowedModulesKeys = new Set([
   'landing',
   'resources',
   'actions',
-  'engagement'
+  'engagement',
+  'skipSignal'
 ]);
 const allowedMetaKeys = new Set(['isEmpty', 'partial', 'maturity', 'exportMode']);
 
@@ -154,6 +155,12 @@ function validateObjectKeys(obj: Record<string, unknown>, path: string) {
       break;
     case 'modules.engagement':
       enforceKeys(new Set(['intro', 'synthesis', 'levelN1', 'levelN2', 'levelN3', 'levelN4']));
+      break;
+    case 'modules.skipSignal':
+      enforceKeys(new Set(['globalSkippedCount', 'byAxis', 'copy']));
+      break;
+    case 'modules.skipSignal.byAxis[]':
+      enforceKeys(new Set(['axisId', 'skippedCount', 'totalCount', 'show']));
       break;
     case 'exportPanel':
       enforceKeys(allowedExportPanelKeys);

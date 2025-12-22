@@ -34,7 +34,8 @@ const isVersionedKey = (value: string) => /v\d/i.test(value);
 const skipDisablePatterns = [
   /allowSkip\s*:\s*false/,
   /:allowSkip\s*=\s*["']false["']/,
-  /allowSkip\s*=\s*["']false["']/
+  /allowSkip\s*=\s*["']false["']/,
+  /allowSkip/
 ];
 
 const assertValidRootKeys = (manifest: Record<string, unknown>) => {

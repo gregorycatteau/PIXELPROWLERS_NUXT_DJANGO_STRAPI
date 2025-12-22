@@ -45,6 +45,23 @@
           </div>
         </section>
 
+        <section v-if="skipSignal && skipSignal.globalSkippedCount > 0" class="pp-globalbilan-section">
+          <div class="pp-journey-card-soft space-y-2">
+            <p class="text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+              {{ skipSignalCopy.globalNotice }}
+            </p>
+            <p class="text-sm text-[color:var(--color-text-muted)] leading-relaxed">
+              {{ skipSignalCopy.optionalDetail }}
+            </p>
+            <ul v-if="skipAxisSignals.length" class="space-y-1 text-xs text-[color:var(--color-text-muted)]">
+              <li v-for="axis in skipAxisSignals" :key="axis.axisId">
+                Axe {{ axisLabelById[axis.axisId] || axis.axisId }} : {{ axis.skippedCount }} / {{ axis.totalCount }}
+                questions laissees de cote.
+              </li>
+            </ul>
+          </div>
+        </section>
+
         <div class="pp-globalbilan-layout lg:grid lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-10 lg:items-start">
           <div class="space-y-12 min-w-0">
             <section id="gb_reperes" class="pp-globalbilan-section">
@@ -538,6 +555,7 @@ import { useP1SystemicLanding } from '@/composables/useP1SystemicLanding';
 import { P1_SYSTEMIC_FOLLOWUPS } from '@/config/journeys/p1SystemicFollowupsV1_3';
 import type { GlobalBilanViewModel } from '@/types/bilan';
 import { BILAN_ENGINE_COPY } from '@/config/bilan/bilanEngineCopy';
+import { BILAN_SKIP_SIGNAL_COPY } from '@/config/bilan/bilanSkipSignalCopy';
 
 const props = defineProps<{
   journeyId: string;
@@ -588,6 +606,15 @@ const engineState = computed<'missing_adapter' | 'empty_vm' | 'partial_vm' | 're
 const modules = computed(() => vm.value.modules ?? {});
 const resourcesForList = computed(() => (modules.value.resources ?? []) as any[]);
 const maturityLabel = computed(() => vm.value.meta?.maturity && vm.value.meta.maturity !== 'prod' ? vm.value.meta.maturity : null);
+const skipSignal = computed(() => modules.value.skipSignal);
+const skipSignalCopy = computed(() => skipSignal.value?.copy ?? BILAN_SKIP_SIGNAL_COPY);
+const axisLabelById = computed<Record<string, string>>(() =>
+  (vm.value?.panorama.axes ?? []).reduce<Record<string, string>>((acc, axis) => {
+    acc[axis.id] = axis.label;
+    return acc;
+  }, {})
+);
+const skipAxisSignals = computed(() => (skipSignal.value?.byAxis ?? []).filter((axis) => axis.show && axis.totalCount > 0));
 
 const storage = useDiagnosticStorage({ journeyId: props.journeyId });
 const axisSummary = computed(() =>

@@ -79,6 +79,22 @@ export type BilanActionVM = {
   safetyNote?: string;
 };
 
+export type BilanSkipSignalAxisVM = {
+  axisId: string;
+  skippedCount: number;
+  totalCount: number;
+  show: boolean;
+};
+
+export type BilanSkipSignalVM = {
+  globalSkippedCount: number;
+  byAxis: BilanSkipSignalAxisVM[];
+  copy?: {
+    globalNotice: string;
+    optionalDetail: string;
+  };
+};
+
 export type GlobalBilanViewModel = {
   copy: any;
   axisSummaryLabel: string;
@@ -134,6 +150,7 @@ export type GlobalBilanViewModel = {
       levelN3: string[];
       levelN4: string[];
     };
+    skipSignal?: BilanSkipSignalVM;
   };
   exportPanel: {
     exportText: string;

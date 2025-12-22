@@ -26,7 +26,6 @@ const baseQuestion = (id: string, subAxis: string, order: number): P1Question =>
   scale: 'likert_1_5',
   weight: 1,
   critical: false,
-  allowSkip: true,
   uiHint: 'sensitive',
   order,
   stepId: 'E3',

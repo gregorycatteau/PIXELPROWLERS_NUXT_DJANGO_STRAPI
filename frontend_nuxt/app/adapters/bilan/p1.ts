@@ -20,6 +20,7 @@ import { P1_SYSTEMIC_FOLLOWUPS } from '@/config/journeys/p1SystemicFollowupsV1_3
 import { P1_EXPORT_COPY } from '@/config/journeys/p1ExportCopyV1_3';
 import { useP1Resources } from '@/composables/useP1Resources';
 import { P1_SYSTEM_SCALPELS_COPY } from '@/config/journeys/p1SystemScalpelsCopyV1_3';
+import { BILAN_SKIP_SIGNAL_COPY } from '@/config/bilan/bilanSkipSignalCopy';
 import type { JourneyBilanAdapter } from './types';
 import type { GlobalBilanViewModel, BilanIssueBullet } from '@/types/bilan';
 import { assertNoRawAnswers } from '@/utils/bilan/assertNoRawAnswers';
@@ -318,6 +319,29 @@ export const p1BilanAdapter: JourneyBilanAdapter = {
     const panoramaAnsweredLabel = computed(
       () => `R ${panoramaAnsweredCount.value} / NR ${panoramaSkippedCount.value}`
     );
+    const skipSignal = computed(() => {
+      const byAxis =
+        (scores.value.panorama?.byAxis ??
+          {}) as Record<AxisId, { answeredCount: number; skippedCount: number; missingCount: number; totalCount: number }>;
+      const axisSignals = axisOrder.map((axisId) => {
+        const stats = byAxis[axisId];
+        const skippedCount = stats?.skippedCount ?? 0;
+        const totalCount =
+          stats?.totalCount ?? (stats?.answeredCount ?? 0) + (stats?.skippedCount ?? 0) + (stats?.missingCount ?? 0);
+        const ratio = totalCount > 0 ? skippedCount / totalCount : 0;
+        return {
+          axisId,
+          skippedCount,
+          totalCount,
+          show: skippedCount >= 2 || ratio >= 0.2
+        };
+      });
+      return {
+        globalSkippedCount: panoramaSkippedCount.value,
+        byAxis: axisSignals,
+        copy: BILAN_SKIP_SIGNAL_COPY
+      };
+    });
     const alerts = computed(() =>
       mainIssues.value.filter((issue) => issue.band === 'very_high' || issue.band === 'high')
     );
@@ -509,7 +533,8 @@ export const p1BilanAdapter: JourneyBilanAdapter = {
           levelN2: splitParagraphs(p1EngagementCopy.globalBilan.levelN2),
           levelN3: splitParagraphs(p1EngagementCopy.globalBilan.levelN3),
           levelN4: splitParagraphs(p1EngagementCopy.globalBilan.levelN4)
-        }
+        },
+        skipSignal: skipSignal.value
       },
       exportPanel: {
         exportText: exportText.value,
