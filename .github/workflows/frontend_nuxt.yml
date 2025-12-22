@@ -25,27 +25,23 @@ jobs:
           cache: "npm"
           cache-dependency-path: frontend_nuxt/package-lock.json
 
+      - name: CI Canary
+        run: |
+          echo "CI_CANARY=frontend_nuxt_ci_v2_20251222"
+          git rev-parse HEAD
+
       - name: Install dependencies
         run: npm ci
 
-      # Debug TEMPORAIRE (à virer quand c'est green)
-      - name: Debug Nuxt types
+      - name: CI Fingerprint
         run: |
-          pwd
+          node -e "const p=require('./package.json'); console.log('typecheck=', p.scripts.typecheck); console.log('bilan:guard=', p.scripts['bilan:guard']);"
           ls -la
-          echo "---- .nuxt ----"
           ls -la .nuxt || true
-          echo "---- package.json scripts ----"
-          cat package.json | node -e "const j=JSON.parse(require('fs').readFileSync(0,'utf8')); console.log('typecheck=', j.scripts?.typecheck); console.log('bilan:guard=', j.scripts?.['bilan:guard']);"
-          echo "---- .nuxt/tsconfig.json (head) ----"
-          test -f .nuxt/tsconfig.json && head -n 40 .nuxt/tsconfig.json || true
           node -e "console.log('cwd', process.cwd())"
 
-      - name: Prepare Nuxt types
-        run: npx nuxi prepare
-
       - name: Typecheck (Nuxt)
-        run: npx vue-tsc --noEmit -p .nuxt/tsconfig.json
+        run: npm run typecheck
 
       - name: Bilan guard
-        run: npx tsx --tsconfig .nuxt/tsconfig.json tools/bilan_adapter_guard.ts
+        run: npm run bilan:guard
