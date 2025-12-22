@@ -4,12 +4,20 @@ export const p3Manifest: JourneyManifestV1 = {
   id: 'p3',
   slug: 'je-suis-en-transition',
   maturity: 'core',
+  axes: [
+    { axisId: 'clarity', label: 'Clarte' },
+    { axisId: 'alignment', label: 'Alignement' },
+    { axisId: 'momentum', label: 'Mouvement' }
+  ],
   modules: {
     panorama: true,
     blocks: true,
     export: true
   },
-  pointers: {},
+  pointers: {
+    questions: 'app/config/journeys/p3QuestionsV1_0',
+    copy: 'app/config/journeys/p3CopyV1_0'
+  },
   adapters: {
     globalBilanAdapterId: 'p3'
   },
