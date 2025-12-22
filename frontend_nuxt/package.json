@@ -11,7 +11,8 @@
     "bilan:guard": "npx nuxi prepare && tsx --tsconfig .nuxt/tsconfig.json tools/bilan_adapter_guard.ts",
     "journey:guard": "tsx tools/journey_manifest_guard.ts",
     "journey:nodup": "tsx tools/journey_no_wrappers_guard.ts",
-    "no-console:guard": "tsx tools/no_console_guard.ts"
+    "no-console:guard": "tsx tools/no_console_guard.ts",
+    "engagement:guard": "tsx tools/engagement_guard.ts"
   },
   "keywords": [
     "nuxt",

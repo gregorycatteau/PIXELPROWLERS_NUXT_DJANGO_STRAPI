@@ -54,3 +54,6 @@ jobs:
 
       - name: No-console guard
         run: npm run no-console:guard
+
+      - name: Engagement guard
+        run: npm run engagement:guard
