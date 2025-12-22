@@ -63,3 +63,9 @@ jobs:
 
       - name: Data-only strings guard
         run: npm run data-only:guard
+
+      - name: Markdown safe guard
+        run: npm run markdown-safe:guard
+
+      - name: Recommendations guard
+        run: npm run reco:guard
