@@ -1,0 +1,9 @@
+# QA Index
+
+- `docs/50-qa/CI_CHECKLIST.md`
+- `docs/50-qa/PX_JOURNEY_ENGINE_SMOKE_TESTS.md`
+- `docs/50-qa/P1_GLOBAL_BILAN_SMOKE_TESTS.md`
+- `docs/50-qa/P2_GLOBAL_BILAN_SMOKE_TESTS.md`
+- `docs/50-qa/P3_GLOBAL_BILAN_SMOKE_TESTS.md`
+- `docs/50-qa/P4_GLOBAL_BILAN_SMOKE_TESTS.md`
+- `docs/50-qa/PX_P1_JOURNEY_TESTS.md`
