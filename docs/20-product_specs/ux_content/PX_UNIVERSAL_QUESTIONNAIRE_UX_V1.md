@@ -29,7 +29,7 @@ Labels obligatoires:
 ### 1.2 Skip intentionnel visible
 - Bouton explicite: "Ignorer cette question".
 - Etat visuel indique (skipped) si selection null.
-- Toujours present (sauf choix produit explicite).
+- Toujours present (skip always on, pas de desactivation par prop).
 
 ### 1.3 Progression
 - Afficher la progression par question (ex: "Question 3 / 12") ou barre existante.

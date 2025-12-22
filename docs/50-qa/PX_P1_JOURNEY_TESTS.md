@@ -7,6 +7,11 @@ Scénarios à exécuter à chaque incrément du parcours P1. Objectif : vérifie
 - Enchaîner E0 → E1 → E2 → E3 → E4 → E5 → E6.
 - Vérifier que le carrefour est atteignable et que le paramètre `step` suit la navigation.
 
+## Smoke test skip universel
+- E1 Panorama: verifier que "Ignorer cette question" est visible sur une question, puis choisir 1-5 pour annuler le skip.
+- B1 Questionnaire: ignorer une question puis repondre, la selection doit remplacer le skip.
+- B3 ou B4: ignorer puis repondre, navigation et progression intactes.
+
 ## Abandon E1 puis reprise
 - Démarrer un questionnaire en E1, quitter la page (reload).
 - Au retour, vérifier l’affichage du bandeau de reprise (reprendre ou recommencer).
