@@ -34,7 +34,7 @@
       </p>
     </div>
     <div class="pp-journey-question-controls">
-      <slot />
+      <slot :label-id="labelId" :description-id="descriptionId" />
     </div>
   </div>
 </section>
