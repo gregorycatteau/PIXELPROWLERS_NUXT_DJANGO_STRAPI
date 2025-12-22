@@ -3,6 +3,7 @@ import type { JourneyManifestV1 } from './types';
 export const p3Manifest: JourneyManifestV1 = {
   id: 'p3',
   slug: 'je-suis-en-transition',
+  engine: 'universal',
   maturity: 'core',
   axes: [
     { axisId: 'clarity', label: 'Clarte' },
