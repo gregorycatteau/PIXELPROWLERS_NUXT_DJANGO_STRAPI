@@ -1,3 +1,5 @@
+import { normalizeForSecurityScan } from './normalizeForSecurityScan';
+
 const CONTROL_CHARS = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/;
 const SCHEME_PATTERNS = [
   /\bjavascript\s*:/i,
@@ -19,7 +21,8 @@ export const assertNoControlChars = (value: string) => {
 };
 
 export const assertNoSchemes = (value: string) => {
-  const lower = value.toLowerCase();
+  const normalized = normalizeForSecurityScan(value);
+  const lower = normalized.toLowerCase();
   if (lower.includes('//')) {
     throw new Error('Unsafe data-only string.');
   }
@@ -29,13 +32,15 @@ export const assertNoSchemes = (value: string) => {
 };
 
 export const assertNoHtmlLike = (value: string) => {
-  if (value.includes('<')) {
+  const normalized = normalizeForSecurityScan(value);
+  if (normalized.includes('<')) {
     throw new Error('Unsafe data-only string.');
   }
 };
 
 export const assertSafeDataOnlyString = (value: string) => {
-  assertNoControlChars(value);
+  const normalized = normalizeForSecurityScan(value);
+  assertNoControlChars(normalized);
   assertNoSchemes(value);
   assertNoHtmlLike(value);
 };

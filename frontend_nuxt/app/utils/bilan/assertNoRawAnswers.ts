@@ -1,22 +1,28 @@
 import type { GlobalBilanViewModel } from '@/types/bilan';
+import type { RecommendationResult } from '@/utils/reco/types';
+import { normalizeForSecurityScan } from '@/utils/security/normalizeForSecurityScan';
 
 const suspiciousKeyPatterns = [
   /answers/i,
   /responses/i,
   /questionId/i,
   /answersBy/i,
+  /\bperQuestion\b/i,
   /rawAnswers/i,
+  /\bp\d+_q\d+\b/i,
+  /\bq\d+_/i,
   /^p[0-9]+_q/i,
   /journeyAnswers/i,
   /raw/i
 ];
 const suspiciousValuePatterns = [
   /questionId/i,
-  /answersBy/i,
-  /rawAnswers/i,
-  /\\bp\\d+_q\\d+\\b/i,
-  /\\bq\\d+\\b/i,
-  /\"p\\d+_q\\d+\"\\s*:/i,
+  /\banswersBy\b/i,
+  /\bperQuestion\b/i,
+  /\brawAnswers\b/i,
+  /\bp\d+_q\d+\b/i,
+  /\bq\d+_/i,
+  /"p\\d+_q\\d+"\\s*:/i,
   /p\\d+_q\\d+\\s*=/i
 ];
 
@@ -116,10 +122,14 @@ function isQuestionPattern(key: string) {
 
 function validateObjectKeys(obj: Record<string, unknown>, path: string) {
   const keys = Object.keys(obj);
-  if (keys.some((k) => suspiciousKeyPatterns.some((re) => re.test(k)))) {
+  const normalizedKeys = keys.map((key) => ({
+    raw: key,
+    normalized: normalizeForSecurityScan(key)
+  }));
+  if (normalizedKeys.some(({ normalized }) => suspiciousKeyPatterns.some((re) => re.test(normalized)))) {
     throw new Error('Invalid bilan VM shape.');
   }
-  if (keys.length > 1 && keys.every((k) => isQuestionPattern(k))) {
+  if (normalizedKeys.length > 1 && normalizedKeys.every(({ normalized }) => isQuestionPattern(normalized))) {
     throw new Error('Invalid bilan VM shape.');
   }
 
@@ -217,7 +227,8 @@ function validateObjectKeys(obj: Record<string, unknown>, path: string) {
 function walk(node: unknown, path: string) {
   if (node === null || node === undefined) return;
   if (typeof node === 'string') {
-    if (suspiciousValuePatterns.some((re) => re.test(node))) {
+    const normalized = normalizeForSecurityScan(node);
+    if (suspiciousValuePatterns.some((re) => re.test(normalized))) {
       throw new Error('Invalid VM shape.');
     }
     return;
@@ -234,12 +245,22 @@ function walk(node: unknown, path: string) {
       walk(value, nextPath);
     }
   } else if (typeof node === 'string') {
-    if (suspiciousKeyPatterns.some((re) => re.test(node))) {
+    const normalized = normalizeForSecurityScan(node);
+    if (suspiciousKeyPatterns.some((re) => re.test(normalized))) {
       throw new Error('Invalid bilan VM shape.');
     }
   }
 }
 
-export function assertNoRawAnswers(vm: GlobalBilanViewModel) {
+export function assertNoRawAnswers(
+  vm: GlobalBilanViewModel,
+  extras?: { recommendations?: RecommendationResult | null; exportMarkdown?: string | null }
+) {
   walk(vm, 'root');
+  if (extras?.recommendations) {
+    walk(extras.recommendations, 'recommendations');
+  }
+  if (extras?.exportMarkdown) {
+    walk(extras.exportMarkdown, 'exportMarkdown');
+  }
 }
