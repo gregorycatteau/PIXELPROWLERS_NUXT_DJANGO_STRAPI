@@ -48,3 +48,6 @@ jobs:
 
       - name: Journey manifest guard
         run: npm run journey:guard
+
+      - name: Journey no-wrapper guard
+        run: npm run journey:nodup

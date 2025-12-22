@@ -9,7 +9,8 @@
     "start": "nuxt preview",
     "typecheck": "npx nuxi prepare && npx vue-tsc --noEmit -p tsconfig.json",
     "bilan:guard": "npx nuxi prepare && tsx --tsconfig .nuxt/tsconfig.json tools/bilan_adapter_guard.ts",
-    "journey:guard": "tsx tools/journey_manifest_guard.ts"
+    "journey:guard": "tsx tools/journey_manifest_guard.ts",
+    "journey:nodup": "tsx tools/journey_no_wrappers_guard.ts"
   },
   "keywords": [
     "nuxt",
