@@ -24,18 +24,21 @@
           :total-questions="questions.length"
           :theme-key="question.axis"
           :status="getStatus(getAnswer(question.id))"
+          v-slot="{ labelId, descriptionId }"
         >
           <p class="pp-journey-feel-hint">
             Réponds au ressenti : il n’y a pas de bonne ou de mauvaise réponse.
           </p>
-          <LikertScale
+          <LikertScaleFiveSteps
             :model-value="getAnswer(question.id)"
             :name="`p1-q2-${question.id}`"
-            :question-id="question.id"
-            :labels="likertLabels"
-            :describedBy="skipNoticeId"
+            :aria-labelled-by="labelId"
+            :aria-described-by="buildDescribedBy(descriptionId)"
             @update:model-value="onUpdate(question.id, $event)"
-            :show-skip="true"
+          />
+          <QuestionSkipControl
+            :is-skipped="getAnswer(question.id) === null"
+            :described-by="skipNoticeId"
             @skip="onUpdate(question.id, null)"
           />
         </JourneyQuestionBlock>
@@ -64,10 +67,11 @@ import JourneyLayout from '~/components/journey/JourneyLayout.vue';
 import JourneyProgressBar from '~/components/journey/JourneyProgressBar.vue';
 import JourneyQuestionBlock from '~/components/journey/JourneyQuestionBlock.vue';
 import JourneyStepHeader from '~/components/journey/JourneyStepHeader.vue';
-import LikertScale from '~/components/journey/LikertScale.vue';
+import LikertScaleFiveSteps from '~/components/journey/questionnaire/LikertScaleFiveSteps.vue';
+import QuestionSkipControl from '~/components/journey/questionnaire/QuestionSkipControl.vue';
 import P1SovereigntyNotice from '~/components/journey/p1/P1SovereigntyNotice.vue';
 import type { VucaAnswer, LikertValue } from '~/composables/useJourneyDiagnostics';
-import { P1_SCALE_COPY, P1_SKIP_COPY } from '@/config/journeys/p1CopyV1_3';
+import { P1_SKIP_COPY } from '@/config/journeys/p1CopyV1_3';
 
 export type P1Questionnaire2Item = {
   id: string;
@@ -92,10 +96,6 @@ const axisLabels: Record<P1Questionnaire2Item['axis'], string> = {
   values: 'Valeurs & alignement perçu'
 };
 
-const likertLabels = {
-  min: `1 = ${P1_SCALE_COPY.valueLabels[1]}`,
-  max: `5 = ${P1_SCALE_COPY.valueLabels[5]}`
-};
 const skipHelper = P1_SKIP_COPY.helperText;
 const skipNoticeId = 'p1-skip-notice-q2';
 
@@ -114,6 +114,9 @@ const emitAnswer = (questionId: string, value: LikertValue | null) => {
 const onUpdate = (questionId: string, value: LikertValue | null) => {
   emitAnswer(questionId, value);
 };
+
+const buildDescribedBy = (descriptionId?: string) =>
+  [descriptionId, skipNoticeId].filter(Boolean).join(' ') || undefined;
 
 const getStatus = (value: LikertValue | null): 'answered' | 'skipped' | 'empty' => {
   if (typeof value === 'number') return 'answered';
