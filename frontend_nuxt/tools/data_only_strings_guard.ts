@@ -7,7 +7,15 @@ import { validateRoutePath } from '../app/config/engagement/allowlist';
 import { p2Copy } from '../app/config/journeys/p2CopyV1_0';
 import { p3Copy } from '../app/config/journeys/p3CopyV1_0';
 import { p4Copy } from '../app/config/journeys/p4CopyV1_0';
-import { p1Copy, P1_SKIP_COPY, P1_ERASE_COPY } from '../app/config/journeys/p1CopyV1_3';
+import {
+  P1_INTRO_COPY,
+  P1_SCALE_COPY,
+  P1_PROGRESS_COPY,
+  P1_SKIP_COPY,
+  P1_GLOBAL_SKIP_SUMMARY,
+  P1_MISSING_COPY,
+  P1_ERASE_COPY
+} from '../app/config/journeys/p1CopyV1_3';
 import { P1_ACTION_PLAN_COPY, P1_GLOBAL_ISSUES_COPY, P1_GLOBAL_SUPPORTS_COPY } from '../app/config/journeys/p1NarrativesV1_3';
 import { p1EngagementCopy } from '../app/config/journeys/p1EngagementCopy';
 import { P1_EXPORT_COPY } from '../app/config/journeys/p1ExportCopyV1_3';
@@ -90,7 +98,11 @@ const main = () => {
     });
 
     [
-      p1Copy,
+      P1_INTRO_COPY,
+      P1_SCALE_COPY,
+      P1_PROGRESS_COPY,
+      P1_GLOBAL_SKIP_SUMMARY,
+      P1_MISSING_COPY,
       P1_SKIP_COPY,
       P1_ERASE_COPY,
       P1_ACTION_PLAN_COPY,
