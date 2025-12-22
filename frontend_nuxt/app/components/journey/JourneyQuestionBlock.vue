@@ -66,7 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import { Comment, Text, computed, toRefs, useSlots } from 'vue';
+import { Comment, Fragment, Text, computed, toRefs, useSlots } from 'vue';
 import type { LikertValue } from '~/composables/useJourneyDiagnostics';
 import LikertScaleFiveSteps from '~/components/journey/questionnaire/LikertScaleFiveSteps.vue';
 import QuestionSkipControl from '~/components/journey/questionnaire/QuestionSkipControl.vue';
@@ -106,14 +106,22 @@ const describedById = computed(() => {
   return ids || undefined;
 });
 
+const isMeaningfulNode = (node: unknown): boolean => {
+  if (!node || typeof node !== 'object') return false;
+  const vnode = node as { type?: unknown; children?: unknown };
+  if (vnode.type === Comment) return false;
+  if (vnode.type === Text) return String(vnode.children ?? '').trim().length > 0;
+  if (vnode.type === Fragment) {
+    const children = Array.isArray(vnode.children) ? (vnode.children as unknown[]) : [];
+    return children.some((child: unknown) => isMeaningfulNode(child));
+  }
+  if (typeof vnode.children === 'string') return vnode.children.trim().length > 0;
+  return true;
+};
+
 const hasDefaultSlot = computed(() => {
   const content = slots.default?.() ?? [];
-  return content.some((node) => {
-    if (node.type === Comment) return false;
-    if (node.type === Text) return String(node.children ?? '').trim().length > 0;
-    if (typeof node.children === 'string') return node.children.trim().length > 0;
-    return true;
-  });
+  return content.some((node) => isMeaningfulNode(node));
 });
 
 const themeLabelMap: Record<string, string> = {
