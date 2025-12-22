@@ -41,9 +41,6 @@ const pushDebugEvent = (name: AnalyticsEventName, payload?: AnalyticsEventPayloa
 const trackEvent = (name: AnalyticsEventName, payload?: AnalyticsEventPayload) => {
   if (!isEnabled()) return;
   try {
-    if (typeof console !== 'undefined' && console?.debug) {
-      console.debug('[analytics]', name, payload ?? {});
-    }
     pushDebugEvent(name, payload);
   } catch {
     // fail-safe : ne pas casser l’app si la console ou le store sont indisponibles
