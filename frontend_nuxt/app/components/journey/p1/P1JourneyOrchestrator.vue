@@ -10,12 +10,12 @@
         Tu peux reprendre à l’étape suggérée ou repartir de zéro : dans tous les cas, c’est toi qui décides.
       </p>
       <div class="flex flex-wrap gap-3">
-        <button type="button" class="pp-cta-primary" @click="handleResume">
+        <PPButton type="button" variant="primary" @click="handleResume">
           Reprendre
-        </button>
-        <button type="button" class="pp-cta-secondary" @click="handleRestart">
+        </PPButton>
+        <PPButton type="button" variant="secondary" @click="handleRestart">
           Recommencer
-        </button>
+        </PPButton>
       </div>
     </div>
 

@@ -1,14 +1,20 @@
 <template>
   <div class="PageContainer">
     <section class="PageSection">
-      <div class="PrimaryCard SectionIntro">
-        <p class="SectionLabel">Relinium</p>
-        <h1 class="SectionTitle">Relinium — labo interne</h1>
-        <p class="SectionDescription">
-          Relinium est notre terrain d’expérimentation : outils, modèles de pages, composants éditoriaux
-          et protocoles d’ateliers. On y teste avant de déployer dans vos environnements.
-        </p>
-      </div>
+      <PPCard as="section" variant="default">
+        <PPPageHeader as="h1" density="comfort" align="left">
+          <template #eyebrow>
+            Relinium
+          </template>
+          <template #title>
+            Relinium — labo interne
+          </template>
+          <template #lead>
+            Relinium est notre terrain d’expérimentation : outils, modèles de pages, composants éditoriaux
+            et protocoles d’ateliers. On y teste avant de déployer dans vos environnements.
+          </template>
+        </PPPageHeader>
+      </PPCard>
       <div class="LabGrid">
         <article v-for="(item, index) in labItems" :key="index" class="SecondaryCard LabCard">
           <h2 class="LabTitle">{{ item.title }}</h2>
@@ -90,22 +96,6 @@ useHead({
 
 .PageContainer {
   @apply w-full max-w-6xl mx-auto px-6 space-y-12 pb-16;
-}
-
-.SectionLabel {
-  @apply text-sm uppercase tracking-[0.2em] text-orange-300;
-}
-
-.SectionTitle {
-  @apply text-3xl font-semibold;
-}
-
-.SectionDescription {
-  @apply text-base leading-relaxed text-slate-300;
-}
-
-.SectionIntro {
-  @apply space-y-3;
 }
 
 .LabGrid {

@@ -1,9 +1,11 @@
 <template>
   <section :id="sectionId" class="home-section">
-    <header class="home-section-header">
-      <h2 class="home-section-title">{{ title }}</h2>
-      <p class="home-section-subtitle">{{ subtitle }}</p>
-    </header>
+    <PPSectionHeader
+      as="h2"
+      density="comfort"
+      :title="title"
+      :lead="subtitle"
+    />
 
     <div class="home-journeys-grid">
       <HomeJourneyCard

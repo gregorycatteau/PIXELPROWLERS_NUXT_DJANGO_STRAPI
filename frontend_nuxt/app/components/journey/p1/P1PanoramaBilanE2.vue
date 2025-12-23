@@ -48,11 +48,12 @@
                 </div>
               </div>
               <div class="pp-bilan-axis-summary-row">
-                <button
+                <PPChip
                   v-for="axis in axes"
                   :key="axis.id"
-                  type="button"
-                  class="pp-bilan-axis-summary-chip"
+                  variant="outline"
+                  size="sm"
+                  :selected="false"
                   :aria-label="`Voir l’axe ${axis.label}`"
                   @click="scrollToAxis(axis.id)"
                 >
@@ -62,7 +63,7 @@
                   <span class="text-[11px] text-slate-200/90 flex items-center gap-1">
                     <span aria-hidden="true">{{ axis.toneEmoji }}</span>{{ axis.tone }}
                   </span>
-                </button>
+                </PPChip>
               </div>
             </section>
 
@@ -80,9 +81,9 @@
                     <span class="pp-bilan-axis-label">{{ axis.label }}</span>
                   </div>
                   <div class="pp-bilan-axis-header-score">
-                    <span class="pp-bilan-axis-score-chip">
+                    <PPBadge variant="neutral" size="sm">
                       Score {{ axis.score ?? 0 }}
-                    </span>
+                    </PPBadge>
                     <span class="pp-bilan-axis-meteo">
                       <span aria-hidden="true">{{ axis.toneEmoji }}</span> {{ axis.tone }}
                     </span>

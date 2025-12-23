@@ -1,16 +1,12 @@
 <template>
   <section class="pp-section">
-    <header class="pp-section-header">
-      <p class="pp-section-label">Ce qu’on fait ensemble</p>
-      <h2 class="pp-section-title">Trois axes pour rendre ta situation lisible</h2>
-      <p class="pp-section-desc">
-        On ne te propose pas un «&nbsp;plan parfait&nbsp;» qui explose au premier imprévu.
-        On part de ce que tu vis vraiment&nbsp;: règles qui changent en cours de route,
-        financements aléatoires, engagement en dents de scie. À partir de là, on dessine
-        une trajectoire assez solide pour tenir… et assez souple pour encaisser les
-        secousses.
-      </p>
-    </header>
+    <PPSectionHeader
+      as="h2"
+      density="comfort"
+      eyebrow="Ce qu’on fait ensemble"
+      title="Trois axes pour rendre ta situation lisible"
+      lead="On ne te propose pas un «&nbsp;plan parfait&nbsp;» qui explose au premier imprévu. On part de ce que tu vis vraiment&nbsp;: règles qui changent en cours de route, financements aléatoires, engagement en dents de scie. À partir de là, on dessine une trajectoire assez solide pour tenir… et assez souple pour encaisser les secousses."
+    />
     <div class="AxisGrid">
       <article
         v-for="(axis, index) in axes"
@@ -20,7 +16,7 @@
         :style="{ transitionDelay: `${index * 80}ms` }"
       >
         <div class="AxisTop">
-          <span class="pp-badge-pill">{{ axis.badge }}</span>
+          <PPBadge variant="accent" size="sm">{{ axis.badge }}</PPBadge>
           <span class="AxisIcon">{{ axis.icon }}</span>
         </div>
         <h3 class="AxisTitle">{{ axis.title }}</h3>

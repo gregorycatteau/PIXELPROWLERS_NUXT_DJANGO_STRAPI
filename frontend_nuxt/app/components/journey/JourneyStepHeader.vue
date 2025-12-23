@@ -1,6 +1,6 @@
 <template>
   <header class="JourneyStepHeader">
-    <p v-if="estImportant" class="JourneyStepBadge">Important</p>
+    <PPBadge v-if="estImportant" variant="accent" size="sm">Important</PPBadge>
     <h2
       :id="headingIdComputed"
       class="JourneyStepTitle"
@@ -34,10 +34,6 @@ const headingIdComputed = computed(() => headingId?.value || `journey-step-headi
 
 .JourneyStepHeader {
   @apply space-y-2;
-}
-
-.JourneyStepBadge {
-  @apply inline-flex items-center rounded-full bg-[color:var(--color-accent-quiet)] px-3 py-1 text-xs font-semibold uppercase tracking-wide text-[color:var(--color-accent-strong)];
 }
 
 .JourneyStepTitle {

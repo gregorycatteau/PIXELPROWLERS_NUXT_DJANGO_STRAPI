@@ -3,20 +3,37 @@ import type { GlobalBilanViewModel } from '~/types/bilan';
 import type { JourneyManifestV1 } from '~/config/journeys/manifests/types';
 import { listActions, listResources } from '~/config/resources/registry';
 import type { RecommendationItem, RecommendationResult, RecommendationSignals } from '~/utils/reco/types';
-import { attachReasons } from '~/utils/reco/scoring';
+import { buildRecommendationsV2 } from '~/utils/reco/scoring';
 
 const MAX_RECOMMENDED = 6;
 
 const buildSignals = (vm: GlobalBilanViewModel, manifest: JourneyManifestV1): RecommendationSignals => {
-  const axes = (vm.panorama?.axes ?? []).map((axis) => ({
-    axisId: axis.id,
-    label: axis.label,
-    score: axis.score ?? 0,
-    answeredCount: 0,
-    skippedCount: 0,
-    missingCount: 0,
-    totalCount: 0
-  }));
+  const skipByAxis = new Map<string, { skippedCount?: number; totalCount?: number }>();
+  (vm.modules?.skipSignal?.byAxis ?? []).forEach((axis) => {
+    skipByAxis.set(axis.axisId, {
+      skippedCount: axis.skippedCount,
+      totalCount: axis.totalCount
+    });
+  });
+
+  const axes = (vm.panorama?.axes ?? []).map((axis) => {
+    const axisAny = axis as typeof axis & {
+      answeredCount?: number;
+      skippedCount?: number;
+      missingCount?: number;
+      totalCount?: number;
+    };
+    const skipMeta = skipByAxis.get(axis.id);
+    return {
+      axisId: axis.id,
+      label: axis.label,
+      score: axis.score ?? 0,
+      answeredCount: axisAny.answeredCount,
+      skippedCount: axisAny.skippedCount ?? skipMeta?.skippedCount,
+      missingCount: axisAny.missingCount,
+      totalCount: axisAny.totalCount ?? skipMeta?.totalCount
+    };
+  });
 
   const skipSignal = vm.modules?.skipSignal
     ? {
@@ -46,15 +63,19 @@ const buildSignals = (vm: GlobalBilanViewModel, manifest: JourneyManifestV1): Re
   };
 };
 
+const hasJourneyTag = (tags: string[] | undefined) => (tags ?? []).some((tag) => tag.startsWith('journey:'));
+
 const buildLibrary = (manifest: JourneyManifestV1): RecommendationItem[] => {
   const resources = listResources();
   const actions = listActions();
 
-  const resourceIds = manifest.resourceIds;
-  const actionIds = manifest.actionIds;
   const journeyTag = `journey:${manifest.id}`;
 
-  const resourceItems = (resourceIds && resourceIds.length ? resources.filter((res) => resourceIds.includes(res.id)) : resources.filter((res) => res.tags.includes(journeyTag)))
+  const resourceItems = resources
+    .filter((res) => {
+      const tags = res.tags ?? [];
+      return tags.includes(journeyTag) || tags.includes('journey:all') || !hasJourneyTag(tags);
+    })
     .map<RecommendationItem>((res) => ({
       id: res.id,
       kind: 'resource',
@@ -65,7 +86,11 @@ const buildLibrary = (manifest: JourneyManifestV1): RecommendationItem[] => {
       filePath: res.filePath
     }));
 
-  const actionItems = (actionIds && actionIds.length ? actions.filter((action) => actionIds.includes(action.id)) : actions.filter((action) => action.tags.includes(journeyTag)))
+  const actionItems = actions
+    .filter((action) => {
+      const tags = action.tags ?? [];
+      return tags.includes(journeyTag) || tags.includes('journey:all') || !hasJourneyTag(tags);
+    })
     .map<RecommendationItem>((action) => ({
       id: action.id,
       kind: 'action',
@@ -82,11 +107,23 @@ const buildLibrary = (manifest: JourneyManifestV1): RecommendationItem[] => {
 export const useUniversalRecommendations = (vm: GlobalBilanViewModel, manifest: JourneyManifestV1): RecommendationResult => {
   const signals = buildSignals(vm, manifest);
   const library = buildLibrary(manifest);
-  const recommended = attachReasons(signals, library.slice(0, MAX_RECOMMENDED));
+  const maxAxisScore = signals.axes.reduce((acc, axis) => Math.max(acc, axis.score ?? 0), 0);
+  if (!signals.axes.length || library.length === 0 || maxAxisScore <= 0) {
+    return { recommended: [], library: [] };
+  }
+
+  const { recommended, meta } = buildRecommendationsV2(signals, library);
+  const trimmedRecommended = recommended.slice(0, MAX_RECOMMENDED);
+  const recommendedIds = new Set(trimmedRecommended.map((item) => item.id));
+  const sortedLibrary = library
+    .filter((item) => !recommendedIds.has(item.id))
+    .slice()
+    .sort((a, b) => a.title.localeCompare(b.title));
 
   return {
-    recommended,
-    library
+    recommended: trimmedRecommended,
+    library: sortedLibrary,
+    meta
   };
 };
 

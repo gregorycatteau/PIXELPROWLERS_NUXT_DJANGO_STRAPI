@@ -1,70 +1,65 @@
 <template>
-  <section id="gb_resources_actions" class="pp-globalbilan-section space-y-4">
-    <div class="pp-globalbilan-section-header">
-      <h2 class="pp-globalbilan-section-title">Actions & ressources</h2>
-      <p class="text-sm text-[color:var(--color-text-muted)]">
-        Recommandations et bibliotheque pour avancer a ton rythme.
-      </p>
-    </div>
-
-    <div v-if="hasRecommended" class="space-y-3">
-      <h3 class="text-sm font-semibold">Recommande</h3>
-      <div class="grid gap-3 md:grid-cols-2">
-        <article v-for="item in recommended" :key="item.id" class="pp-journey-card-soft space-y-2">
-          <div class="flex items-center justify-between">
-            <p class="text-xs uppercase tracking-[0.14em] text-[color:var(--color-text-muted)]">
-              {{ item.kind === 'resource' ? 'Ressource' : 'Action' }}
-              <span v-if="item.horizon">· {{ item.horizon }}</span>
-            </p>
-            <span v-if="item.format" class="text-[10px] uppercase tracking-[0.14em] text-[color:var(--color-text-muted)]">
-              {{ item.format }}
-            </span>
-          </div>
-          <p class="text-sm font-semibold">{{ item.title }}</p>
-          <p v-if="item.description" class="text-sm text-[color:var(--color-text-muted)]">
-            {{ item.description }}
-          </p>
-          <p v-if="item.reason" class="text-xs text-[color:var(--color-text-muted)]">
-            {{ item.reason }}
-          </p>
-          <div class="pt-1">
-            <component
-              :is="ctaComponent(item)"
-              v-bind="ctaProps(item)"
-              class="pp-btn-ghost text-xs"
-              :disabled="!isCtaEnabled(item)"
-              :aria-label="ctaAria(item)"
-              @click="onCtaClick(item)"
-            >
-              {{ item.cta.label }}
-            </component>
-          </div>
-        </article>
-      </div>
-    </div>
-
-    <div v-if="hasLibrary" class="space-y-3">
-      <div class="flex flex-wrap items-center gap-3">
-        <h3 class="text-sm font-semibold">Bibliotheque</h3>
-        <div v-if="tags.length" class="flex flex-wrap gap-2">
+  <section id="gb_resources_actions" class="space-y-4 pt-4">
+    <!-- Section Recommandé (mode prescription) -->
+    <PPResourcesShell
+      v-if="hasRecommended"
+      title="Recommandé pour toi"
+      description="Actions et ressources prioritaires basées sur ton profil."
+      density="comfort"
+      section-id="resources-recommended"
+    >
+      <PPResourceCard
+        v-for="item in recommended"
+        :key="item.id"
+        :title="item.title"
+        :description="item.description"
+        :href="getExternalHref(item)"
+        :to="getInternalRoute(item)"
+        :meta="getResourceMeta(item)"
+        :badge="getResourceBadge(item)"
+        :cta-aria-label="`${item.cta.label} pour ${item.title}`"
+      >
+        <template #cta-label>{{ item.cta.label }}</template>
+        <template v-if="item.cta.type === 'export'" #cta>
           <button
             type="button"
-            class="pp-globalbilan-summary-chip"
-            :aria-pressed="activeTag === ''"
+            class="pp-journey-cta-secondary text-xs"
+            @click="emit('go-export')"
+          >
+            {{ item.cta.label }}
+          </button>
+        </template>
+      </PPResourceCard>
+    </PPResourcesShell>
+
+    <!-- Section Bibliothèque (filtrable) -->
+    <div v-if="hasLibrary" class="space-y-3">
+      <PPSectionHeader
+        as="h3"
+        density="compact"
+        title="Bibliothèque"
+      />
+      
+      <div class="flex flex-wrap items-center gap-3">
+        <div v-if="tags.length" class="flex flex-wrap gap-2">
+          <PPChip
+            variant="outline"
+            size="sm"
+            :selected="activeTag === ''"
             @click="activeTag = ''"
           >
             Tous
-          </button>
-          <button
+          </PPChip>
+          <PPChip
             v-for="tag in tags"
             :key="tag"
-            type="button"
-            class="pp-globalbilan-summary-chip"
-            :aria-pressed="activeTag === tag"
+            variant="outline"
+            size="sm"
+            :selected="activeTag === tag"
             @click="activeTag = tag"
           >
             {{ tag }}
-          </button>
+          </PPChip>
         </div>
         <div class="ml-auto w-full sm:w-auto">
           <input
@@ -78,33 +73,27 @@
       </div>
 
       <div v-if="filteredLibrary.length" class="grid gap-3 md:grid-cols-2">
-        <article v-for="item in filteredLibrary" :key="item.id" class="pp-journey-card-soft space-y-2">
-          <div class="flex items-center justify-between">
-            <p class="text-xs uppercase tracking-[0.14em] text-[color:var(--color-text-muted)]">
-              {{ item.kind === 'resource' ? 'Ressource' : 'Action' }}
-              <span v-if="item.horizon">· {{ item.horizon }}</span>
-            </p>
-            <span v-if="item.format" class="text-[10px] uppercase tracking-[0.14em] text-[color:var(--color-text-muted)]">
-              {{ item.format }}
-            </span>
-          </div>
-          <p class="text-sm font-semibold">{{ item.title }}</p>
-          <p v-if="item.description" class="text-sm text-[color:var(--color-text-muted)]">
-            {{ item.description }}
-          </p>
-          <div class="pt-1">
-            <component
-              :is="ctaComponent(item)"
-              v-bind="ctaProps(item)"
-              class="pp-btn-ghost text-xs"
-              :disabled="!isCtaEnabled(item)"
-              :aria-label="ctaAria(item)"
-              @click="onCtaClick(item)"
+        <PPResourceCard
+          v-for="item in filteredLibrary"
+          :key="item.id"
+          :title="item.title"
+          :description="item.description"
+          :href="getExternalHref(item)"
+          :to="getInternalRoute(item)"
+          :meta="getResourceMeta(item)"
+          :cta-aria-label="`${item.cta.label} pour ${item.title}`"
+        >
+          <template #cta-label>{{ item.cta.label }}</template>
+          <template v-if="item.cta.type === 'export'" #cta>
+            <button
+              type="button"
+              class="pp-journey-cta-secondary text-xs"
+              @click="emit('go-export')"
             >
               {{ item.cta.label }}
-            </component>
-          </div>
-        </article>
+            </button>
+          </template>
+        </PPResourceCard>
       </div>
       <p v-else class="text-sm text-[color:var(--color-text-muted)]">Aucun element disponible.</p>
     </div>
@@ -119,6 +108,7 @@
 import { computed, ref } from 'vue';
 import type { ResourcesActionsItemVM } from '~/types/bilan';
 import { safeFilePath, safeRoutePath } from '~/utils/cta/safeCta';
+import type { ResourceMeta, ResourceBadge } from '~/components/PPResourceCard.vue';
 
 const props = defineProps<{
   recommended: ResourcesActionsItemVM[];
@@ -171,40 +161,56 @@ const safeFileTarget = (target?: string | null) => {
   }
 };
 
-const isCtaEnabled = (item: ResourcesActionsItemVM) => {
-  if (item.cta.type === 'none') return false;
-  if (item.cta.type === 'file') return Boolean(safeFileTarget(item.cta.target));
-  if (item.cta.type === 'route') return Boolean(safeRouteTarget(item.cta.target));
-  return true;
-};
-
-const ctaComponent = (item: ResourcesActionsItemVM) => {
-  if (item.cta.type === 'contact') return 'NuxtLink';
-  if (item.cta.type === 'resources') return 'NuxtLink';
-  if (item.cta.type === 'route' && isCtaEnabled(item)) return 'NuxtLink';
-  if (item.cta.type === 'file' && isCtaEnabled(item)) return 'a';
-  return 'button';
-};
-
-const ctaProps = (item: ResourcesActionsItemVM) => {
-  if (item.cta.type === 'contact') return { to: CONTACT_ROUTE };
-  if (item.cta.type === 'resources') return { to: RESOURCES_ROUTE };
-  if (item.cta.type === 'route' && isCtaEnabled(item)) {
-    const to = safeRouteTarget(item.cta.target);
-    if (!to) return { type: 'button' };
-    return { to };
-  }
-  if (item.cta.type === 'file' && isCtaEnabled(item)) {
+/**
+ * Get external href if applicable (file type with valid path)
+ * NOTE: External URLs are sanitized by PPResourceCard (UTM stripped, protocol enforced)
+ */
+const getExternalHref = (item: ResourcesActionsItemVM): string | undefined => {
+  if (item.cta.type === 'file') {
     const href = safeFileTarget(item.cta.target);
-    if (!href) return { type: 'button' };
-    return { href, target: '_blank', rel: 'noopener' };
+    return href ?? undefined;
   }
-  return { type: 'button' };
+  return undefined;
 };
 
-const ctaAria = (item: ResourcesActionsItemVM) => `Action: ${item.cta.label}`;
+/**
+ * Get internal route if applicable
+ */
+const getInternalRoute = (item: ResourcesActionsItemVM): string | undefined => {
+  if (item.cta.type === 'contact') return CONTACT_ROUTE;
+  if (item.cta.type === 'resources') return RESOURCES_ROUTE;
+  if (item.cta.type === 'route') {
+    const to = safeRouteTarget(item.cta.target);
+    return to ?? undefined;
+  }
+  return undefined;
+};
 
-const onCtaClick = (item: ResourcesActionsItemVM) => {
-  if (item.cta.type === 'export') emit('go-export');
+/**
+ * Map item to ResourceMeta
+ */
+const getResourceMeta = (item: ResourcesActionsItemVM): ResourceMeta | undefined => {
+  const kind = item.kind === 'resource' ? 'read' : undefined;
+  const horizon = item.horizon;
+  
+  if (!kind && !horizon) return undefined;
+  
+  return {
+    kind: kind as 'read' | undefined,
+    effort: horizon ?? undefined,
+  };
+};
+
+/**
+ * Map item to ResourceBadge
+ */
+const getResourceBadge = (item: ResourcesActionsItemVM): ResourceBadge | undefined => {
+  if (item.kind === 'action') {
+    return { variant: 'status', label: 'Action' };
+  }
+  if (item.format) {
+    return { variant: 'info', label: item.format };
+  }
+  return undefined;
 };
 </script>

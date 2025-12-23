@@ -1,13 +1,11 @@
 <template>
   <section id="gb_engagement" class="pp-globalbilan-section space-y-3">
-    <div class="pp-globalbilan-section-header">
-      <h2 class="pp-globalbilan-section-title">Options de suite (N1-N4)</h2>
-      <p v-if="introParagraphs.length" class="text-sm text-[color:var(--color-text-muted)]">
-        <span v-for="paragraph in introParagraphs" :key="paragraph" class="block">
-          {{ paragraph }}
-        </span>
-      </p>
-    </div>
+    <PPSectionHeader
+      as="h2"
+      density="comfort"
+      title="Options de suite (N1-N4)"
+      :lead="introParagraphs.join(' ')"
+    />
 
     <div class="pp-globalbilan-options-grid">
       <article v-for="level in levels" :key="level.id" class="pp-globalbilan-option-card">
@@ -20,15 +18,17 @@
           </p>
         </div>
         <div class="pt-2">
-          <component
-            :is="ctaComponent(level)"
+          <PPChip
+            :as="ctaComponent(level)"
             v-bind="ctaProps(level)"
-            class="pp-globalbilan-summary-chip"
+            variant="outline"
+            size="sm"
+            :selected="false"
             :disabled="level.ctaTarget === 'none' || !isCtaAllowed(level)"
             @click="onCtaClick(level)"
           >
             {{ level.ctaLabel }}
-          </component>
+          </PPChip>
         </div>
       </article>
     </div>

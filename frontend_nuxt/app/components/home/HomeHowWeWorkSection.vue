@@ -1,9 +1,11 @@
 <template>
   <section :id="sectionId" class="home-section">
-    <header class="home-section-header">
-      <h2 class="home-section-title">{{ title }}</h2>
-      <p v-if="subtitle" class="home-section-subtitle">{{ subtitle }}</p>
-    </header>
+    <PPSectionHeader
+      as="h2"
+      density="comfort"
+      :title="title"
+      :lead="subtitle"
+    />
 
     <div class="home-how-grid">
       <article
@@ -11,7 +13,7 @@
         :key="step.title"
         class="home-how-card"
       >
-        <div class="home-how-badge">{{ idx + 1 }}</div>
+        <PPBadge as="div" variant="neutral" size="sm">{{ idx + 1 }}</PPBadge>
         <div class="home-how-content">
           <h3 class="home-how-title">{{ step.title }}</h3>
           <p class="home-how-body">{{ step.body }}</p>
@@ -44,10 +46,6 @@ const props = defineProps<{
 
 .home-how-card {
   @apply relative rounded-2xl border border-[color:var(--color-stroke)] bg-[color:var(--color-bg-card)]/90 p-5 shadow-[var(--shadow-soft)] space-y-3;
-}
-
-.home-how-badge {
-  @apply flex h-10 w-10 items-center justify-center rounded-full bg-[color:var(--color-accent-quiet)] text-[color:var(--color-accent-strong)] font-bold;
 }
 
 .home-how-title {

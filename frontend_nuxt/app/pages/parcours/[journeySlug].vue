@@ -58,7 +58,7 @@
       <p class="text-sm text-[color:var(--color-text-muted)]">
         {{ manifest ? 'Le parcours demandé n’existe pas encore.' : 'Le parcours demandé est introuvable.' }}
       </p>
-      <NuxtLink to="/" class="pp-cta-secondary inline-flex w-auto">Retour à l’accueil</NuxtLink>
+      <PPButton to="/" class="inline-flex w-auto" variant="secondary">Retour à l’accueil</PPButton>
     </div>
   </div>
 </template>

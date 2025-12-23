@@ -1,8 +1,10 @@
 <template>
   <section id="gb_export" class="pp-globalbilan-section space-y-3">
-    <div class="pp-globalbilan-section-header">
-      <h2 class="pp-globalbilan-section-title">{{ copy.exportHeading }}</h2>
-    </div>
+    <PPSectionHeader
+      as="h2"
+      density="compact"
+      :title="copy.exportHeading"
+    />
     <div class="pp-globalbilan-card space-y-3">
       <details :open="focusDetails">
         <summary class="text-sm text-[color:var(--color-text)] cursor-pointer">Voir le texte exportable</summary>

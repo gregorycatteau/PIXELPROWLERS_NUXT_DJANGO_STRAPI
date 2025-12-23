@@ -5,10 +5,12 @@
       <p class="text-xs text-[color:var(--color-text-muted)]">Blocs complétés : {{ completedLabel }}</p>
     </div>
     <div class="space-y-3">
-      <article
+      <PPCard
+        as="article"
+        variant="default"
         v-for="block in blocks"
         :key="block.id"
-        class="rounded-xl border border-[color:var(--color-stroke)] bg-[color:var(--color-panel-soft)] p-4 space-y-3"
+        class="p-4 space-y-3"
       >
         <div class="flex items-start justify-between gap-3">
           <p class="text-sm font-semibold text-[color:var(--color-text)] leading-snug">{{ block.title }}</p>
@@ -19,15 +21,15 @@
           </span>
         </div>
         <div class="flex flex-wrap gap-2 text-xs">
-          <span class="pp-globalbilan-summary-chip inline-flex items-center gap-1">
+          <PPBadge variant="success" size="sm" class="inline-flex items-center gap-1">
             <span aria-hidden="true">✅</span> Répondu : {{ block.answeredCount }}
-          </span>
-          <span class="pp-globalbilan-summary-chip inline-flex items-center gap-1">
+          </PPBadge>
+          <PPBadge variant="warning" size="sm" class="inline-flex items-center gap-1">
             <span aria-hidden="true">⏭</span> Non répondu : {{ block.skippedCount }}
-          </span>
-          <span class="pp-globalbilan-summary-chip inline-flex items-center gap-1">
+          </PPBadge>
+          <PPBadge variant="neutral" size="sm" class="inline-flex items-center gap-1">
             <span aria-hidden="true">👀</span> Non vu : {{ block.unseenCount }}
-          </span>
+          </PPBadge>
         </div>
         <div class="space-y-1">
           <div class="flex items-center justify-between text-xs text-[color:var(--color-text-muted)]">
@@ -70,7 +72,7 @@
             </ul>
           </details>
         </div>
-      </article>
+      </PPCard>
     </div>
   </section>
 </template>

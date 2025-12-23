@@ -1,42 +1,28 @@
 <template>
   <section id="gb_hypotheses" class="pp-globalbilan-section">
-    <div class="pp-globalbilan-section-header space-y-1">
-      <h2 class="pp-globalbilan-section-title">
-        Hypothèses structurantes
-      </h2>
-      <p class="text-sm text-[color:var(--color-text-muted)]">
-        On passe de ce que tu ressens à ce qui tient ton système. Choisis 1–2 hypothèses à vérifier en premier.
-      </p>
-      <p class="text-xs font-semibold text-[color:var(--color-text)]">Sélection : {{ selectionCount }}</p>
-    </div>
+    <PPSectionHeader
+      as="h2"
+      density="comfort"
+      title="Hypothèses structurantes"
+      lead="On passe de ce que tu ressens à ce qui tient ton système. Choisis 1–2 hypothèses à vérifier en premier."
+    >
+      <template #meta>
+        <p class="text-xs font-semibold text-[color:var(--color-text)]">Sélection : {{ selectionCount }}</p>
+      </template>
+    </PPSectionHeader>
 
     <div v-if="hypotheses.length" class="space-y-6">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <article
-          v-for="hypo in hypotheses"
-          :key="hypo.id"
-          class="pp-globalbilan-theme-card flex flex-col gap-4 rounded-xl border border-[color:var(--color-stroke)] bg-[color:var(--color-panel-soft)] p-4"
-          :class="hypo.selected ? 'border-[color:var(--color-primary)] ring-1 ring-[color:var(--color-primary)]' : ''"
-        >
-          <div class="flex items-start justify-between gap-3">
-            <span class="pp-globalbilan-summary-chip">Hypothèse {{ hypo.index }}</span>
-            <button
-              type="button"
-              class="pp-journey-cta-secondary text-xs"
-              :class="[
-                hypo.selected ? 'border-[color:var(--color-primary)] text-[color:var(--color-text)]' : '',
-                hypo.disabled ? 'opacity-60 cursor-not-allowed' : ''
-              ]"
-              :disabled="hypo.disabled"
-              @click="emit('toggle', hypo.id)"
-            >
-              {{ hypo.selected ? 'Gardée' : 'Je la garde' }}
-            </button>
-          </div>
+      <PPHypothesesPicker
+        :items="mappedItems"
+        :model-value="selectedHypothesesIds"
+        :max-selected="2"
+        :show-go-to-atterrissage="hasSelection"
+        @update:model-value="handleSelectionChange"
+        @go-to-atterrissage="emit('goAtterrissage')"
+      >
+        <!-- Slot for detailed content per hypothesis -->
+        <template v-for="hypo in hypotheses" :key="hypo.id" #[`item-${hypo.id}`]="{ selected }">
           <div class="space-y-3 max-w-[60ch] text-left">
-            <h3 class="text-base font-semibold text-[color:var(--color-text)] leading-snug">
-              {{ hypo.title }}
-            </h3>
             <p class="text-sm text-[color:var(--color-text-muted)] leading-relaxed line-clamp-2">
               Ce que ça explique : <span class="text-[color:var(--color-text)]">{{ hypo.summary }}</span>
             </p>
@@ -93,12 +79,6 @@
               <span aria-hidden="true">{{ hypo.detailsOpen ? '▾' : '▸' }}</span>
               {{ hypo.detailsOpen ? 'Réduire les détails' : 'Détails' }}
             </button>
-            <span
-              v-if="hypo.disabled && !hypo.selected"
-              class="text-[10px] text-[color:var(--color-text-muted)]"
-            >
-              Max 2 sélectionnées
-            </span>
           </div>
           <div
             v-if="hypo.detailsOpen"
@@ -117,22 +97,21 @@
               Première vérif : <span class="text-[color:var(--color-text-muted)]">{{ hypo.firstCheck }}</span>
             </p>
           </div>
-        </article>
-      </div>
+        </template>
+      </PPHypothesesPicker>
 
-      <div class="pp-globalbilan-card space-y-3">
+      <PPCard v-if="verificationPlans.length" as="div" variant="soft" class="space-y-3">
         <div class="flex items-center justify-between">
           <h3 class="text-sm font-semibold text-[color:var(--color-text)]">Plan de vérification (15–30 min)</h3>
           <p class="text-xs text-[color:var(--color-text-muted)]">Sélection : {{ selectionCount }}</p>
         </div>
-        <div v-if="!verificationPlans.length" class="text-sm text-[color:var(--color-text-muted)]">
-          Sélectionne 1–2 hypothèses pour générer un plan de vérification léger.
-        </div>
-        <div v-else class="space-y-3">
-          <article
+        <div class="space-y-3">
+          <PPCard
+            as="article"
+            variant="default"
             v-for="plan in verificationPlans"
             :key="plan.id"
-            class="rounded-lg border border-white/20 bg-[color:var(--color-panel-soft)] p-4 space-y-3"
+            class="p-4 space-y-3"
           >
             <p class="text-sm font-semibold text-[color:var(--color-text)]">{{ plan.title }}</p>
             <ol class="list-decimal list-inside space-y-1 text-sm text-[color:var(--color-text-muted)]">
@@ -141,9 +120,18 @@
             <button type="button" class="pp-journey-cta-secondary text-xs font-medium" @click="emit('goAtterrissage')">
               Aller à Atterrissage
             </button>
-          </article>
+          </PPCard>
         </div>
-      </div>
+      </PPCard>
+      <PPCard v-else-if="!hasSelection" as="div" variant="soft" class="space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-semibold text-[color:var(--color-text)]">Plan de vérification (15–30 min)</h3>
+          <p class="text-xs text-[color:var(--color-text-muted)]">Sélection : {{ selectionCount }}</p>
+        </div>
+        <p class="text-sm text-[color:var(--color-text-muted)]">
+          Sélectionne 1–2 hypothèses pour générer un plan de vérification léger.
+        </p>
+      </PPCard>
 
       <div
         v-if="secondaryHypotheses.length"
@@ -159,12 +147,14 @@
       </div>
     </div>
     <p v-else class="text-sm text-[color:var(--color-text-muted)]">
-      À ce stade, aucune hypothèse structurante ne ressort nettement. Tu peux continuer avec les blocs ou le plan d’action.
+      À ce stade, aucune hypothèse structurante ne ressort nettement. Tu peux continuer avec les blocs ou le plan d'action.
     </p>
   </section>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
+
 type IssueBullet = { lead: string; detail?: string };
 type HypothesisCard = {
   id: string;
@@ -197,4 +187,33 @@ const emit = defineEmits<{
   (e: 'toggleDetails', id: string): void;
   (e: 'goAtterrissage'): void;
 }>();
+
+// Map hypotheses to PPHypothesesPicker format
+const mappedItems = computed(() =>
+  props.hypotheses.map((hypo) => ({
+    id: hypo.id,
+    title: hypo.title,
+    index: hypo.index
+  }))
+);
+
+// Get selected IDs from props
+const selectedHypothesesIds = computed(() =>
+  props.hypotheses.filter(h => h.selected).map(h => h.id)
+);
+
+const hasSelection = computed(() => selectedHypothesesIds.value.length > 0);
+
+// Handle selection changes from PPHypothesesPicker
+const handleSelectionChange = (newSelection: string[]) => {
+  const currentSelection = selectedHypothesesIds.value;
+  const added = newSelection.find(id => !currentSelection.includes(id));
+  const removed = currentSelection.find(id => !newSelection.includes(id));
+  
+  if (added) {
+    emit('toggle', added);
+  } else if (removed) {
+    emit('toggle', removed);
+  }
+};
 </script>

@@ -1,11 +1,20 @@
 <template>
   <JourneyLayout>
-    <div class="pp-journey-panel space-y-5" role="region" aria-labelledby="journey-step-heading-B3_questions">
-      <JourneyStepHeader
-        :title="blockCopy.questionnaireTitle"
-        :subtitle="blockCopy.questionnaireSubtitle || blockCopy.subtitle"
-        heading-id="journey-step-heading-B3_questions"
-      />
+    <PPQuestionnaireShell
+      density="default"
+      align="center"
+      v-bind="$attrs"
+      role="region"
+      aria-labelledby="journey-step-heading-B3_questions"
+    >
+      <template #header>
+        <JourneyStepHeader
+          :title="blockCopy.questionnaireTitle"
+          :subtitle="blockCopy.questionnaireSubtitle || blockCopy.subtitle"
+          heading-id="journey-step-heading-B3_questions"
+        />
+      </template>
+
       <div class="pp-journey-global-notice mt-4 md:mt-5" :id="skipNoticeId">
         <span aria-hidden="true">🛡️</span>
         <span>{{ skipHelper }}</span>
@@ -102,25 +111,25 @@
           </div>
 
           <div class="flex flex-wrap gap-2">
-            <button type="button" class="pp-btn-ghost text-xs" @click="skipPack(pack)">
-              Passer ce thème
-            </button>
+            <PPSkipAction label="Passer ce thème" density="compact" @skip="skipPack(pack)" />
           </div>
         </div>
       </div>
-      <div class="flex flex-wrap gap-3">
-        <button type="button" class="pp-journey-cta-primary" @click="handleValidate">
-          {{ blockCopy.bilanTitle }}
-        </button>
-        <button type="button" class="pp-journey-cta-secondary" @click="goToStep('E2_panorama_bilan')">
-          {{ copy.backToHub }}
-        </button>
-      </div>
-      <p class="pp-journey-body text-sm text-[color:var(--color-text-muted)]">
-        {{ copy.progressAnsweredLabel }} : {{ answeredCount }} / {{ totalQuestions }} · {{ copy.progressSkippedLabel }} :
-        {{ skippedCount }}
-      </p>
-    </div>
+      <template #footer>
+        <PPQuestionNav
+          :prev-label="copy.backToHub"
+          :next-label="blockCopy.bilanTitle"
+          @prev="goToStep('E2_panorama_bilan')"
+          @next="handleValidate"
+        />
+        <div class="pp-journey-body text-sm text-[color:var(--color-text-muted)] flex flex-wrap items-center gap-2">
+          <span>{{ copy.progressAnsweredLabel }} :</span>
+          <PPProgress :current="answeredCount" :total="totalQuestions" mode="ratio" />
+          <span>· {{ copy.progressSkippedLabel }} :</span>
+          <span>{{ skippedCount }}</span>
+        </div>
+      </template>
+    </PPQuestionnaireShell>
   </JourneyLayout>
 </template>
 

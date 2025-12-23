@@ -1,6 +1,9 @@
 <template>
-  <article
-    class="home-journey-card pp-journey-card"
+  <PPCard
+    as="article"
+    variant="journey"
+    hoverable
+    class="home-journey-card"
     :class="[
       isDisabled ? 'home-journey-card-disabled' : '',
       isEmphasized ? 'home-journey-card-active' : ''
@@ -8,12 +11,12 @@
   >
     <div class="home-journey-card-header">
       <p class="home-journey-id">{{ badgeDisplay }}</p>
-      <span v-if="!isAvailable" class="home-journey-badge">Bientôt</span>
+      <PPBadge v-if="!isAvailable" variant="warning" size="sm">Bientôt</PPBadge>
     </div>
     <h3 class="home-journey-title pp-journey-card-title">
-      <span class="pp-journey-card-title-chip">
+      <PPBadge variant="neutral" size="sm">
         {{ title }}
-      </span>
+      </PPBadge>
     </h3>
 
     <section class="home-journey-card-section home-journey-card-problem">
@@ -46,7 +49,7 @@
         </button>
       </div>
     </section>
-  </article>
+  </PPCard>
 </template>
 
 <script setup lang="ts">
@@ -114,20 +117,12 @@ const handleClick = () => {
   @apply text-xs font-semibold uppercase tracking-[0.16em] text-orange-200/90;
 }
 
-.home-journey-badge {
-  @apply inline-flex items-center rounded-full bg-slate-800 px-3 py-1 text-xs font-semibold text-slate-100 border border-slate-700;
-}
-
 .home-journey-title {
   @apply text-base md:text-lg font-semibold leading-snug text-slate-50 mb-4;
 }
 
 .pp-journey-card-title {
   @apply mt-1 mb-3 text-center;
-}
-
-.pp-journey-card-title-chip {
-  @apply inline-flex items-center justify-center px-4 py-1.5 rounded-full bg-slate-900/90 border border-slate-700/80 text-sm md:text-base font-semibold text-orange-500 shadow-[0_0_24px_rgba(15,23,42,0.7)];
 }
 
 .home-journey-card-section {

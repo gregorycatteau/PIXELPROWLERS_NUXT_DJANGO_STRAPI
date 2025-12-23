@@ -53,18 +53,20 @@
       </div>
 
       <div class="pp-journey-block-grid">
-        <article
+        <PPCard
           v-for="block in blocks"
           :key="block.id"
-          class="pp-bilan-card-soft space-y-3"
+          as="article"
+          variant="soft"
+          class="space-y-3"
         >
           <div class="flex items-start justify-between gap-3">
             <p class="text-base font-semibold text-[color:var(--color-text-primary)]">
               {{ block.title }}
             </p>
-            <span class="pp-journey-status-chip">
+            <PPBadge variant="neutral" size="sm">
               {{ block.statusLabel }}
-            </span>
+            </PPBadge>
           </div>
           <div class="flex flex-wrap gap-3 md:gap-4 md:items-center">
             <button
@@ -83,7 +85,7 @@
               {{ copy.blockBilanCta }}
             </button>
           </div>
-        </article>
+        </PPCard>
       </div>
     </section>
   </div>

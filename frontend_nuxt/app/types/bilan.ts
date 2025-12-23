@@ -1,6 +1,18 @@
 import type { EngagementLevelId, CtaTarget } from '~/config/engagement/types';
 import type { RecommendationItem } from '~/utils/reco/types';
 
+type ForbiddenVmKeys =
+  | 'answersBy'
+  | 'rawAnswers'
+  | 'perQuestion'
+  | `answersBy${string}`
+  | `rawAnswers${string}`
+  | `perQuestion${string}`
+  | `p${number}_q${number}`
+  | `q${number}_${string}`;
+
+type NoForbiddenKeys<T> = T & { [K in ForbiddenVmKeys]?: never };
+
 export type BilanAxisVM = {
   id: string;
   label: string;
@@ -123,7 +135,7 @@ export type BilanSkipSignalVM = {
   };
 };
 
-export type GlobalBilanViewModel = {
+type GlobalBilanViewModelBase = {
   copy: any;
   axisSummaryLabel: string;
   completedBlocksLabel: string;
@@ -202,3 +214,5 @@ export type GlobalBilanViewModel = {
     globalMissing: number;
   };
 };
+
+export type GlobalBilanViewModel = NoForbiddenKeys<GlobalBilanViewModelBase>;

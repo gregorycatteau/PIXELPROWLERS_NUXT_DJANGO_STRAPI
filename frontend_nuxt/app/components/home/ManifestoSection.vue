@@ -4,7 +4,7 @@
       <div class="pp-manifesto-band" />
       <div class="ManifesteBody">
         <div class="ManifesteHeader">
-          <div class="pp-manifesto-badge">PP</div>
+          <PPBadge as="div" variant="accent" size="sm">PP</PPBadge>
           <p class="pp-section-label">Qui je suis</p>
         </div>
         <div class="ManifesteContent pp-section-header">

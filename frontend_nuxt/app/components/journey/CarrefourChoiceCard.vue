@@ -1,5 +1,5 @@
 <template>
-<article class="CarrefourChoiceCard pp-card pp-journey-card-interactive">
+<PPCard as="article" variant="journey" hoverable class="CarrefourChoiceCard">
     <header class="space-y-1">
       <p class="CarrefourChoiceLabel">{{ id.toUpperCase() }}</p>
       <p class="CarrefourChoiceTitle">{{ title }}</p>
@@ -8,7 +8,7 @@
     <button type="button" class="pp-journey-cta-primary" @click="$emit('select', id)">
       {{ ctaLabel }}
     </button>
-  </article>
+  </PPCard>
 </template>
 
 <script setup lang="ts">

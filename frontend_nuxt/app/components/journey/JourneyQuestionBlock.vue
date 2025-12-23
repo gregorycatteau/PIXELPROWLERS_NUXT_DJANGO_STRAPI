@@ -1,72 +1,72 @@
 <template>
-<section
-  :class="[
-    'JourneyQuestionBlock pp-card pp-journey-soft-scale pp-journey-reveal pp-journey-question-card',
-    status === 'answered' ? 'pp-journey-question-card--answered' : '',
-    status === 'skipped' ? 'pp-journey-question-card--skipped' : ''
-  ]"
-  role="group"
-  :aria-labelledby="labelId"
-  :aria-describedby="description ? descriptionId : undefined"
-  :data-question-id="questionId || title"
->
-  <div class="pp-journey-question-layout">
-    <div class="pp-journey-question-text">
-      <div class="JourneyQuestionHeaderTop">
-        <div class="JourneyQuestionBadges">
-          <span v-if="questionIndex && totalQuestions" class="pp-journey-question-chip">
-            Question {{ questionIndex }} / {{ totalQuestions }}
-          </span>
-          <span v-if="themeLabel" :class="['pp-journey-theme-badge', themeClass]">
-            {{ themeLabel }}
-          </span>
-          <span
-            v-if="status && status !== 'empty'"
-            :class="['pp-journey-status-badge', statusClass]"
-          >
-            {{ status === 'answered' ? 'Réponse enregistrée' : 'Mis de côté' }}
-          </span>
-        </div>
-        <p :id="labelId" class="JourneyQuestionLabel">{{ title }}</p>
-      </div>
-      <p v-if="description" :id="descriptionId" class="JourneyQuestionDescription">
-        {{ description }}
-      </p>
-      <p v-if="helperText" :id="helperTextId" class="pp-journey-feel-hint">
-        {{ helperText }}
-      </p>
-    </div>
-    <div class="pp-journey-question-controls">
+  <PPQuestionCard
+    as="section"
+    density="default"
+    :title="title"
+    :context="description"
+    :index="questionIndex ?? null"
+    :total="totalQuestions ?? null"
+    :id-base="questionId || title"
+    role="group"
+    :aria-labelledby="titleId"
+    :aria-describedby="describedById"
+    :data-question-id="questionId || title"
+  >
+    <template #meta>
+      <PPProgress
+        v-if="questionIndex && totalQuestions"
+        :current="questionIndex"
+        :total="totalQuestions"
+        mode="ratio"
+      />
+      <PPBadge v-if="themeLabel" variant="outline" size="sm" :class="themeClass">
+        {{ themeLabel }}
+      </PPBadge>
+      <PPBadge
+        v-if="status && status !== 'empty'"
+        variant="success"
+        size="sm"
+        :class="statusClass"
+      >
+        {{ status === 'answered' ? 'Réponse enregistrée' : 'Mis de côté' }}
+      </PPBadge>
+    </template>
+
+    <template #default>
       <slot
         v-if="hasDefaultSlot"
-        :label-id="labelId"
-        :description-id="descriptionId"
+        :label-id="titleId"
+        :description-id="contextId"
         :helper-text-id="helperTextId"
       />
       <template v-else>
+        <p v-if="helperText" :id="helperTextId" class="pp-journey-feel-hint">
+          {{ helperText }}
+        </p>
         <LikertScaleFiveSteps
           :name="controlName"
           :model-value="modelValue ?? null"
           :disabled="disabled"
-          :aria-labelled-by="labelId"
+          :aria-labelled-by="titleId"
           :aria-described-by="describedById"
           @update:model-value="(val) => emit('update:modelValue', val)"
         />
-        <QuestionSkipControl
-          v-if="!disabled"
-          :is-skipped="modelValue === null"
-          :disabled="disabled"
-          :described-by="describedById"
-          @skip="() => emit('update:modelValue', null)"
-        />
       </template>
-    </div>
-  </div>
-</section>
+    </template>
+
+    <template v-if="!hasDefaultSlot && !disabled" #skip>
+      <QuestionSkipControl
+        :is-skipped="modelValue === null"
+        :disabled="disabled"
+        :described-by="describedById"
+        @skip="() => emit('update:modelValue', null)"
+      />
+    </template>
+  </PPQuestionCard>
 </template>
 
 <script setup lang="ts">
-import { Comment, Fragment, Text, computed, toRefs, useSlots } from 'vue';
+import { Comment, Fragment, Text, computed, useSlots } from 'vue';
 import type { LikertValue } from '~/composables/useJourneyDiagnostics';
 import LikertScaleFiveSteps from '~/components/journey/questionnaire/LikertScaleFiveSteps.vue';
 import QuestionSkipControl from '~/components/journey/questionnaire/QuestionSkipControl.vue';
@@ -86,21 +86,48 @@ const props = defineProps<{
   describedBy?: string;
 }>();
 
-const { title, description, questionId } = toRefs(props);
 const slots = useSlots();
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: LikertValue | null): void;
 }>();
 
-const labelId = computed(() => `${questionId?.value || title.value}-label`);
-const descriptionId = computed(() => `${questionId?.value || title.value}-desc`);
-const helperTextId = computed(() => `${questionId?.value || title.value}-helper`);
-const controlName = computed(() => props.name ?? `question-${questionId?.value || title.value}`);
+/**
+ * Normalise une base d'id pour éviter collisions DOM / focus hijack / ids bizarres.
+ * NFKC si dispo + suppression zero-width + allowlist + prefix + maxlen.
+ * NOTE: doit rester aligné avec PPQuestionCard.
+ */
+function normalizeIdBase(raw: string): string {
+  let s = String(raw ?? '');
+  try {
+    if (typeof s.normalize === 'function') s = s.normalize('NFKC');
+  } catch {
+    // ignore
+  }
+  s = s.replace(/[\u200B-\u200D\uFEFF]/g, '');
+  s = s.replace(/[^a-zA-Z0-9_-]/g, '-');
+  s = s.replace(/-+/g, '-').replace(/^[-_]+|[-_]+$/g, '');
+  if (!s) s = 'q';
+  if (s.length > 48) s = s.slice(0, 48);
+  return `ppq_${s}`;
+}
+
+const baseId = computed(() => normalizeIdBase(props.questionId ?? props.title ?? 'q'));
+const titleId = computed(() => `${baseId.value}__title`);
+const contextId = computed(() => `${baseId.value}__context`);
+const helperTextId = computed(() => `${baseId.value}__helper`);
+
+const controlName = computed(() => props.name ?? `question-${props.questionId ?? props.title}`);
+
 const describedById = computed(() => {
-  const ids = [description.value ? descriptionId.value : null, props.helperText ? helperTextId.value : null, props.describedBy ?? null]
+  const ids = [
+    props.description ? contextId.value : null,
+    props.helperText ? helperTextId.value : null,
+    props.describedBy ?? null
+  ]
     .filter(Boolean)
     .join(' ');
+
   return ids || undefined;
 });
 
@@ -132,22 +159,25 @@ const themeLabelMap: Record<string, string> = {
   structure: 'Structure / robustesse'
 };
 
+const THEME_BADGE_PREFIX = ['pp', 'journey', 'theme', 'badge'].join('-');
+const STATUS_BADGE_PREFIX = ['pp', 'journey', 'status', 'badge'].join('-');
+
 const themeClass = computed(() => {
   switch (props.themeKey) {
     case 'human':
-      return 'pp-journey-theme-badge--human';
+      return `${THEME_BADGE_PREFIX}--human`;
     case 'governance':
-      return 'pp-journey-theme-badge--governance';
+      return `${THEME_BADGE_PREFIX}--governance`;
     case 'organization':
-      return 'pp-journey-theme-badge--organization';
+      return `${THEME_BADGE_PREFIX}--organization`;
     case 'resources':
-      return 'pp-journey-theme-badge--resources';
+      return `${THEME_BADGE_PREFIX}--resources`;
     case 'movement':
-      return 'pp-journey-theme-badge--organization';
+      return `${THEME_BADGE_PREFIX}--organization`;
     case 'decisions':
-      return 'pp-journey-theme-badge--governance';
+      return `${THEME_BADGE_PREFIX}--governance`;
     case 'structure':
-      return 'pp-journey-theme-badge--resources';
+      return `${THEME_BADGE_PREFIX}--resources`;
     default:
       return '';
   }
@@ -156,44 +186,8 @@ const themeClass = computed(() => {
 const themeLabel = computed(() => (props.themeKey ? themeLabelMap[props.themeKey] ?? props.themeKey : ''));
 
 const statusClass = computed(() => {
-  if (props.status === 'answered') return 'pp-journey-status-badge--answered';
-  if (props.status === 'skipped') return 'pp-journey-status-badge--skipped';
+  if (props.status === 'answered') return `${STATUS_BADGE_PREFIX}--answered`;
+  if (props.status === 'skipped') return `${STATUS_BADGE_PREFIX}--skipped`;
   return '';
 });
 </script>
-
-<style scoped>
-@reference "@/assets/css/main.css";
-
-.JourneyQuestionBlock {
-  @apply w-full max-w-5xl mx-auto space-y-4 border border-[color:var(--color-stroke)]/70 bg-[color:var(--color-bg-card)]/90 p-4 sm:p-6;
-}
-
-.JourneyQuestionBlock:hover {
-  @apply border-[color:var(--color-accent-border)] bg-[color:var(--color-bg-card)] shadow-[var(--shadow-soft)];
-}
-
-.JourneyQuestionBlock:focus-visible {
-  @apply outline-none border-[color:var(--color-accent-border)] shadow-[0_0_0_4px_rgba(249,115,22,0.12)];
-}
-
-.JourneyQuestionHeader {
-  @apply space-y-1;
-}
-
-.JourneyQuestionLabel {
-  @apply text-lg font-semibold;
-}
-
-.JourneyQuestionDescription {
-  @apply text-sm text-[color:var(--color-text-muted)];
-}
-
-.JourneyQuestionContent {
-  @apply space-y-4;
-}
-
-.JourneyQuestionHeaderTop {
-  @apply flex flex-col gap-2;
-}
-</style>

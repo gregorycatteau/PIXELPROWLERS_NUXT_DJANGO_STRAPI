@@ -1,14 +1,15 @@
 <template>
 <section class="pp-section IndicatorsSectionWrapper" aria-labelledby="indicators-title">
-  <header class="pp-section-header">
-    <p class="pp-section-label">Étape 2 · Te reconnais-tu dans ces situations&nbsp;?</p>
-    <h2 id="indicators-title" class="pp-section-title">Indices que tu es vraiment au bon endroit</h2>
-    <p class="pp-section-desc">
-      Si tu te reconnais dans au moins une de ces situations, c’est normal&nbsp;: beaucoup de collectifs et de
-      porteurs de projets vivent ça. Choisis le parcours qui se rapproche le plus de ce que tu vis, même si ce n’est
-      pas parfait.
-    </p>
-  </header>
+  <PPSectionHeader
+    as="h2"
+    density="comfort"
+    eyebrow="Étape 2 · Te reconnais-tu dans ces situations&nbsp;?"
+    lead="Si tu te reconnais dans au moins une de ces situations, c’est normal&nbsp;: beaucoup de collectifs et de porteurs de projets vivent ça. Choisis le parcours qui se rapproche le plus de ce que tu vis, même si ce n’est pas parfait."
+  >
+    <template #title>
+      <span id="indicators-title">Indices que tu es vraiment au bon endroit</span>
+    </template>
+  </PPSectionHeader>
   <div class="IndicatorsGrid">
     <button
       v-for="(item, index) in situations"
@@ -23,11 +24,19 @@
       :aria-describedby="`indicator-${index}-body`"
       @click="emitSelectJourney(item.journeyId)"
     >
-        <div v-if="selectedJourneyId === item.journeyId" class="CardSelectedBadge pp-badge-pill">Parcours sélectionné</div>
+        <PPBadge
+          v-if="selectedJourneyId === item.journeyId"
+          as="div"
+          variant="success"
+          size="sm"
+          class="CardSelectedBadge"
+        >
+          Parcours sélectionné
+        </PPBadge>
         <div class="IndicatorHeader">
-          <div class="pp-emoji-badge IndicatorBadge">{{ item.icon }}</div>
+          <PPBadge as="div" variant="accent" size="sm" class="IndicatorBadge">{{ item.icon }}</PPBadge>
           <div>
-            <p class="pp-badge-pill CardTag">{{ item.tag }}</p>
+            <PPBadge as="div" variant="neutral" size="sm" class="CardTag">{{ item.tag }}</PPBadge>
             <h3 :id="`indicator-${index}-title`" class="IndicatorTitle pp-heading-2">{{ item.title }}</h3>
           </div>
         </div>
@@ -44,19 +53,20 @@
         choisir un point de départ. Tu pourras ajuster ensuite.
       </p>
       <div class="IndicatorsButtons">
-        <NuxtLink
+        <PPButton
           :to="{
             path: '/accompagnement-formation',
             query: { parcours: selectedJourneyId }
           }"
-          class="IndicatorsPrimaryButton pp-cta-primary"
+          class="IndicatorsPrimaryButton"
+          variant="primary"
           @click="handleCtaClick"
         >
           {{ ctaLabel }}
-        </NuxtLink>
-        <button type="button" class="IndicatorsSecondaryButton pp-cta-secondary" @click="emitScrollToHero">
+        </PPButton>
+        <PPButton type="button" class="IndicatorsSecondaryButton" variant="secondary" @click="emitScrollToHero">
           Revenir aux parcours du début de page
-        </button>
+        </PPButton>
       </div>
       <p class="IndicatorsHelper">
         Tu peux changer de parcours à tout moment avant de nous écrire.

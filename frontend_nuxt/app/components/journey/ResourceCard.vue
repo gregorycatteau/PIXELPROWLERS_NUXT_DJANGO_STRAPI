@@ -1,21 +1,20 @@
 <template>
-<article class="ResourceCard pp-journey-card-interactive">
+<PPCard as="article" variant="soft" hoverable class="ResourceCard">
     <div class="ResourceHeader">
       <p class="ResourceLevel">{{ levelLabel }}</p>
       <p class="ResourceTitle">{{ title }}</p>
     </div>
     <p class="ResourceDescription">{{ description }}</p>
-    <a
-      class="pp-cta-secondary inline-flex w-auto"
+    <PPButton
+      class="inline-flex w-auto"
       :href="href"
       target="_blank"
-      rel="noreferrer noopener"
+      variant="secondary"
       :aria-label="`Ouvrir la ressource ${title}`"
-      @click.prevent="handleClick"
     >
       Ouvrir la ressource
-    </a>
-  </article>
+    </PPButton>
+  </PPCard>
 </template>
 
 <script setup lang="ts">

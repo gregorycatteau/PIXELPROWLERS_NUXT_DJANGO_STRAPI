@@ -1,23 +1,21 @@
 <template>
   <section id="gb_tensions" class="pp-globalbilan-section">
-    <div class="pp-globalbilan-section-header">
-      <h2 class="pp-globalbilan-section-title">
-        {{ title }}
-      </h2>
-      <p class="text-sm text-[color:var(--color-text-muted)]">
-        {{ intro }}
-      </p>
-    </div>
+    <PPSectionHeader
+      as="h2"
+      density="comfort"
+      :title="title"
+      :lead="intro"
+    />
     <div v-if="issues.length" class="space-y-3">
       <div class="flex flex-wrap items-center justify-between gap-3">
         <h3 id="tensions_poids" class="text-sm font-semibold text-[color:var(--color-text)]">Ce qui pèse le plus</h3>
         <div class="flex flex-wrap items-center gap-2 text-xs">
-          <button type="button" class="pp-globalbilan-summary-chip" @click="emit('setAll', false)">
+          <PPChip variant="outline" size="sm" :selected="false" @click="emit('setAll', false)">
             Lecture rapide
-          </button>
-          <button type="button" class="pp-globalbilan-summary-chip" @click="emit('setAll', true)">
+          </PPChip>
+          <PPChip variant="outline" size="sm" :selected="false" @click="emit('setAll', true)">
             Tout lire
-          </button>
+          </PPChip>
           <button type="button" class="pp-journey-cta-secondary text-xs" @click="emit('goHypotheses')">
             Passer en lecture structure
           </button>

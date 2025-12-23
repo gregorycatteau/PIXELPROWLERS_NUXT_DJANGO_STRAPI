@@ -10,12 +10,12 @@
           si on pense être les bonnes personnes pour toi.
         </p>
       </div>
-      <NuxtLink
+      <PPButton
         to="/accompagnement-formation"
-        class="pp-cta-secondary"
+        variant="secondary"
       >
         Voir les formats possibles
-      </NuxtLink>
+      </PPButton>
     </div>
     <form
       class="ContactForm"

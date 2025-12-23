@@ -17,16 +17,9 @@ const handleClick = () => {
 </script>
 
 <template>
-  <button
-    type="button"
-    class="pp-likert-skip-button"
-    :class="{ 'pp-likert-skip-button--active': isSkipped }"
+  <PPSkipAction
+    :label="label || 'Ignorer cette question'"
     :disabled="disabled"
-    :aria-pressed="isSkipped ? 'true' : 'false'"
-    :aria-describedby="describedBy"
-    @click="handleClick"
-  >
-    <span aria-hidden="true">🛡</span>
-    <span>{{ label || 'Ignorer cette question' }}</span>
-  </button>
+    @skip="handleClick"
+  />
 </template>

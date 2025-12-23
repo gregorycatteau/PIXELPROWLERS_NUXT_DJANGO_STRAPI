@@ -2,6 +2,7 @@
 import { computed, ref, watch } from 'vue';
 import type { LikertValue } from '~/composables/useJourneyDiagnostics';
 import { P1_SCALE_COPY, P1_SKIP_COPY } from '@/config/journeys/p1CopyV1_3';
+import PPScale5 from '~/components/PPScale5.vue';
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: LikertValue | null): void;
@@ -28,11 +29,13 @@ const currentValue = computed<LikertValue | null>(() => props.modelValue ?? prop
 const valueLabels = P1_SCALE_COPY.valueLabels;
 const prompt = P1_SCALE_COPY.questionPrompt;
 const resolvedLabels = computed(() => props.labels ?? { min: `${valueLabels[1]}`, max: `${valueLabels[5]}` });
+const stepLabels = computed(() => scale.value.map((value) => valueLabels[value]));
 const skipLabel = computed(() => props.skipLabel ?? P1_SKIP_COPY.buttonLabel);
 const showSkip = computed(() => props.showSkip ?? true);
 const hasInteracted = ref(false);
 const isSkipped = computed(() => hasInteracted.value && currentValue.value === null);
 const contextId = computed(() => `likert-context-${props.questionId}`);
+const context = computed(() => props.describedBy || contextId.value);
 
 watch(
   () => props.modelValue,
@@ -43,10 +46,11 @@ watch(
   }
 );
 
-const handleSelect = (value: LikertValue) => {
+const handleSelect = (value: number | null) => {
+  if (value === null) return;
   hasInteracted.value = true;
-  emit('update:modelValue', value);
-  emit('select', value);
+  emit('update:modelValue', value as LikertValue);
+  emit('select', value as LikertValue);
 };
 
 const handleSkip = () => {
@@ -57,53 +61,26 @@ const handleSkip = () => {
 </script>
 
 <template>
-  <fieldset class="pp-likert-scale">
-    <legend class="sr-only">{{ prompt }}</legend>
-
+  <div class="space-y-2">
     <p v-if="resolvedLabels?.min || resolvedLabels?.max" :id="contextId" class="sr-only">
       1 signifie « {{ resolvedLabels?.min }} », 5 signifie « {{ resolvedLabels?.max }} ». L’échelle va de plus léger à plus lourd au quotidien.
     </p>
 
-    <!--
-      Échelle 1 → 5, accessible au clavier.
-      On utilise des radios natifs pour bénéficier de la navigation clavier et des états aria implicites.
-    -->
-    <div
-      class="pp-likert-track"
-      role="radiogroup"
-      :aria-label="prompt"
-      :aria-describedby="describedBy || contextId"
-    >
-      <label
-        v-for="value in scale"
-        :key="value"
-        class="pp-likert-step"
-        :class="{ 'pp-likert-step--active': currentValue === value && !isSkipped }"
-      >
-        <input
-          type="radio"
-          class="sr-only"
-          :name="name"
-          :value="value"
-          :checked="currentValue === value"
-          :aria-label="valueLabels[value]"
-          @change="handleSelect(value)"
-        />
-        <span class="pp-likert-step__number" aria-hidden="true">{{ value }}</span>
-        <span class="pp-likert-step__label" aria-hidden="true">{{ valueLabels[value] }}</span>
-        <span class="sr-only">Note {{ valueLabels[value] }}</span>
-        <span v-if="currentValue === value && !isSkipped" class="sr-only">Ta réponse actuelle</span>
-      </label>
-    </div>
-    <button
+    <PPScale5
+      :model-value="currentValue"
+      :question-id="questionId"
+      :min-label="resolvedLabels?.min"
+      :max-label="resolvedLabels?.max"
+      :prompt="prompt"
+      :context="context"
+      :step-labels="stepLabels"
+      @update:model-value="handleSelect"
+    />
+
+    <PPSkipAction
       v-if="showSkip"
-      type="button"
-      class="pp-likert-skip-button"
-      :class="{ 'pp-likert-skip-button--active': isSkipped }"
-      @click="handleSkip"
-    >
-      <span aria-hidden="true">🛡</span>
-      <span>{{ skipLabel }}</span>
-    </button>
-  </fieldset>
+      :label="skipLabel"
+      @skip="handleSkip"
+    />
+  </div>
 </template>

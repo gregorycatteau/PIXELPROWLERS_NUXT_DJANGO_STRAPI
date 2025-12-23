@@ -18,7 +18,7 @@
       </ul>
     </nav>
 
-    <div class="pp-globalbilan-aside-card">
+    <PPCard as="div" variant="indicator" class="space-y-2">
       <p class="pp-globalbilan-aside-title">Repères rapides</p>
       <div class="space-y-2">
         <div class="flex items-center justify-between text-xs">
@@ -34,7 +34,7 @@
           <span class="font-semibold">{{ panoramaAnsweredLabel }}</span>
         </div>
       </div>
-    </div>
+    </PPCard>
 
     <div class="pp-globalbilan-aside-actions">
       <button type="button" class="pp-journey-cta-secondary text-xs w-full justify-center" @click="$emit('go-hub')">

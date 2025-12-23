@@ -1,14 +1,12 @@
 <template>
   <section class="pp-section">
-    <header class="pp-section-header">
-      <p class="pp-section-label">Étape 3 · Comment on travaille ensemble (si tu veux aller plus loin)</p>
-      <h2 class="pp-section-title">Quatre étapes, pas plus</h2>
-      <p class="pp-section-desc">
-        On ne vient pas retourner la table. On commence par regarder ensemble, sans promesse
-        magique et sans t’obliger à tout changer. Quatre étapes posées pour passer de
-        «&nbsp;on subit&nbsp;» à «&nbsp;on sait ce qu’on teste dans les prochaines semaines&nbsp;».
-      </p>
-    </header>
+    <PPSectionHeader
+      as="h2"
+      density="comfort"
+      eyebrow="Étape 3 · Comment on travaille ensemble (si tu veux aller plus loin)"
+      title="Quatre étapes, pas plus"
+      lead="On ne vient pas retourner la table. On commence par regarder ensemble, sans promesse magique et sans t’obliger à tout changer. Quatre étapes posées pour passer de «&nbsp;on subit&nbsp;» à «&nbsp;on sait ce qu’on teste dans les prochaines semaines&nbsp;»."
+    />
     <div class="TimelineWrapper">
       <div
         v-for="(step, index) in steps"
@@ -17,7 +15,7 @@
         class="TimelineStep pp-reveal"
         :style="{ transitionDelay: `${index * 90}ms` }"
       >
-        <div class="TimelineBadge pp-badge-accent">{{ index + 1 }}</div>
+        <PPBadge as="div" variant="accent" size="sm" class="TimelineBadge">{{ index + 1 }}</PPBadge>
         <div
           class="TimelineLine"
           :class="{ last: index === steps.length - 1 }"

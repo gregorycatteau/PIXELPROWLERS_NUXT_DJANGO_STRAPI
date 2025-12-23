@@ -1,14 +1,20 @@
 <template>
   <div class="PageContainer">
     <section class="PageSection">
-      <div class="PrimaryCard SectionIntro">
-        <p class="SectionLabel">À propos</p>
-        <h1 class="SectionTitle">PixelProwlers, studio pluriactif</h1>
-        <p class="SectionDescription">
-          Nous aidons les collectifs et organisations à clarifier leur posture, à rendre leurs offres lisibles et
-          à mettre en place des expériences numériques sobres qui filtrent les bonnes demandes.
-        </p>
-      </div>
+      <PPCard as="section" variant="default">
+        <PPPageHeader as="h1" density="comfort" align="left">
+          <template #eyebrow>
+            À propos
+          </template>
+          <template #title>
+            PixelProwlers, studio pluriactif
+          </template>
+          <template #lead>
+            Nous aidons les collectifs et organisations à clarifier leur posture, à rendre leurs offres lisibles et
+            à mettre en place des expériences numériques sobres qui filtrent les bonnes demandes.
+          </template>
+        </PPPageHeader>
+      </PPCard>
       <div class="PillarsGrid">
         <div class="SecondaryCard PillarCard" v-for="(item, index) in pillars" :key="index">
           <p class="PillarLabel">Pilier {{ index + 1 }}</p>
@@ -87,22 +93,6 @@ useHead({
 
 .PageContainer {
   @apply w-full max-w-6xl mx-auto px-6 space-y-12 pb-16;
-}
-
-.SectionLabel {
-  @apply text-sm uppercase tracking-[0.2em] text-orange-300;
-}
-
-.SectionTitle {
-  @apply text-3xl font-semibold;
-}
-
-.SectionDescription {
-  @apply text-base leading-relaxed text-slate-300;
-}
-
-.SectionIntro {
-  @apply space-y-3;
 }
 
 .PillarsGrid {

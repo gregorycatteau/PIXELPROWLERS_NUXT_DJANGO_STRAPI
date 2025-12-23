@@ -9,15 +9,18 @@
       <div class="pp-journey-section">
         <p class="pp-journey-meta">Axes prioritaires</p>
         <div class="grid gap-3 sm:grid-cols-2">
-        <div
+        <PPBadge
           v-for="(axis, index) in axisList"
           :key="axis.key"
-          class="BilanPill pp-journey-reveal"
+          as="div"
+          variant="neutral"
+          size="sm"
+          class="pp-journey-reveal"
           :style="{ '--pp-stagger-delay': `${index * 80}ms` }"
         >
           <span class="font-semibold">{{ axis.label }}</span>
           <span class="text-sm text-[color:var(--color-text-muted)]">{{ formatScore(axis.value) }}</span>
-        </div>
+        </PPBadge>
       </div>
       <div class="space-y-2 text-sm text-[color:var(--color-text-muted)]">
         <p>Lecture indicative : plus la valeur est élevée, plus l’axe mérite de l’attention en priorité. Ce n’est pas un verdict, juste un repère pour t’aider à choisir par où commencer.</p>
@@ -71,7 +74,4 @@ const formatScore = (score: number) => `${score.toFixed(2)}/5`;
 <style scoped>
 @reference "@/assets/css/main.css";
 
-.BilanPill {
-  @apply flex items-center justify-between rounded-xl border border-[color:var(--color-stroke)] bg-[color:var(--color-panel-soft)] px-4 py-3;
-}
 </style>

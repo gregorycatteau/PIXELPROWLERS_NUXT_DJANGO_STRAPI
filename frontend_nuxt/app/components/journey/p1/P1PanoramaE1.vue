@@ -1,11 +1,18 @@
 <template>
   <JourneyLayout>
-    <div class="pp-journey-panel space-y-5" role="region" aria-labelledby="journey-step-heading-E1_panorama">
-      <JourneyStepHeader
-        :title="copy.title"
-        :subtitle="copy.subtitle"
-        heading-id="journey-step-heading-E1_panorama"
-      />
+    <PPQuestionnaireShell
+      density="default"
+      align="center"
+      role="region"
+      aria-labelledby="journey-step-heading-E1_panorama"
+    >
+      <template #header>
+        <JourneyStepHeader
+          :title="copy.title"
+          :subtitle="copy.subtitle"
+          heading-id="journey-step-heading-E1_panorama"
+        />
+      </template>
 
       <div class="pp-journey-section space-y-4">
         <p class="pp-journey-meta">{{ copy.meta }}</p>
@@ -34,18 +41,18 @@
         </div>
       </div>
 
-      <div class="flex gap-3">
-        <button type="button" class="pp-journey-cta-primary" @click="handleValidate">
-          {{ copy.validate }}
-        </button>
-        <button type="button" class="pp-journey-cta-secondary" @click="goToStep('E0_intro')">
-          {{ copy.back }}
-        </button>
-      </div>
-      <p v-if="validationError" class="pp-journey-body text-sm text-[color:var(--color-accent-strong)]">
-        {{ validationError }}
-      </p>
-    </div>
+      <template #footer>
+        <PPQuestionNav
+          :prev-label="copy.back"
+          :next-label="copy.validate"
+          @prev="goToStep('E0_intro')"
+          @next="handleValidate"
+        />
+        <p v-if="validationError" class="pp-journey-body text-sm text-[color:var(--color-accent-strong)]">
+          {{ validationError }}
+        </p>
+      </template>
+    </PPQuestionnaireShell>
   </JourneyLayout>
 </template>
 

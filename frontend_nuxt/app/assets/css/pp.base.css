@@ -1,0 +1,20 @@
+/* PixelProwlers DS — BASE (V1) — Source: main.css (moved) */
+@layer base {
+  :root {
+    font-family: var(--font-sans);
+    background-color: var(--color-bg-page);
+    color: var(--color-text-primary);
+  }
+
+  body {
+    @apply bg-[color:var(--color-bg-page)] text-[color:var(--color-text-primary)] antialiased;
+  }
+
+  a {
+    color: var(--color-accent-strong);
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+}

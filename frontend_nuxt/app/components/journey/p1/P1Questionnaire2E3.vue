@@ -1,13 +1,27 @@
 <template>
   <JourneyLayout>
-    <div class="pp-journey-panel space-y-5" role="region" aria-labelledby="journey-step-heading-E3">
-      <JourneyStepHeader
-        title="Questionnaire 2 — VUCA & valeurs"
-        subtitle="Echelle 1–5, pas de stockage serveur. Concentre-toi sur ton ressenti actuel."
-        heading-id="journey-step-heading-E3"
-      />
-      <P1SovereigntyNotice />
-      <JourneyProgressBar :current="answeredCount" :total="questions.length" label="Avancement" />
+    <PPQuestionnaireShell
+      density="default"
+      align="center"
+      role="region"
+      aria-labelledby="journey-step-heading-E3"
+    >
+      <template #header>
+        <JourneyStepHeader
+          title="Questionnaire 2 — VUCA & valeurs"
+          subtitle="Echelle 1–5, pas de stockage serveur. Concentre-toi sur ton ressenti actuel."
+          heading-id="journey-step-heading-E3"
+        />
+        <P1SovereigntyNotice />
+        <PPProgress
+          :current="answeredCount"
+          :total="questions.length"
+          label="Avancement"
+          mode="both"
+          :showHeader="true"
+        />
+      </template>
+
       <div class="pp-journey-global-notice mt-4 md:mt-5" :id="skipNoticeId">
         <span aria-hidden="true">🛡️</span>
         <span>{{ skipHelper }}</span>
@@ -32,28 +46,23 @@
         >
         </JourneyQuestionBlock>
       </div>
-      <div class="flex flex-wrap gap-3">
-        <button
-          type="button"
-          class="pp-journey-cta-primary"
-          :class="{ 'pp-journey-cta-pulse-once': allAnswered }"
-          :disabled="!allAnswered"
-          @click="$emit('completed')"
-        >
-          Continuer vers le bilan VUCA
-        </button>
-        <button type="button" class="pp-journey-cta-secondary" @click="$emit('abort')">
-          Revenir au bilan précédent
-        </button>
-      </div>
-    </div>
+
+      <template #footer>
+        <PPQuestionNav
+          prev-label="Revenir au bilan précédent"
+          next-label="Continuer vers le bilan VUCA"
+          :next-disabled="!allAnswered"
+          @prev="$emit('abort')"
+          @next="$emit('completed')"
+        />
+      </template>
+    </PPQuestionnaireShell>
   </JourneyLayout>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
 import JourneyLayout from '~/components/journey/JourneyLayout.vue';
-import JourneyProgressBar from '~/components/journey/JourneyProgressBar.vue';
 import JourneyQuestionBlock from '~/components/journey/JourneyQuestionBlock.vue';
 import JourneyStepHeader from '~/components/journey/JourneyStepHeader.vue';
 import P1SovereigntyNotice from '~/components/journey/p1/P1SovereigntyNotice.vue';

@@ -1,14 +1,20 @@
 <template>
   <div class="PageContainer">
     <section class="PageSection">
-      <div class="PrimaryCard SectionIntro">
-        <p class="SectionLabel">Accompagnement & formation</p>
-        <h1 class="SectionTitle">Formats courts pour avancer vite</h1>
-        <p class="SectionDescription">
-          Choisis un format adapté à ta maturité : diagnostic express, sprint d’alignement ou
-          accompagnement sur 6 semaines pour livrer et documenter.
-        </p>
-      </div>
+      <PPCard as="section" variant="default">
+        <PPPageHeader as="h1" density="comfort" align="left">
+          <template #eyebrow>
+            Accompagnement & formation
+          </template>
+          <template #title>
+            Formats courts pour avancer vite
+          </template>
+          <template #lead>
+            Choisis un format adapté à ta maturité : diagnostic express, sprint d’alignement ou
+            accompagnement sur 6 semaines pour livrer et documenter.
+          </template>
+        </PPPageHeader>
+      </PPCard>
       <div class="OffersGrid">
         <article v-for="(offer, index) in offers" :key="index" class="SecondaryCard OfferCard">
           <h2 class="OfferTitle">{{ offer.title }}</h2>
@@ -90,22 +96,6 @@ useHead({
 
 .PageContainer {
   @apply w-full max-w-6xl mx-auto px-6 space-y-12 pb-16;
-}
-
-.SectionLabel {
-  @apply text-sm uppercase tracking-[0.2em] text-orange-300;
-}
-
-.SectionTitle {
-  @apply text-3xl font-semibold;
-}
-
-.SectionDescription {
-  @apply text-base leading-relaxed text-slate-300;
-}
-
-.SectionIntro {
-  @apply space-y-3;
 }
 
 .OffersGrid {

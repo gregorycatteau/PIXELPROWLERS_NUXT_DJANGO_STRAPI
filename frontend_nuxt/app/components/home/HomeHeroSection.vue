@@ -2,31 +2,36 @@
   <section :id="sectionId" class="home-section home-hero">
     <div class="home-hero-grid">
       <div class="home-section-header space-y-4">
-        <div class="space-y-3">
-          <h1 class="home-hero-title">
+        <PPPageHeader as="h1" align="center" density="comfort">
+          <template #title>
             {{ title }}
-          </h1>
-          <p class="home-hero-subtitle">
-            {{ subtitlePrimaryValue }}
-          </p>
-          <p v-if="subtitleSecondaryValue" class="home-hero-subtitle-strong">
-            {{ subtitleSecondaryValue }}
-          </p>
-        </div>
+          </template>
 
-        <div class="home-hero-actions">
-          <button type="button" class="home-cta-primary" @click="emitPrimaryClick">
-            {{ primaryCtaLabel }}
-          </button>
-          <button
-            v-if="secondaryCtaLabel"
-            type="button"
-            class="home-cta-secondary"
-            @click="emitSecondaryClick"
-          >
-            {{ secondaryCtaLabel }}
-          </button>
-        </div>
+          <template #lead>
+            <p>
+              {{ subtitlePrimaryValue }}
+            </p>
+            <p v-if="subtitleSecondaryValue">
+              {{ subtitleSecondaryValue }}
+            </p>
+          </template>
+
+          <template #actions>
+            <div class="home-hero-actions">
+              <PPButton type="button" variant="primary" @click="emitPrimaryClick">
+                {{ primaryCtaLabel }}
+              </PPButton>
+              <PPButton
+                v-if="secondaryCtaLabel"
+                type="button"
+                variant="secondary"
+                @click="emitSecondaryClick"
+              >
+                {{ secondaryCtaLabel }}
+              </PPButton>
+            </div>
+          </template>
+        </PPPageHeader>
 
         <p v-if="microcopy" class="home-hero-microcopy">
           {{ microcopy }}
@@ -92,18 +97,6 @@ const subtitleSecondaryValue = computed(() => props.subtitleSecondary);
 
 .home-section-kicker {
   @apply text-xs font-semibold uppercase tracking-[0.2em] text-orange-300/90;
-}
-
-.home-hero-title {
-  @apply text-4xl sm:text-5xl font-bold leading-tight max-w-[22ch];
-}
-
-.home-hero-subtitle {
-  @apply text-base sm:text-lg leading-relaxed text-[color:var(--color-text-muted)] max-w-[70ch];
-}
-
-.home-hero-subtitle-strong {
-  @apply text-base sm:text-lg font-semibold leading-relaxed text-slate-100 max-w-[68ch];
 }
 
 .home-hero-actions {

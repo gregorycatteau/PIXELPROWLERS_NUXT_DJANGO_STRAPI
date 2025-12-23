@@ -1,17 +1,16 @@
 <template>
   <section class="pp-section">
-    <div class="pp-section-header">
-      <p class="pp-section-label">Est-ce qu’on est faits pour travailler ensemble ?</p>
-      <h2 class="pp-section-title">Clarifions vite si on avance ou non</h2>
-      <p class="pp-section-desc">
-        On travaille bien quand on peut se dire les choses simplement. Voici ce que tu peux attendre de nous,
-        et aussi quand ce n’est peut-être pas le bon format.
-      </p>
-    </div>
+    <PPSectionHeader
+      as="h2"
+      density="comfort"
+      eyebrow="Est-ce qu’on est faits pour travailler ensemble ?"
+      title="Clarifions vite si on avance ou non"
+      lead="On travaille bien quand on peut se dire les choses simplement. Voici ce que tu peux attendre de nous, et aussi quand ce n’est peut-être pas le bon format."
+    />
     <div class="FitGrid">
       <article class="pp-card pp-card-hover pp-tilt-card FitCard" tabindex="0">
         <div class="FitCardHeader">
-          <span class="pp-badge-pill">Ce que tu peux attendre</span>
+          <PPBadge variant="neutral" size="sm">Ce que tu peux attendre</PPBadge>
         </div>
         <ul class="FitList">
           <li class="FitItem">Un regard extérieur honnête sur ta situation, sans jugement et sans vernis marketing.</li>
@@ -24,7 +23,7 @@
 
       <article class="pp-card pp-card-hover pp-tilt-card FitCard" tabindex="0">
         <div class="FitCardHeader">
-          <span class="pp-badge-pill">Ce n’est pas pour toi si…</span>
+          <PPBadge variant="neutral" size="sm">Ce n’est pas pour toi si…</PPBadge>
         </div>
         <ul class="FitList">
           <li class="FitItem">Tu cherches une solution miracle « clé en main » sans vouloir regarder ce qui coince dans le fonctionnement actuel.</li>

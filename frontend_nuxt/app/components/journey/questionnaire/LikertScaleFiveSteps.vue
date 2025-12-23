@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import type { LikertValue } from '~/composables/useJourneyDiagnostics';
+import PPScale5 from '~/components/PPScale5.vue';
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: LikertValue | null): void;
@@ -32,44 +33,36 @@ const resolvedLabels = computed<Record<LikertValue, string>>(
     } as Record<LikertValue, string>)
 );
 
-const handleSelect = (value: LikertValue) => {
-  if (props.disabled) return;
-  emit('update:modelValue', value);
+const minLabel = computed(() => resolvedLabels.value[(scale.value[0] ?? 1) as LikertValue]);
+const maxLabel = computed(
+  () => resolvedLabels.value[(scale.value[scale.value.length - 1] ?? 5) as LikertValue]
+);
+const stepLabels = computed(() => scale.value.map((value) => resolvedLabels.value[value]));
+const prompt = computed(() => props.ariaLabelledBy || 'Echelle de reponse');
+const context = computed(() => props.ariaDescribedBy ?? null);
+
+const handleUpdate = (value: number | null) => {
+  if (value === null) {
+    emit('update:modelValue', null);
+    return;
+  }
+  if (scale.value.includes(value as LikertValue)) {
+    emit('update:modelValue', value as LikertValue);
+  }
 };
 </script>
 
 <template>
-  <fieldset class="pp-likert-scale">
-    <legend class="sr-only">Echelle de reponse</legend>
-
-    <div
-      class="pp-likert-track"
-      role="radiogroup"
-      :aria-labelledby="ariaLabelledBy"
-      :aria-describedby="ariaDescribedBy"
-      :aria-label="ariaLabelledBy ? undefined : 'Echelle de reponse'"
-    >
-      <label
-        v-for="value in scale"
-        :key="value"
-        class="pp-likert-step focus-within:outline-none focus-within:ring-2 focus-within:ring-amber-300/70"
-        :class="{ 'pp-likert-step--active': modelValue === value }"
-      >
-        <input
-          type="radio"
-          class="sr-only"
-          :name="name"
-          :value="value"
-          :checked="modelValue === value"
-          :disabled="disabled"
-          :aria-label="resolvedLabels[value]"
-          @change="handleSelect(value)"
-        />
-        <span class="pp-likert-step__number" aria-hidden="true">{{ value }}</span>
-        <span class="pp-likert-step__label" aria-hidden="true">{{ resolvedLabels[value] }}</span>
-        <span class="sr-only">{{ resolvedLabels[value] }}</span>
-        <span v-if="modelValue === value" class="sr-only">Ta reponse actuelle</span>
-      </label>
-    </div>
-  </fieldset>
+  <!-- Wrapper mince : conserve le contrat public, délègue 100% du rendu à PPScale5 -->
+  <PPScale5
+    :model-value="modelValue"
+    :question-id="name"
+    :disabled="disabled"
+    :min-label="minLabel"
+    :max-label="maxLabel"
+    :prompt="prompt"
+    :context="context"
+    :step-labels="stepLabels"
+    @update:model-value="handleUpdate"
+  />
 </template>

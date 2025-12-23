@@ -18,10 +18,10 @@ export type RecommendationAxisSignal = {
   axisId: string;
   label: string;
   score: number;
-  answeredCount: number;
-  skippedCount: number;
-  missingCount: number;
-  totalCount: number;
+  answeredCount?: number;
+  skippedCount?: number;
+  missingCount?: number;
+  totalCount?: number;
 };
 
 export type RecommendationBlockSignal = {
@@ -46,4 +46,8 @@ export type RecommendationSignals = {
 export type RecommendationResult = {
   recommended: RecommendationItem[];
   library: RecommendationItem[];
+  meta?: {
+    axesDominants: Array<{ id: string; label: string; score: number }>;
+    intensity: 'gentle' | 'moderate' | 'strong';
+  };
 };
