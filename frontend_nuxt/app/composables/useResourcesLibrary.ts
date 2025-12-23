@@ -6,10 +6,11 @@
  * - Filtres : kind, tags, effort, impact, language
  * - Tri : default(position), updatedAt desc, effort asc, impact desc
  * - Pagination : 12/page (index + total pages)
- * - Deep linking via query params
- * - Sanitation des query params (allowlist clés/valeurs)
+ * - Deep linking via SafeDeepLinkKit (secure query params)
+ * - Sanitation des query params (allowlist clés/valeurs via resourcesDeepLink.ts)
  *
  * @see docs/20-product_specs/ux_content/PX_V1_3_RESOURCES_LIBRARY_SPEC.md
+ * @see frontend_nuxt/app/utils/deeplinks/resourcesDeepLink.ts
  */
 
 import { computed, ref, watch, onMounted, onUnmounted, type Ref } from 'vue';
@@ -26,6 +27,11 @@ import {
   type ImpactLevel,
   type ResourceLanguage,
 } from '@/data/resourcesData';
+import {
+  parseResourcesDeepLink,
+  buildResourcesDeepLink,
+  type SortOption as DeepLinkSortOption,
+} from '@/utils/deeplinks/resourcesDeepLink';
 
 // =============================================================================
 // CONSTANTS

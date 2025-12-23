@@ -15,6 +15,19 @@
 - Validé par : (à renseigner)
 - Date : (à renseigner)
 
+## Gate 1.5 – Deep links & DOM injection tripwires (P0)
+- Description : contrat strict deep links /ressources + parsing défensif + guard anti DOM injection.
+- Critères :
+  - SafeDeepLinkKit canonique (build + parse) présent et utilisé partout pour `/ressources`.
+  - Allowlist query params + sanitize NFKC/stripZW/trim/clamp + drop silencieux + defaults safe.
+  - Params tracking/debug interdits (utm_*, gclid, fbclid, ref, source, campaign, debug*).
+  - Pas de logs des query brutes en prod.
+  - Guard `no-innerhtml` (innerHTML/outerHTML/insertAdjacentHTML) actif sur `frontend_nuxt/app/**`.
+  - Tests unitaires parse/build + test “querystring trop longue” → fallback neutre.
+- Statut : TODO
+- Validé par : Dan & Marty
+- Date : (à renseigner)
+
 ## Gate 2 – Ressources dynamiques
 - Description : pas de PII dans le catalogue, logs Strapi/endpoint minimisés et à rétention courte.
 - Critères : doc catalogue + politique de logs écrite.

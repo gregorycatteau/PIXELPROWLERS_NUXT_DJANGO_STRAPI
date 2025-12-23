@@ -37,7 +37,7 @@
           </p>
           <ResourceList :resources="resourcePreview" variant="compact" />
           <div class="flex flex-wrap gap-2">
-            <NuxtLink class="pp-journey-cta-secondary inline-flex w-auto text-xs" to="/ressources?focus=p1">
+            <NuxtLink class="pp-journey-cta-secondary inline-flex w-auto text-xs" :to="p1ResourcesLink">
               Voir toutes les ressources P1
             </NuxtLink>
             <NuxtLink class="pp-btn-ghost text-xs" :to="startLink">
@@ -65,6 +65,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { buildResourcesDeepLink } from '~/utils/deeplinks/resourcesDeepLink';
 import ResourceList from '@/components/resources/ResourceList.vue';
 import P1JourneyOrchestrator from '~/components/journey/p1/P1JourneyOrchestrator.vue';
 import JourneyEngineUniversal from '~/components/journey/JourneyEngineUniversal.vue';
@@ -110,4 +111,7 @@ const resourcePreview = computed<P1Resource[]>(() => {
 });
 
 const startLink = computed(() => `/parcours/${manifest.value?.slug ?? 'ma-structure-dysfonctionne'}?step=E0_intro`);
+
+/** Deep link sécurisé vers /ressources filtré P1 (SafeDeepLinkKit) */
+const p1ResourcesLink = buildResourcesDeepLink({ tags: ['p1'] });
 </script>

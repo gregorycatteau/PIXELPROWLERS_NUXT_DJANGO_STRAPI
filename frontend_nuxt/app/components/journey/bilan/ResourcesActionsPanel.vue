@@ -34,11 +34,20 @@
 
     <!-- Section Bibliothèque (filtrable) -->
     <div v-if="hasLibrary" class="space-y-3">
-      <PPSectionHeader
-        as="h3"
-        density="compact"
-        title="Bibliothèque"
-      />
+      <div class="flex flex-wrap items-baseline justify-between gap-2">
+        <PPSectionHeader
+          as="h3"
+          density="compact"
+          title="Bibliothèque"
+        />
+        <!-- CTA pilote SafeDeepLinkKit : lien sécurisé vers /ressources filtré P1 -->
+        <NuxtLink
+          :to="P1_IMPACT_RESOURCES_LINK"
+          class="pp-journey-cta-secondary text-xs"
+        >
+          Explorer ressources P1
+        </NuxtLink>
+      </div>
       
       <div class="flex flex-wrap items-center gap-3">
         <div v-if="tags.length" class="flex flex-wrap gap-2">
@@ -108,6 +117,7 @@
 import { computed, ref } from 'vue';
 import type { ResourcesActionsItemVM } from '~/types/bilan';
 import { safeFilePath, safeRoutePath } from '~/utils/cta/safeCta';
+import { buildResourcesDeepLink } from '~/utils/deeplinks/resourcesDeepLink';
 import type { ResourceMeta, ResourceBadge } from '~/components/PPResourceCard.vue';
 
 const props = defineProps<{
@@ -142,6 +152,16 @@ const filteredLibrary = computed(() => {
 
 const CONTACT_ROUTE = safeRoutePath('/contact');
 const RESOURCES_ROUTE = safeRoutePath('/ressources');
+
+/**
+ * Deep link vers /ressources filtré P1 + tri impact (pilote SafeDeepLinkKit)
+ * @see frontend_nuxt/app/utils/deeplinks/resourcesDeepLink.ts
+ */
+const P1_IMPACT_RESOURCES_LINK = buildResourcesDeepLink({
+  tags: ['p1'],
+  sort: 'impact',
+  page: 1,
+});
 
 const safeRouteTarget = (target?: string | null) => {
   if (!target) return null;
