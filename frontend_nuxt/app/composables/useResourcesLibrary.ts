@@ -219,9 +219,6 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
       if (queryStart !== -1) {
         const queryString = fullPath.slice(queryStart);
         if (queryString.length > MAX_QUERY_STRING_LENGTH) {
-          if (import.meta.dev) {
-            console.debug('[useResourcesLibrary] URL dirty: query string too long');
-          }
           return true;
         }
       }
@@ -232,9 +229,6 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
         const keyLower = key.toLowerCase();
         for (const prefix of FORBIDDEN_PARAM_PREFIXES) {
           if (keyLower.startsWith(prefix)) {
-            if (import.meta.dev) {
-              console.debug(`[useResourcesLibrary] URL dirty: forbidden param "${key}"`);
-            }
             return true;
           }
         }
@@ -261,9 +255,6 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
       // Check if any param exists in original that's not in rebuilt (unknown params)
       for (const key of queryKeys) {
         if (!(key in rebuiltQuery)) {
-          if (import.meta.dev) {
-            console.debug(`[useResourcesLibrary] URL dirty: unknown param "${key}"`);
-          }
           return true;
         }
       }
@@ -305,15 +296,8 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
       
       // Silent replace (no toast, no animation, no scroll reset)
       router.replace(canonicalRoute);
-      
-      if (import.meta.dev) {
-        console.debug('[useResourcesLibrary] URL canonicalized');
-      }
     } catch {
       // Silent failure — don't block user
-      if (import.meta.dev) {
-        console.debug('[useResourcesLibrary] URL canonicalization failed');
-      }
     }
   }
 
