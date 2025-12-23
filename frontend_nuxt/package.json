@@ -14,6 +14,7 @@
     "no-console:guard": "tsx tools/no_console_guard.ts",
     "engagement:guard": "tsx tools/engagement_guard.ts",
     "no-v-html:guard": "tsx tools/no_v_html_guard.ts",
+    "no-innerhtml:guard": "node scripts/guards/no-innerhtml.mjs",
     "data-only:guard": "tsx tools/data_only_strings_guard.ts",
     "markdown-safe:guard": "tsx tools/markdown_safe_guard.ts",
     "reco:guard": "tsx tools/recommendations_guard.ts",

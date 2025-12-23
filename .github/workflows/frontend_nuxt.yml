@@ -61,6 +61,9 @@ jobs:
       - name: No v-html guard
         run: npm run no-v-html:guard
 
+      - name: No innerHTML guard
+        run: npm run no-innerhtml:guard
+
       - name: Data-only strings guard
         run: npm run data-only:guard
 
