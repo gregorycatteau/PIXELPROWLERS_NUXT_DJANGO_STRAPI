@@ -29,8 +29,8 @@ const MAX_QUERY_LENGTH = 120;
 /** Max tags allowed */
 const MAX_TAGS = 5;
 
-/** Max page number */
-const MAX_PAGE = 999;
+/** Max page number (anti-phantom pages) */
+const MAX_PAGE = 50;
 
 /** Allowlist for query param keys */
 const ALLOWED_KEYS = new Set([
@@ -302,6 +302,9 @@ export const DEFAULT_FILTERS: FiltersNormalized = {
 /**
  * Parse query params from route into normalized filters.
  * Zéro throw : any invalid input => fallback to defaults.
+ * 
+ * SECURITY: Direct key access only (no Object.keys iteration)
+ * to prevent prototype pollution attacks.
  *
  * @param query - route.query (Record<string, unknown>)
  * @returns FiltersNormalized with safe, validated values
@@ -317,50 +320,54 @@ export function parseResourcesDeepLink(
   }
   
   try {
-    // Only process allowed keys
-    for (const key of Object.keys(query)) {
-      if (!ALLOWED_KEYS.has(key)) {
-        continue; // Silently ignore unknown keys
-      }
-      
-      const value = query[key];
-      
-      switch (key) {
-        case 'q':
-          result.q = sanitizeString(value, MAX_QUERY_LENGTH);
-          break;
-          
-        case 'kind':
-          result.kinds = parseArrayParam<ResourceKind>(value, VALID_KINDS, 4);
-          break;
-          
-        case 'tags':
-          result.tags = parseTags(value);
-          break;
-          
-        case 'effort':
-          result.efforts = parseArrayParam<EffortLevel>(value, VALID_EFFORTS, 3);
-          break;
-          
-        case 'impact':
-          result.impacts = parseArrayParam<ImpactLevel>(value, VALID_IMPACTS, 3);
-          break;
-          
-        case 'language':
-          result.languages = parseArrayParam<ResourceLanguage>(value, VALID_LANGUAGES, 2);
-          break;
-          
-        case 'sort':
-          result.sort = parseSort(value);
-          break;
-          
-        case 'page':
-          result.page = parsePage(value);
-          break;
-      }
+    // SECURITY: Direct key access only — no Object.keys() iteration
+    // This prevents prototype pollution from hostile query objects
+    
+    // q (search query)
+    if ('q' in query) {
+      result.q = sanitizeString(query['q'], MAX_QUERY_LENGTH);
+    }
+    
+    // kind (resource type filter)
+    if ('kind' in query) {
+      result.kinds = parseArrayParam<ResourceKind>(query['kind'], VALID_KINDS, 4);
+    }
+    
+    // tags (comma-separated or array)
+    if ('tags' in query) {
+      result.tags = parseTags(query['tags']);
+    }
+    
+    // effort (effort level filter)
+    if ('effort' in query) {
+      result.efforts = parseArrayParam<EffortLevel>(query['effort'], VALID_EFFORTS, 3);
+    }
+    
+    // impact (impact level filter)
+    if ('impact' in query) {
+      result.impacts = parseArrayParam<ImpactLevel>(query['impact'], VALID_IMPACTS, 3);
+    }
+    
+    // language (language filter)
+    if ('language' in query) {
+      result.languages = parseArrayParam<ResourceLanguage>(query['language'], VALID_LANGUAGES, 2);
+    }
+    
+    // sort (sort option)
+    if ('sort' in query) {
+      result.sort = parseSort(query['sort']);
+    }
+    
+    // page (pagination)
+    if ('page' in query) {
+      result.page = parsePage(query['page']);
     }
   } catch {
     // Any error => return current result (partial parse is OK)
+    // Dev feedback (no query exposure in prod)
+    if (import.meta.dev) {
+      console.debug('[resourcesDeepLink] dropped invalid query param');
+    }
   }
   
   return result;

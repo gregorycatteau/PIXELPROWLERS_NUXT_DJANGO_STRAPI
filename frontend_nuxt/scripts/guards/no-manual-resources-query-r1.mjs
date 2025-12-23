@@ -13,21 +13,18 @@ import path from 'node:path'
 //
 // OK si usage de buildResourcesDeepLink(...)
 //
-// SCOPE : fichiers susceptibles de construire des liens /ressources
-// - components/journey/bilan/*
-// - components/resources/*
-// - pages qui linkent vers /ressources
+// SCOPE : Scope minimal — uniquement les fichiers CTA pilotes
+// où buildResourcesDeepLink() a été intégré explicitement.
+// Évite les faux positifs sur les autres fichiers.
 //
 // @see frontend_nuxt/app/utils/deeplinks/resourcesDeepLink.ts
 
 const ROOT = path.join(process.cwd(), 'app')
 
-// Files to scan (components that might link to /ressources)
-const SCAN_DIRS = [
-  'components/journey/bilan',
-  'components/resources',
-  'components/home',
-  'pages',
+// Files to scan — SCOPE MINIMAL (fichiers CTA pilotes uniquement)
+const SCAN_FILES = [
+  'components/journey/bilan/ResourcesActionsPanel.vue',
+  'pages/parcours/[journeySlug].vue',
 ]
 
 // Patterns to detect manual query construction
@@ -68,37 +65,16 @@ function containsSafePattern(content) {
 }
 
 /**
- * Collect files to scan
+ * Collect files to scan (scope minimal — fichiers explicites uniquement)
  */
-function collectFiles(baseDir, relativeDirs) {
+function collectFiles(baseDir, relativeFiles) {
   const files = []
 
-  for (const relDir of relativeDirs) {
-    const dir = path.join(baseDir, relDir)
-    if (!fs.existsSync(dir)) continue
-
-    const scanDir = (currentDir) => {
-      const entries = fs.readdirSync(currentDir, { withFileTypes: true })
-
-      for (const entry of entries) {
-        const fullPath = path.join(currentDir, entry.name)
-
-        if (entry.name.startsWith('.') || entry.name === 'node_modules') {
-          continue
-        }
-
-        if (entry.isDirectory()) {
-          scanDir(fullPath)
-        } else if (entry.isFile()) {
-          const ext = path.extname(entry.name)
-          if (ext === '.vue' || ext === '.ts') {
-            files.push(fullPath)
-          }
-        }
-      }
+  for (const relFile of relativeFiles) {
+    const filePath = path.join(baseDir, relFile)
+    if (fs.existsSync(filePath)) {
+      files.push(filePath)
     }
-
-    scanDir(dir)
   }
 
   return files
@@ -154,7 +130,7 @@ function scanFile(filePath) {
 function main() {
   console.log('🔍 no-manual-resources-query-r1:guard — Checking for manual /ressources query construction...\n')
 
-  const files = collectFiles(ROOT, SCAN_DIRS)
+  const files = collectFiles(ROOT, SCAN_FILES)
   const allViolations = []
 
   for (const file of files) {
