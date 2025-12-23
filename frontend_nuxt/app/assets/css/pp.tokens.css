@@ -1,0 +1,331 @@
+/* PixelProwlers DS — TOKENS (V1) — Source: main.css (moved) */
+@theme {
+  /* Palette de base */
+  --color-surface: #060912;
+  --color-panel: #0c1220;
+  --color-panel-alt: #10192c;
+  --color-panel-soft: #0a1020;
+  --color-stroke: #1e283a;
+  --color-border-soft: rgba(148, 163, 184, 0.3);
+  --color-brand: #f97316;
+  --color-brand-soft: color-mix(in srgb, #f97316 70%, white);
+  --color-accent: #06b6d4;
+  --color-accent-soft: color-mix(in srgb, #06b6d4 65%, white);
+  --color-accent-active: #fb923c;
+  --color-ink: #e6edf6;
+  --color-muted: #a2b3c7;
+  --color-success: #34d399;
+  --color-success-soft: rgba(52, 211, 153, 0.15);
+  --color-error: #f87171;
+  --color-error-soft: rgba(248, 113, 113, 0.15);
+
+  /* Couleurs sémantiques */
+  --color-bg-page: var(--color-surface);
+  --color-bg-section: var(--color-panel-alt);
+  --color-bg-card: var(--color-panel);
+  --color-bg-hero: color-mix(in srgb, #0b1220 80%, #f97316 8%, #06b6d4 8%);
+  --color-text-primary: var(--color-ink);
+  --color-text-muted: var(--color-muted);
+  --color-text-invert: #0b0f1a;
+  --color-accent-strong: var(--color-brand);
+  --color-accent-quiet: rgba(249, 115, 22, 0.12);
+  --color-accent-border: rgba(249, 115, 22, 0.4);
+
+  /* Typographie */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+  --font-display: var(--font-sans);
+  --font-alt: var(--font-sans);
+
+  /* Rayons */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-xxl: 2rem;
+  --radius-pill: 999px;
+
+  /* Ombres */
+  --shadow-soft: 0 8px 30px rgba(0, 0, 0, 0.25);
+  --shadow-elevated: 0 26px 80px rgba(15, 23, 42, 0.85);
+  --shadow-accent: 0 18px 50px rgba(249, 115, 22, 0.35);
+
+  /* PixelProwlers DS (V1) — Tokens canons (aliases temporaires) */
+  --pp-color-surface: var(--color-surface);
+  --pp-color-panel: var(--color-panel);
+  --pp-color-panel-alt: var(--color-panel-alt);
+  --pp-color-panel-soft: var(--color-panel-soft);
+  --pp-color-stroke: var(--color-stroke);
+  --pp-color-border-soft: var(--color-border-soft);
+
+  --pp-color-brand: var(--color-brand);
+  --pp-color-brand-soft: var(--color-brand-soft);
+  --pp-color-accent: var(--color-accent);
+  --pp-color-accent-soft: var(--color-accent-soft);
+
+  --pp-color-ink: var(--color-ink);
+  --pp-color-muted: var(--color-muted);
+  --pp-color-success: var(--color-success);
+  --pp-color-success-soft: var(--color-success-soft);
+  --pp-color-error: var(--color-error);
+  --pp-color-error-soft: var(--color-error-soft);
+
+  --pp-color-bg-page: var(--color-bg-page);
+  --pp-color-bg-section: var(--color-bg-section);
+  --pp-color-bg-card: var(--color-bg-card);
+
+  --pp-color-text-primary: var(--color-text-primary);
+  --pp-color-text-muted: var(--color-text-muted);
+  --pp-color-text-invert: var(--color-text-invert);
+
+  --pp-color-accent-strong: var(--color-accent-strong);
+  --pp-color-accent-quiet: var(--color-accent-quiet);
+  --pp-color-accent-border: var(--color-accent-border);
+
+  --pp-font-sans: var(--font-sans);
+  --pp-font-display: var(--font-display);
+  --pp-font-alt: var(--font-alt);
+
+  --pp-radius-sm: var(--radius-sm);
+  --pp-radius-md: var(--radius-md);
+  --pp-radius-lg: var(--radius-lg);
+  --pp-radius-xl: var(--radius-xl);
+  --pp-radius-pill: var(--radius-pill);
+
+  --pp-shadow-soft: var(--shadow-soft);
+  --pp-shadow-elevated: var(--shadow-elevated);
+  --pp-shadow-accent: var(--shadow-accent);
+
+  /* CTA tokens (V1) — source unique pour tous les CTA */
+  --pp-cta-primary-bg: var(--pp-color-accent-strong);
+  --pp-cta-primary-bg-hover: var(--pp-color-brand-soft);
+  --pp-cta-primary-text: var(--pp-color-text-invert);
+  --pp-cta-primary-shadow: var(--pp-shadow-accent);
+
+  --pp-cta-secondary-bg: transparent;
+  --pp-cta-secondary-bg-hover: var(--pp-color-bg-section);
+  --pp-cta-secondary-text: var(--pp-color-text-primary);
+  --pp-cta-secondary-border: var(--pp-color-border-soft);
+
+  /* Card tokens (V1) — Atome PPCard */
+  --pp-card-bg: var(--pp-color-panel-soft);
+  --pp-card-bg-soft: var(--pp-color-panel-soft);
+  --pp-card-bg-accent: var(--pp-color-accent-quiet);
+  --pp-card-border: var(--pp-color-border-soft);
+  --pp-card-border-strong: var(--pp-color-stroke);
+  --pp-card-radius: var(--pp-radius-xl);
+  --pp-card-shadow: var(--pp-shadow-soft);
+  --pp-card-shadow-hover: var(--pp-shadow-elevated);
+  --pp-card-pad: 1rem;
+  --pp-card-active-ring: var(--pp-color-accent-strong);
+  --pp-card-active-border: var(--pp-color-accent-border);
+  /* Badge tokens (V1) — Atome PPBadge */
+  --pp-badge-radius: var(--pp-radius-pill);
+  --pp-badge-pad-x: 0.625rem;
+  --pp-badge-pad-y: 0.25rem;
+  --pp-badge-font-sm: 0.75rem;
+  --pp-badge-font-md: 0.8125rem;
+  --pp-badge-border: var(--pp-color-border-soft);
+
+  --pp-badge-bg-neutral: var(--pp-color-panel-alt);
+  --pp-badge-text-neutral: var(--pp-color-text-primary);
+
+  --pp-badge-bg-accent: var(--pp-color-accent-quiet);
+  --pp-badge-text-accent: var(--pp-color-text-primary);
+  --pp-badge-border-accent: var(--pp-color-accent-border);
+
+  --pp-badge-bg-success: var(--pp-color-success-soft);
+  --pp-badge-text-success: var(--pp-color-text-primary);
+
+  --pp-badge-bg-warning: var(--pp-color-brand-soft);
+  --pp-badge-text-warning: var(--pp-color-text-primary);
+
+  --pp-badge-bg-danger: var(--pp-color-error-soft);
+  --pp-badge-text-danger: var(--pp-color-text-primary);
+  /* Chip tokens (V1) — Atome PPChip */
+  --pp-chip-radius: var(--pp-radius-pill);
+  --pp-chip-pad-x: 0.75rem;
+  --pp-chip-pad-y: 0.375rem;
+
+  --pp-chip-font-sm: 0.75rem;
+  --pp-chip-font-md: 0.8125rem;
+
+  --pp-chip-border: var(--pp-color-border-soft);
+  --pp-chip-border-strong: var(--pp-color-stroke);
+
+  --pp-chip-bg: transparent;
+  --pp-chip-bg-hover: var(--pp-color-panel-soft);
+  --pp-chip-text: var(--pp-color-text-primary);
+
+  --pp-chip-selected-bg: var(--pp-color-accent-quiet);
+  --pp-chip-selected-border: var(--pp-color-accent-border);
+  --pp-chip-selected-text: var(--pp-color-text-primary);
+
+  --pp-chip-accent-bg: var(--pp-color-accent-quiet);
+  --pp-chip-accent-border: var(--pp-color-accent-border);
+  /* SectionHeader tokens (V1) — Atome PPSectionHeader */
+  --pp-section-gap: 0.75rem;
+  --pp-section-gap-compact: 0.5rem;
+
+  --pp-section-title-size: 1.05rem;
+  --pp-section-title-leading: 1.25;
+  --pp-section-title-weight: 650;
+
+  --pp-section-eyebrow-size: 0.75rem;
+  --pp-section-eyebrow-letter: 0.02em;
+
+  --pp-section-lead-size: 0.9rem;
+  --pp-section-lead-leading: 1.6;
+
+  --pp-section-divider: var(--pp-color-stroke);
+  /* === PageHeader tokens (page-level) ==================== */
+  --pp-pageheader-gap: 0.75rem;
+  --pp-pageheader-gap-compact: 0.5rem;
+  --pp-pageheader-eyebrow-size: 0.75rem;
+  --pp-pageheader-title-size: clamp(2rem, 4.2vw, 3.5rem);
+  --pp-pageheader-title-size-compact: clamp(1.75rem, 3.6vw, 2.75rem);
+  --pp-pageheader-lead-size: 1.05rem;
+  --pp-pageheader-lead-size-compact: 1rem;
+  --pp-pageheader-actions-gap: 0.75rem;
+  /* Scale5 (PPScale5) — Tokens (V1.7) */
+  --pp-scale5-radius: var(--pp-radius-xl);
+  --pp-scale5-gap: 0.375rem;
+  --pp-scale5-track-bg: var(--pp-color-panel-soft);
+  --pp-scale5-track-border: var(--pp-color-border-soft);
+  --pp-scale5-step-bg: var(--pp-color-panel);
+  --pp-scale5-step-border: var(--pp-color-border-soft);
+  --pp-scale5-step-text: var(--pp-color-text-muted);
+  --pp-scale5-step-bg-selected: var(--pp-color-accent-quiet);
+  --pp-scale5-step-border-selected: var(--pp-color-accent-border);
+  --pp-scale5-step-text-selected: var(--pp-color-text-primary);
+  --pp-scale5-label-text: var(--pp-color-text-muted);
+  /* Progress (PPProgress) — Tokens (V1.8) */
+  --pp-progress-gap: 0.5rem;
+  --pp-progress-label-size: 0.75rem;
+  --pp-progress-label-text: var(--pp-color-text-muted);
+  --pp-progress-count-size: 0.75rem;
+  --pp-progress-count-text: var(--pp-color-text-muted);
+  --pp-progress-bar-h: 0.5rem;
+  --pp-progress-bar-bg: var(--pp-color-panel-soft);
+  --pp-progress-bar-border: var(--pp-color-border-soft);
+  --pp-progress-fill-bg: var(--pp-color-accent);
+  --pp-progress-radius: var(--pp-radius-pill);
+  --pp-progress-hint-size: 0.75rem;
+  --pp-progress-hint-text: var(--pp-color-text-muted);
+  /* ------------------------------ */
+  /* QuestionNav (DS)               */
+  /* ------------------------------ */
+  --pp-questionnav-gap: 0.75rem;
+  --pp-questionnav-mt: 1rem;
+
+  /* ------------------------------ */
+  /* SkipAction (DS)                */
+  /* ------------------------------ */
+  --pp-skip-fg: var(--color-text-muted);
+  --pp-skip-bg: transparent;
+  --pp-skip-bg-hover: color-mix(in srgb, var(--color-panel-soft) 65%, transparent);
+  --pp-skip-border: color-mix(in srgb, var(--color-stroke) 60%, transparent);
+  --pp-skip-ring: var(--pp-focus-ring);
+  --pp-skip-radius: 999px;
+  --pp-skip-pad-y: 0.375rem;
+  --pp-skip-pad-x: 0.625rem;
+  --pp-skip-gap: 0.35rem;
+
+  /* DS: QuestionCard tokens */
+  --pp-questioncard-gap: 12px;
+  --pp-questioncard-header-gap: 12px;
+  --pp-questioncard-title-size: 1.05rem;
+  --pp-questioncard-title-weight: 650;
+  --pp-questioncard-context-size: 0.95rem;
+  --pp-questioncard-context-color: var(--color-text-muted);
+  --pp-questioncard-counter-size: 0.85rem;
+  --pp-questioncard-counter-color: var(--color-text-muted);
+  --pp-questioncard-actions-gap: 12px;
+
+  /* density tuning */
+  --pp-questioncard-gap-compact: 10px;
+  --pp-questioncard-gap-comfort: 14px;
+
+  /* DS: QuestionnaireShell */
+  --pp-questionnaire-shell-maxw: 48rem;
+  --pp-questionnaire-shell-gap: 1rem;
+  --pp-questionnaire-shell-gap-compact: 0.75rem;
+  --pp-questionnaire-shell-gap-comfort: 1.25rem;
+  --pp-questionnaire-shell-header-gap: 0.75rem;
+  --pp-questionnaire-shell-footer-gap: 0.75rem;
+
+  /* DS: BilanShell (pattern unique bilan) */
+  --pp-bilan-shell-maxw: 72rem;
+  --pp-bilan-shell-gap: 2.5rem;
+  --pp-bilan-shell-gap-compact: 2rem;
+  --pp-bilan-shell-gap-comfort: 3rem;
+  --pp-bilan-shell-aside-w: 320px;
+
+  /* DS: BilanSection */
+  --pp-bilan-section-gap: 1rem;
+  --pp-bilan-section-gap-compact: 0.75rem;
+  --pp-bilan-section-gap-comfort: 1.25rem;
+  --pp-bilan-section-label-size: 0.75rem;
+  --pp-bilan-section-title-size: 1.125rem;
+  --pp-bilan-section-title-weight: 650;
+
+  /* Focus tokens (V1) — A11y enforced */
+  --pp-focus-ring: var(--pp-color-accent-strong);
+  --pp-focus-ring-offset: var(--pp-color-bg-page);
+
+  /* DS: HypothesesPicker tokens (V1) */
+  --pp-hyp-gap: 1rem;
+  --pp-hyp-counter-size: 0.875rem;
+  --pp-hyp-counter-weight: 600;
+  --pp-hyp-counter-color: var(--pp-color-text-primary);
+  --pp-hyp-message-bg: var(--pp-color-panel-soft);
+  --pp-hyp-message-border: var(--pp-color-stroke);
+
+  /* DS: AtterrissagePlan tokens (V1) */
+  --pp-landing-gap: 1rem;
+  --pp-landing-pad: 1.5rem;
+  --pp-landing-radius: var(--pp-radius-lg);
+  --pp-landing-bg: var(--pp-color-panel-soft);
+  --pp-landing-border: var(--pp-color-stroke);
+  --pp-landing-highlight-outline: var(--pp-color-accent-strong);
+
+  /* DS: ResourcesShell & ResourceCard tokens (V1) */
+  --pp-resources-shell-gap: 1rem;
+  --pp-resources-card-gap: 0.75rem;
+  --pp-resources-card-gap-compact: 0.5rem;
+  --pp-resources-card-gap-comfort: 1rem;
+
+  /* DS: ResourcesLibrary tokens (V1.R2) — Page /ressources */
+  --pp-reslib-layout-gap: 1.5rem;
+  --pp-reslib-sidebar-w: 260px;
+  --pp-reslib-sidebar-bg: var(--pp-color-panel-soft);
+  --pp-reslib-sidebar-radius: var(--pp-radius-lg);
+  --pp-reslib-sidebar-pad: 1rem;
+  --pp-reslib-search-radius: var(--pp-radius-md);
+  --pp-reslib-search-border: var(--pp-color-border-soft);
+  --pp-reslib-search-focus: var(--pp-color-accent);
+  --pp-reslib-filter-gap: 0.5rem;
+  --pp-reslib-filter-label-size: 0.875rem;
+  --pp-reslib-filter-label-weight: 600;
+  --pp-reslib-filter-chips-gap: 0.25rem;
+  --pp-reslib-toolbar-gap: 0.75rem;
+  --pp-reslib-results-size: 0.875rem;
+  --pp-reslib-sort-radius: var(--pp-radius-md);
+  --pp-reslib-grid-gap: 0.75rem;
+  --pp-reslib-skeleton-h: 180px;
+  --pp-reslib-pagination-gap: 0.75rem;
+  --pp-reslib-pagination-btn-pad: 0.5rem 0.75rem;
+  --pp-reslib-pagination-btn-radius: var(--pp-radius-md);
+  --pp-reslib-empty-pad: 2rem;
+
+  /* Compatibility aliases (DEPRECATED) — avoid ambiguous token regressions */
+  --color-text: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-muted);
+  --color-text-strong: var(--color-text-primary);
+
+  --color-border: var(--color-border-soft);
+  --color-border-strong: var(--color-stroke);
+
+  --color-bg: var(--color-bg-page);
+  --color-bg-soft: var(--color-bg-section);
+  --color-card: var(--color-bg-card);
+}
