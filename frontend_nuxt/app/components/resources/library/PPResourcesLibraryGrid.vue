@@ -79,5 +79,5 @@ function getResourceChips(resource: ResourceItem): { variant: 'tag'; label: stri
 </script>
 
 <style scoped>
-@reference "@/assets/css/pp.components.css";
+@reference "@/assets/css/main.css";
 </style>

@@ -61,5 +61,5 @@ defineEmits<{
 </script>
 
 <style scoped>
-@reference "@/assets/css/pp.components.css";
+@reference "@/assets/css/main.css";
 </style>
