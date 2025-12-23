@@ -43,7 +43,8 @@
     "resources:r1:guard": "node scripts/guards/no-legacy-resources-r1.mjs",
     "resourceslib:r1:guard": "node scripts/guards/no-legacy-resources-library-r1.mjs",
     "resourceslib:r2:guard": "node scripts/guards/no-menhir-resources-page-r2.mjs",
-    "resourcesdeeplink:r1:guard": "node scripts/guards/no-manual-resources-query-r1.mjs"
+    "resourcesdeeplink:r1:guard": "node scripts/guards/no-manual-resources-query-r1.mjs",
+    "resourcesdeeplink:r2:guard": "node scripts/guards/no-manual-resources-query-r2.mjs"
   },
   "keywords": [
     "nuxt",

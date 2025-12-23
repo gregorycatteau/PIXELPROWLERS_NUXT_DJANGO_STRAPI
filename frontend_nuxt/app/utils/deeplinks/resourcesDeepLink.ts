@@ -62,6 +62,9 @@ const VALID_LANGUAGES = new Set<string>(['fr', 'en']);
 /** Zero-width characters to strip */
 const ZERO_WIDTH_CHARS = /[\u200B\u200C\u200D\u200E\u200F\u2060\uFEFF]/g;
 
+/** Control characters to strip (U+0000–U+001F + U+007F) */
+const CONTROL_CHARS = /[\u0000-\u001F\u007F]/g;
+
 /** Tag validation pattern (kebab-case lowercase) */
 const TAG_PATTERN = /^[a-z0-9-]+$/;
 
@@ -123,6 +126,9 @@ function sanitizeString(value: unknown, maxLength: number = MAX_QUERY_LENGTH): s
   try {
     // NFKC normalization
     let result = value.normalize('NFKC');
+    
+    // Strip control characters (U+0000–U+001F + U+007F) — security hardening
+    result = result.replace(CONTROL_CHARS, '');
     
     // Strip zero-width characters (silent)
     result = result.replace(ZERO_WIDTH_CHARS, '');

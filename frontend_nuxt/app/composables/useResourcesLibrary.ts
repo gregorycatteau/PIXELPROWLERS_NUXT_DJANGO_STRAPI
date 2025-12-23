@@ -7,7 +7,12 @@
  * - Tri : default(position), updatedAt desc, effort asc, impact desc
  * - Pagination : 12/page (index + total pages)
  * - Deep linking via SafeDeepLinkKit (secure query params)
- * - Sanitation des query params (allowlist clés/valeurs via resourcesDeepLink.ts)
+ * - Canonicalisation soft : auto-cleanup des URL sales/hostiles
+ *
+ * SECURITY (R2 + R2.1):
+ * - Tous les query params sont parsés via parseResourcesDeepLink (allowlist stricte)
+ * - Tous les query params sont reconstruits via buildResourcesDeepLink
+ * - URL canonicalisation : params hostiles/inconnus → router.replace silencieux
  *
  * @see docs/20-product_specs/ux_content/PX_V1_3_RESOURCES_LIBRARY_SPEC.md
  * @see frontend_nuxt/app/utils/deeplinks/resourcesDeepLink.ts
@@ -19,8 +24,6 @@ import {
   RESOURCES,
   getFilterOptions,
   validateResourcesData,
-  EFFORT_LABELS,
-  IMPACT_LABELS,
   type ResourceItem,
   type ResourceKind,
   type EffortLevel,
@@ -30,7 +33,9 @@ import {
 import {
   parseResourcesDeepLink,
   buildResourcesDeepLink,
+  DEFAULT_FILTERS,
   type SortOption as DeepLinkSortOption,
+  type FiltersNormalized,
 } from '@/utils/deeplinks/resourcesDeepLink';
 
 // =============================================================================
@@ -40,17 +45,16 @@ import {
 const ITEMS_PER_PAGE = 12;
 const SEARCH_DEBOUNCE_MS = 300;
 
-/** Allowlist for query param keys */
-const ALLOWED_QUERY_KEYS = [
-  'q',
-  'kind',
-  'tags',
-  'effort',
-  'impact',
-  'language',
-  'sort',
-  'page',
-] as const;
+/**
+ * Forbidden query param prefixes (privacy/tracking)
+ * @see docs/40-security/contracts/PX_V1_3_SECURITY_P0_DEEPLINKS_DOM_GUARDS.md
+ */
+const FORBIDDEN_PARAM_PREFIXES = ['utm_', 'gclid', 'fbclid', 'ref', 'source', 'campaign', 'debug'];
+
+/**
+ * Max query string length before fallback (anti-DoS)
+ */
+const MAX_QUERY_STRING_LENGTH = 800;
 
 /** Sort options */
 export type SortOption = 'default' | 'updatedAt' | 'effort' | 'impact';
@@ -155,6 +159,9 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
 
   // Debounce timer
   let searchDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+  
+  // Flag to prevent canonicalization loop
+  let hasCanonicalizedOnce = false;
 
   // ---------------------------------------------------------------------------
   // FILTER OPTIONS (available values from catalogue)
@@ -173,7 +180,10 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
         validateResourcesData();
       }
 
-      // Read query params
+      // R2.1: Canonicalize URL if dirty (BEFORE reading params)
+      canonicalizeUrlIfNeeded();
+
+      // R2: Read query params via SafeDeepLinkKit
       readQueryParams();
 
       isLoading.value = false;
@@ -192,119 +202,175 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
   });
 
   // ---------------------------------------------------------------------------
-  // QUERY PARAMS HANDLING
+  // R2.1: URL CANONICALIZATION (soft)
   // ---------------------------------------------------------------------------
 
   /**
-   * Sanitize and parse query params with allowlist
+   * Check if current URL needs canonicalization.
+   * Returns true if URL is "dirty" (has forbidden/unknown params, too long, etc.)
    */
-  function readQueryParams(): void {
-    const query = route.query;
-
-    // Search query
-    if (typeof query.q === 'string' && query.q.length <= 100) {
-      searchQuery.value = query.q.trim();
-      debouncedSearchQuery.value = query.q.trim();
-    }
-
-    // Kind filter
-    if (query.kind) {
-      const kinds = (Array.isArray(query.kind) ? query.kind : [query.kind])
-        .filter((k): k is ResourceKind =>
-          filterOptions.kinds.includes(k as ResourceKind)
-        );
-      filters.value.kinds = kinds;
-    }
-
-    // Tags filter
-    if (query.tags) {
-      const tagsParam = typeof query.tags === 'string' ? query.tags : '';
-      const tags = tagsParam
-        .split(',')
-        .map((t) => t.trim().toLowerCase())
-        .filter((t) => filterOptions.tags.includes(t));
-      filters.value.tags = tags;
-    }
-
-    // Effort filter
-    if (query.effort) {
-      const efforts = (Array.isArray(query.effort) ? query.effort : [query.effort])
-        .filter((e): e is EffortLevel =>
-          filterOptions.efforts.includes(e as EffortLevel)
-        );
-      filters.value.efforts = efforts;
-    }
-
-    // Impact filter
-    if (query.impact) {
-      const impacts = (Array.isArray(query.impact) ? query.impact : [query.impact])
-        .filter((i): i is ImpactLevel =>
-          filterOptions.impacts.includes(i as ImpactLevel)
-        );
-      filters.value.impacts = impacts;
-    }
-
-    // Language filter
-    if (query.language) {
-      const languages = (
-        Array.isArray(query.language) ? query.language : [query.language]
-      ).filter((l): l is ResourceLanguage =>
-        filterOptions.languages.includes(l as ResourceLanguage)
-      );
-      filters.value.languages = languages;
-    }
-
-    // Sort
-    if (
-      typeof query.sort === 'string' &&
-      SORT_OPTIONS.some((o) => o.value === query.sort)
-    ) {
-      sortBy.value = query.sort as SortOption;
-    }
-
-    // Page
-    if (typeof query.page === 'string') {
-      const page = parseInt(query.page, 10);
-      if (!isNaN(page) && page >= 1) {
-        currentPage.value = page;
+  function isDirtyUrl(): boolean {
+    try {
+      const query = route.query;
+      
+      // Check query string length (anti-DoS)
+      const fullPath = route.fullPath;
+      const queryStart = fullPath.indexOf('?');
+      if (queryStart !== -1) {
+        const queryString = fullPath.slice(queryStart);
+        if (queryString.length > MAX_QUERY_STRING_LENGTH) {
+          if (import.meta.dev) {
+            console.debug('[useResourcesLibrary] URL dirty: query string too long');
+          }
+          return true;
+        }
       }
+      
+      // Check for forbidden params (utm_, gclid, etc.)
+      const queryKeys = Object.keys(query);
+      for (const key of queryKeys) {
+        const keyLower = key.toLowerCase();
+        for (const prefix of FORBIDDEN_PARAM_PREFIXES) {
+          if (keyLower.startsWith(prefix)) {
+            if (import.meta.dev) {
+              console.debug(`[useResourcesLibrary] URL dirty: forbidden param "${key}"`);
+            }
+            return true;
+          }
+        }
+      }
+      
+      // Parse with SafeDeepLinkKit and check if any param was dropped/modified
+      const parsed = parseResourcesDeepLink(query);
+      const rebuilt = buildResourcesDeepLink({
+        q: parsed.q,
+        kinds: parsed.kinds,
+        tags: parsed.tags,
+        efforts: parsed.efforts,
+        impacts: parsed.impacts,
+        languages: parsed.languages,
+        sort: parsed.sort,
+        page: parsed.page,
+      });
+      
+      // Compare rebuilt query with current query
+      const rebuiltQuery = typeof rebuilt === 'string' 
+        ? {} 
+        : (rebuilt.query ?? {});
+      
+      // Check if any param exists in original that's not in rebuilt (unknown params)
+      for (const key of queryKeys) {
+        if (!(key in rebuiltQuery)) {
+          if (import.meta.dev) {
+            console.debug(`[useResourcesLibrary] URL dirty: unknown param "${key}"`);
+          }
+          return true;
+        }
+      }
+      
+      return false;
+    } catch {
+      // If any error, consider URL dirty
+      return true;
     }
   }
 
   /**
-   * Sync state to query params (without breaking back/forward navigation)
+   * Canonicalize URL if dirty.
+   * Uses router.replace for silent navigation (no history entry, no scroll reset).
+   */
+  function canonicalizeUrlIfNeeded(): void {
+    // Prevent canonicalization loop
+    if (hasCanonicalizedOnce) return;
+    
+    if (!isDirtyUrl()) return;
+    
+    hasCanonicalizedOnce = true;
+    
+    try {
+      // Parse current params with SafeDeepLinkKit (sanitizes automatically)
+      const parsed = parseResourcesDeepLink(route.query);
+      
+      // Rebuild canonical URL
+      const canonicalRoute = buildResourcesDeepLink({
+        q: parsed.q,
+        kinds: parsed.kinds,
+        tags: parsed.tags,
+        efforts: parsed.efforts,
+        impacts: parsed.impacts,
+        languages: parsed.languages,
+        sort: parsed.sort,
+        page: parsed.page,
+      });
+      
+      // Silent replace (no toast, no animation, no scroll reset)
+      router.replace(canonicalRoute);
+      
+      if (import.meta.dev) {
+        console.debug('[useResourcesLibrary] URL canonicalized');
+      }
+    } catch {
+      // Silent failure — don't block user
+      if (import.meta.dev) {
+        console.debug('[useResourcesLibrary] URL canonicalization failed');
+      }
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // R2: QUERY PARAMS HANDLING via SafeDeepLinkKit
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Read query params using SafeDeepLinkKit (secure parsing with allowlist)
+   */
+  function readQueryParams(): void {
+    // Use SafeDeepLinkKit for secure parsing
+    const parsed = parseResourcesDeepLink(route.query);
+    
+    // Apply parsed values to state
+    searchQuery.value = parsed.q;
+    debouncedSearchQuery.value = parsed.q;
+    
+    // Filter by available options (belt-and-suspenders validation)
+    filters.value.kinds = parsed.kinds.filter((k) =>
+      filterOptions.kinds.includes(k)
+    );
+    filters.value.tags = parsed.tags.filter((t) =>
+      filterOptions.tags.includes(t)
+    );
+    filters.value.efforts = parsed.efforts.filter((e) =>
+      filterOptions.efforts.includes(e)
+    );
+    filters.value.impacts = parsed.impacts.filter((i) =>
+      filterOptions.impacts.includes(i)
+    );
+    filters.value.languages = parsed.languages.filter((l) =>
+      filterOptions.languages.includes(l)
+    );
+    
+    sortBy.value = parsed.sort;
+    currentPage.value = parsed.page;
+  }
+
+  /**
+   * Sync state to query params using SafeDeepLinkKit (secure building)
    */
   function syncQueryParams(): void {
-    const query: Record<string, string | string[] | undefined> = {};
-
-    // Only include non-empty values
-    if (debouncedSearchQuery.value) {
-      query.q = debouncedSearchQuery.value;
-    }
-    if (filters.value.kinds.length > 0) {
-      query.kind = filters.value.kinds;
-    }
-    if (filters.value.tags.length > 0) {
-      query.tags = filters.value.tags.join(',');
-    }
-    if (filters.value.efforts.length > 0) {
-      query.effort = filters.value.efforts;
-    }
-    if (filters.value.impacts.length > 0) {
-      query.impact = filters.value.impacts;
-    }
-    if (filters.value.languages.length > 0) {
-      query.language = filters.value.languages;
-    }
-    if (sortBy.value !== 'default') {
-      query.sort = sortBy.value;
-    }
-    if (currentPage.value > 1) {
-      query.page = String(currentPage.value);
-    }
-
+    // Use SafeDeepLinkKit to build canonical URL
+    const canonicalRoute = buildResourcesDeepLink({
+      q: debouncedSearchQuery.value,
+      kinds: filters.value.kinds,
+      tags: filters.value.tags,
+      efforts: filters.value.efforts,
+      impacts: filters.value.impacts,
+      languages: filters.value.languages,
+      sort: sortBy.value,
+      page: currentPage.value,
+    });
+    
     // Use replace to avoid polluting history on every filter change
-    router.replace({ query });
+    router.replace(canonicalRoute);
   }
 
   // Watch for state changes and sync to URL
