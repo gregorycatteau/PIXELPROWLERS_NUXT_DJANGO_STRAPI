@@ -12,7 +12,7 @@
 | [PX_V1_3_SECURITY_GUARDS_REGISTRY.md](./PX_V1_3_SECURITY_GUARDS_REGISTRY.md) | active | Guards Registry — SSOT V1.3 |
 | [PX_V1_3_SECURITY_P0_DEEPLINKS_DOM_GUARDS.md](./PX_V1_3_SECURITY_P0_DEEPLINKS_DOM_GUARDS.md) | stable | P0 — Contract Sécurité : Deep links /ressources + Guard DOM injection |
 
-**Owners** : Marty
+**Owners** : Eva, Dan
 
 <!-- GENERATED:END -->
 

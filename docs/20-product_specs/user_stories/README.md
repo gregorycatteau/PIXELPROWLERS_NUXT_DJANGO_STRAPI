@@ -16,7 +16,7 @@
 | [pages_ressources.md](./pages_ressources.md) | draft | pages ressources |
 | [parcours_utilisateurs_P1.md](./parcours_utilisateurs_P1.md) | active | PX V1.2 – User stories Parcours P1 « Ma structure dysfonctionne » |
 
-**Owners** : Marty
+**Owners** : Marty, Claire
 
 <!-- GENERATED:END -->
 

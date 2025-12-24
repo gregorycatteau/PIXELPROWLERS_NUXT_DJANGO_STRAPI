@@ -9,6 +9,7 @@
 
 | Document | Status | Description |
 |----------|--------|-------------|
+| [AGENTS_REGISTRY_V1.md](./AGENTS_REGISTRY_V1.md) | active | AGENTS_REGISTRY_V1 — Registre des Agents PixelProwlers |
 | [DB_SETUP.md](./DB_SETUP.md) | active | Création des bases PostgreSQL |
 | [DOCS_DOD_AND_CONVENTIONS_V1.md](./DOCS_DOD_AND_CONVENTIONS_V1.md) | active | Documentation DoD & Conventions (V1) |
 | [ENVIRONMENTS.md](./ENVIRONMENTS.md) | active | Environnements |

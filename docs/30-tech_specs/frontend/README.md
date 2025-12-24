@@ -18,7 +18,7 @@
 | [PX_NO_VHTML_DOCTRINE_V1.md](./PX_NO_VHTML_DOCTRINE_V1.md) | active | PX No v-html Doctrine V1 |
 | [journeys.md](./journeys.md) | draft | Journeys (Nuxt) — TODO |
 
-**Owners** : Dan
+**Owners** : Dan, Heider
 
 <!-- GENERATED:END -->
 

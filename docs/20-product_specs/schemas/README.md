@@ -11,7 +11,7 @@
 |----------|--------|-------------|
 | [PX_V1_3_P1_QUESTION_SCHEMA.md](./PX_V1_3_P1_QUESTION_SCHEMA.md) | active | PX_V1_3_P1_QUESTION_SCHEMA.md |
 
-**Owners** : Dan, Marty
+**Owners** : Dan, Tom
 
 <!-- GENERATED:END -->
 

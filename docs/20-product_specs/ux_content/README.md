@@ -18,7 +18,7 @@
 | [PX_V1_3_1_P1_SYSTEM_SCALPELS_COPY.md](./PX_V1_3_1_P1_SYSTEM_SCALPELS_COPY.md) | active | P1 System Scalpels Copy v1.3.1 |
 | [PX_V1_3_RESOURCES_LIBRARY_SPEC.md](./PX_V1_3_RESOURCES_LIBRARY_SPEC.md) | active | PX_V1_3_RESOURCES_LIBRARY_SPEC |
 
-**Owners** : Talia, Marty
+**Owners** : Talia
 
 <!-- GENERATED:END -->
 

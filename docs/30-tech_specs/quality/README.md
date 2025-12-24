@@ -15,7 +15,7 @@
 | [seo.md](./seo.md) | draft | seo |
 | [testing_and_validation.md](./testing_and_validation.md) | draft | testing and validation |
 
-**Owners** : Eva, Dan
+**Owners** : Dan, Eva
 
 <!-- GENERATED:END -->
 

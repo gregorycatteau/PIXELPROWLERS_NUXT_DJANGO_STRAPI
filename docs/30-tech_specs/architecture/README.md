@@ -5,7 +5,7 @@
 <!-- GENERATED:START -->
 <!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2025-12-24 -->
 
-**Owners** : Dan
+**Owners** : Shay, Dan
 
 <!-- GENERATED:END -->
 
