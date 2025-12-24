@@ -1,0 +1,103 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-12-24",
+  "description": "Registry canonique des agents PixelProwlers - Source de vérité pour SSOT ownership",
+  "agents": [
+    {
+      "slug": "bruce",
+      "displayName": "Bruce",
+      "primaryDomains": ["data", "database", "postgresql", "encryption"],
+      "profilePath": "agents/profiles/bruce_agent.json"
+    },
+    {
+      "slug": "claire",
+      "displayName": "Claire",
+      "primaryDomains": ["email-marketing", "crm", "analytics", "user-journeys"],
+      "profilePath": "agents/profiles/claire_agent.json"
+    },
+    {
+      "slug": "dan",
+      "displayName": "Dan",
+      "primaryDomains": ["frontend", "ux-audit", "components", "accessibility"],
+      "profilePath": "agents/profiles/dan_agent.json"
+    },
+    {
+      "slug": "eva",
+      "displayName": "Eva",
+      "primaryDomains": ["security", "opsec", "privacy", "threat-detection"],
+      "profilePath": "agents/profiles/eva_agent.json"
+    },
+    {
+      "slug": "heider",
+      "displayName": "Heider",
+      "primaryDomains": ["animations", "gsap", "scroll-control", "visual-design"],
+      "profilePath": "agents/profiles/heider_agent.json"
+    },
+    {
+      "slug": "jared",
+      "displayName": "Jared",
+      "primaryDomains": ["project-coordination", "governance", "prioritization", "ssot"],
+      "profilePath": "agents/profiles/jared_agent.json"
+    },
+    {
+      "slug": "jonas",
+      "displayName": "Jonas",
+      "primaryDomains": ["authentication", "identity", "sso", "access-control"],
+      "profilePath": "agents/profiles/jonas_agent.json"
+    },
+    {
+      "slug": "julien",
+      "displayName": "Julien",
+      "primaryDomains": ["seo-technical", "crawl-optimization", "indexation"],
+      "profilePath": "agents/profiles/julien_agent.json"
+    },
+    {
+      "slug": "marty",
+      "displayName": "Marty",
+      "primaryDomains": ["product", "roadmap", "prioritization", "strategy"],
+      "profilePath": "agents/profiles/marty_agent.json"
+    },
+    {
+      "slug": "nova",
+      "displayName": "Nova",
+      "primaryDomains": ["prompts", "visual-generation", "aesthetic-alignment"],
+      "profilePath": "agents/profiles/nova_agent.json"
+    },
+    {
+      "slug": "rand",
+      "displayName": "Rand",
+      "primaryDomains": ["seo-strategy", "content-planning", "organic-optimization"],
+      "profilePath": "agents/profiles/rand_agent.json"
+    },
+    {
+      "slug": "sarah",
+      "displayName": "Sarah",
+      "primaryDomains": ["ux-animation", "micro-interactions", "gsap", "visual-fluidity"],
+      "profilePath": "agents/profiles/sarah_agent.json"
+    },
+    {
+      "slug": "shafi",
+      "displayName": "Shafi",
+      "primaryDomains": ["encrypted-contexts", "privacy", "backups", "data-integrity"],
+      "profilePath": "agents/profiles/shafi_agent.json"
+    },
+    {
+      "slug": "shay",
+      "displayName": "Shay",
+      "primaryDomains": ["ci-cd", "devsecops", "infra-hardening", "monitoring"],
+      "profilePath": "agents/profiles/shay_agent.json"
+    },
+    {
+      "slug": "talia",
+      "displayName": "Talia",
+      "primaryDomains": ["ux-content", "copywriting", "cta-design", "conversion"],
+      "profilePath": "agents/profiles/talia_agent.json"
+    },
+    {
+      "slug": "tom",
+      "displayName": "Tom",
+      "primaryDomains": ["backend", "api", "architecture", "permissions"],
+      "profilePath": "agents/profiles/tom_agent.json"
+    }
+  ]
+}

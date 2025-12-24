@@ -29,6 +29,12 @@ __pycache__/
 frontend_nuxt/.env
 backend_django/.env*
 cms_strapi/.env*
+agents/.env
+agents/*.env
+agents/_scratch/
+
+# Agents local artifacts (not version-controlled)
+agents/test.json
 
 # IDE
 .DS_Store
