@@ -1,7 +1,7 @@
 # PixelProwlers — Makefile
 # Commandes locales pour SSOT, CI, et développement
 
-.PHONY: help ssot-check ssot-lint ssot-openapi ssot-index-check ssot-index-apply ssot-linkcheck ssot-all
+.PHONY: help ssot-check ssot-lint ssot-openapi ssot-index-check ssot-index-apply ssot-linkcheck ssot-all agent-start agent-prompt agent-scope-check agent-close agent-list
 
 # Default target
 help:
@@ -163,3 +163,42 @@ doc-preview:
 		exit 1; \
 	fi
 	@python3 tools/ssot_create_doc.py $(TYPE) $(PATH) --title "$(TITLE)" --dry-run
+
+# ============================================================
+# AGENT RUNTIME (Option B)
+# ============================================================
+
+agent-start:
+	@if [ -z "$(AGENT)" ] || [ -z "$(TICKET)" ]; then \
+		echo "❌ Usage: make agent-start AGENT=<agent> TICKET=<ticket>"; \
+		echo "   Example: make agent-start AGENT=tom TICKET=TKT_backend_mvp"; \
+		exit 1; \
+	fi
+	@python3 tools/agent_runtime.py start --agent $(AGENT) --ticket $(TICKET)
+
+agent-prompt:
+	@if [ -z "$(AGENT)" ] || [ -z "$(TICKET)" ]; then \
+		echo "❌ Usage: make agent-prompt AGENT=<agent> TICKET=<ticket>"; \
+		echo "   Example: make agent-prompt AGENT=tom TICKET=TKT_backend_mvp"; \
+		exit 1; \
+	fi
+	@python3 tools/agent_runtime.py prompt --agent $(AGENT) --ticket $(TICKET)
+
+agent-scope-check:
+	@if [ -z "$(AGENT)" ] || [ -z "$(TICKET)" ]; then \
+		echo "❌ Usage: make agent-scope-check AGENT=<agent> TICKET=<ticket>"; \
+		echo "   Example: make agent-scope-check AGENT=tom TICKET=TKT_backend_mvp"; \
+		exit 1; \
+	fi
+	@python3 tools/agent_runtime.py scope-check --agent $(AGENT) --ticket $(TICKET)
+
+agent-close:
+	@if [ -z "$(AGENT)" ] || [ -z "$(TICKET)" ]; then \
+		echo "❌ Usage: make agent-close AGENT=<agent> TICKET=<ticket>"; \
+		echo "   Example: make agent-close AGENT=tom TICKET=TKT_backend_mvp"; \
+		exit 1; \
+	fi
+	@python3 tools/agent_runtime.py close --agent $(AGENT) --ticket $(TICKET) $(if $(SUMMARY),--summary "$(SUMMARY)",)
+
+agent-list:
+	@python3 tools/agent_runtime.py list

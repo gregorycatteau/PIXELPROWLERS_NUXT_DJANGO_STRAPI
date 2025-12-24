@@ -277,6 +277,16 @@
         "owners": ["Jared", "Marty"],
         "priority": "P1",
         "tags": ["agents", "ssot", "ownership", "registry"]
+      },
+      {
+        "id": "AGENTS_RUNTIME_V1",
+        "path": "docs/00-foundations/AGENTS_RUNTIME_V1.md",
+        "status": "active",
+        "hasFrontmatter": true,
+        "domain": "governance",
+        "owners": ["Marty", "Dan", "Eva"],
+        "priority": "P1",
+        "tags": ["agents", "runtime", "worktrees", "sandbox", "security"]
       }
     ],
     "needsFrontmatter": [],

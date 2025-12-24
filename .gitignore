@@ -36,6 +36,9 @@ agents/_scratch/
 # Agents local artifacts (not version-controlled)
 agents/test.json
 
+# Agent worktrees (Option B runtime)
+.worktrees/
+
 # IDE
 .DS_Store
 .idea/
