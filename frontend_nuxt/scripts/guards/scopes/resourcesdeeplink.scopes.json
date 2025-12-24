@@ -1,0 +1,28 @@
+{
+  "pilot": [
+    "app/pages/ressources.vue",
+    "app/composables/useResourcesLibrary.ts"
+  ],
+  "r2": [
+    "app/pages/ressources.vue",
+    "app/composables/useResourcesLibrary.ts",
+    "app/components/resources/library/PPResourcesLibraryShell.vue",
+    "app/components/resources/library/PPResourcesLibraryFilters.vue",
+    "app/components/resources/library/PPResourcesLibraryGrid.vue",
+    "app/components/resources/library/PPResourcesLibraryPagination.vue"
+  ],
+  "r3": [
+    "app/pages/ressources.vue",
+    "app/composables/useResourcesLibrary.ts",
+    "app/components/resources/library/PPResourcesLibraryShell.vue",
+    "app/components/resources/library/PPResourcesLibraryFilters.vue",
+    "app/components/resources/library/PPResourcesLibraryGrid.vue",
+    "app/components/resources/library/PPResourcesLibraryPagination.vue",
+    "app/components/resources/library/PPResourcesLibraryToolbar.vue",
+    "app/components/journey/bilan/ResourcesActionsPanel.vue",
+    "app/components/journey/bilan/BilanLandingPanel.vue",
+    "app/components/journey/bilan/BilanHypothesesSection.vue",
+    "app/components/journey/bilan/GlobalBilanEngine.vue",
+    "app/utils/deeplinks/resourcesDeepLink.ts"
+  ]
+}

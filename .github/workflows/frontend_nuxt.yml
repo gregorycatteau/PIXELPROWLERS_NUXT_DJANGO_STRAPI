@@ -27,7 +27,7 @@ jobs:
 
       - name: CI Canary
         run: |
-          echo "CI_CANARY=frontend_nuxt_ci_v2_20251222"
+          echo "CI_CANARY=frontend_nuxt_ci_v3_guards_industrialized_20251224"
           git rev-parse HEAD
 
       - name: Install dependencies
@@ -35,7 +35,7 @@ jobs:
 
       - name: CI Fingerprint
         run: |
-          node -e "const p=require('./package.json'); console.log('typecheck=', p.scripts.typecheck); console.log('bilan:guard=', p.scripts['bilan:guard']);"
+          node -e "const p=require('./package.json'); console.log('typecheck=', p.scripts.typecheck); console.log('guards:ci=', p.scripts['guards:ci']);"
           ls -la
           ls -la .nuxt || true
           node -e "console.log('cwd', process.cwd())"
@@ -43,32 +43,5 @@ jobs:
       - name: Typecheck (Nuxt)
         run: npm run typecheck
 
-      - name: Bilan guard
-        run: npm run bilan:guard
-
-      - name: Journey manifest guard
-        run: npm run journey:guard
-
-      - name: Journey no-wrapper guard
-        run: npm run journey:nodup
-
-      - name: No-console guard
-        run: npm run no-console:guard
-
-      - name: Engagement guard
-        run: npm run engagement:guard
-
-      - name: No v-html guard
-        run: npm run no-v-html:guard
-
-      - name: No innerHTML guard
-        run: npm run no-innerhtml:guard
-
-      - name: Data-only strings guard
-        run: npm run data-only:guard
-
-      - name: Markdown safe guard
-        run: npm run markdown-safe:guard
-
-      - name: Recommendations guard
-        run: npm run reco:guard
+      - name: Guards CI (all security + quality guards)
+        run: npm run guards:ci
