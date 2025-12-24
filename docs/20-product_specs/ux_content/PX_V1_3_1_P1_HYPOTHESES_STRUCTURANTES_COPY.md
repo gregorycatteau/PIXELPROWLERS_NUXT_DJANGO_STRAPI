@@ -1,7 +1,15 @@
 ---
 id: PX_V1_3_1_P1_HYPOTHESES_STRUCTURANTES_COPY
 version: 1.0.0
-scope: P1
+status: active
+date: 2025-12-24
+owners: ["Talia", "Marty"]
+scope: ["P1"]
+tags:
+  - ux
+  - content
+  - hypotheses
+  - bilan
 surface: global_bilan
 tone: atterrissage_direct
 rules:

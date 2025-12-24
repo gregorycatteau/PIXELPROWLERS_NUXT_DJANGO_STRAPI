@@ -1,3 +1,13 @@
+---
+id: PX_NO_VHTML_DOCTRINE_V1
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Dan"]
+scope: ["docs/30-tech_specs/**"]
+tags: ["tech_specs", "frontend"]
+---
+
 # PX No v-html Doctrine V1
 
 PixelProwlers ne construit pas de profils utilisateurs : il produit des miroirs locaux exportables.

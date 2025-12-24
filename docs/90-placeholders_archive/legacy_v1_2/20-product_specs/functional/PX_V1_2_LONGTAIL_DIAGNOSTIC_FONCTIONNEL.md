@@ -1,3 +1,13 @@
+---
+id: PX_V1_2_LONGTAIL_DIAGNOSTIC_FONCTIONNEL
+version: 1.0.0
+status: archived
+date: 2025-12-24
+owners: ["Marty"]
+scope: ["docs/20-product_specs/**"]
+tags: ["product_specs", "functional"]
+---
+
 # PX V1.2 — Parcours longue traîne « Ma structure dysfonctionne » (spécification fonctionnelle)
 
 > Statut SSOT : document V1.2 conservé pour historique. La version active est V1.3, voir `docs/20-product_specs/functional/PX_V1_3_P1_DIAGNOSTIC_ATELIER.md`.

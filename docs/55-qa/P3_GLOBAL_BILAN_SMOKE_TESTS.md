@@ -1,3 +1,17 @@
+---
+id: P3_GLOBAL_BILAN_SMOKE_TESTS
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Dan", "Eva"]
+  - Marty
+scope:
+  - docs/55-qa/**
+tags:
+  - qa
+  - testing
+---
+
 # P3 Global Bilan — Smoke tests (engine + adapter)
 
 ## 1) E1 -> E2 -> Global

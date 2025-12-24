@@ -1,3 +1,13 @@
+---
+id: UX_INDEX_V1
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Heider", "Dan"]
+scope: ["docs/20-product_specs/**"]
+tags: ["product_specs", "ux_ui", "design_system"]
+---
+
 # UX_INDEX_V1 — PixelProwlers Design System & UX Patterns (ENFORCED)
 
 > Statut : **ENFORCED** (obligatoire)

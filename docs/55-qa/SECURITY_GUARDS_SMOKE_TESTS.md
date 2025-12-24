@@ -1,3 +1,17 @@
+---
+id: SECURITY_GUARDS_SMOKE_TESTS
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Dan", "Eva"]
+  - Marty
+scope:
+  - docs/55-qa/**
+tags:
+  - qa
+  - testing
+---
+
 # Security Guards — Smoke tests
 
 ## Positifs

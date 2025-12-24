@@ -1,3 +1,13 @@
+---
+id: PX_JOURNEY_ENGINE_UNIVERSAL_V1
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Dan"]
+scope: ["docs/30-tech_specs/**"]
+tags: ["tech_specs", "frontend"]
+---
+
 # PX Journey Engine Universal V1
 
 ## Doctrine

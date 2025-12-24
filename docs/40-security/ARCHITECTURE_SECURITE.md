@@ -1,3 +1,13 @@
+---
+id: ARCHITECTURE_SECURITE
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Eva", "Dan"]
+scope: ["docs/40-security/**"]
+tags: ["security"]
+---
+
 # Architecture sécurité — Vue d'ensemble
 
 ## 1. Périmètre V1.2

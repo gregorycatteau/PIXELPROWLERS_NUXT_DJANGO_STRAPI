@@ -1,3 +1,13 @@
+---
+id: PX_V1_3_RESOURCES_LIBRARY_SPEC
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Talia", "Marty"]
+scope: ["docs/20-product_specs/**"]
+tags: ["product_specs", "ux_content"]
+---
+
 # PX_V1_3_RESOURCES_LIBRARY_SPEC
 
 > **Version** : 1.0  

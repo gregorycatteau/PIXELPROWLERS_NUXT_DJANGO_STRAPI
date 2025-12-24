@@ -1,3 +1,13 @@
+---
+id: SPRINT0_CONTEXT_PIXELPROWLERS
+version: 1.0.0
+status: draft
+date: 2025-12-24
+owners: ["Rand", "Julien"]
+scope: ["docs/70-seo/**"]
+tags: ["seo"]
+---
+
 # Sprint 0 – Contexte PixelProwlers
 
 ## Architecture frontend (Nuxt/Tailwind)

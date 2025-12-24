@@ -1,3 +1,13 @@
+---
+id: SECURITY_GATES
+version: 1.0.0
+status: draft
+date: 2025-12-24
+owners: ["Eva", "Dan"]
+scope: ["docs/40-security/**"]
+tags: ["security"]
+---
+
 # Security Gates — contrôle avant mise en prod
 
 ## Gate 0 – Vision & politique

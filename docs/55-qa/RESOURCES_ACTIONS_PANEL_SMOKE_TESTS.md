@@ -1,3 +1,17 @@
+---
+id: RESOURCES_ACTIONS_PANEL_SMOKE_TESTS
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Dan", "Eva"]
+  - Marty
+scope:
+  - docs/55-qa/**
+tags:
+  - qa
+  - testing
+---
+
 # Resources & Actions Panel — Smoke tests
 
 Valider le panneau universel Actions & ressources, ses filtres et ses CTA.

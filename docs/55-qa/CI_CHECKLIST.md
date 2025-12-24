@@ -1,3 +1,17 @@
+---
+id: CI_CHECKLIST
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Dan", "Eva"]
+  - Marty
+scope:
+  - docs/55-qa/**
+tags:
+  - qa
+  - testing
+---
+
 # CI Checklist — Bilan Engine
 
 Commands to run in CI for the frontend:

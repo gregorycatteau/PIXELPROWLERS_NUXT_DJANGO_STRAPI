@@ -1,13 +1,10 @@
 ---
 id: PX_V1_3_SECURITY_P0_DEEPLINKS_DOM_GUARDS
 version: 1.0.0
-status: approved
+status: stable
 date: 2025-12-23
-owners:
-  - Dan
-  - Marty
-scope:
-  - frontend_nuxt/app
+owners: ["Eva", "Dan"]
+scope: ["frontend_nuxt/app"]
 tags:
   - security
   - privacy

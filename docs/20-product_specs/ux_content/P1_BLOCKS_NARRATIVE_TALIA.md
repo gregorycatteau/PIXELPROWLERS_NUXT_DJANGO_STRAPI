@@ -1,3 +1,13 @@
+---
+id: P1_BLOCKS_NARRATIVE_TALIA
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Talia", "Marty"]
+scope: ["docs/20-product_specs/**"]
+tags: ["product_specs", "ux_content"]
+---
+
 # P1 – Narration des bilans de blocs (Talia)
 
 > Document UX content pour les bilans de blocs P1 (B1 à B4).  

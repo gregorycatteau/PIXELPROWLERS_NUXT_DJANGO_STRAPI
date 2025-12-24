@@ -1,3 +1,13 @@
+---
+id: PX_V1_2_PARCOURS_OVERVIEW
+version: 1.0.0
+status: archived
+date: 2025-12-24
+owners: ["Marty"]
+scope: ["docs/10-vision_roadmap/**"]
+tags: ["roadmap", "vision"]
+---
+
 # PX V1.2 — Parcours d’entrée PixelProwlers (Overview produit)
 
 > Document de référence pour tous les agents (Produit, UX, Rédaction, Dev, Sécurité).  

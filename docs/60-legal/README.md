@@ -1,3 +1,22 @@
-# Légal & conformité
+# 60 Legal — Index
 
-RGPD, ToS, mentions légales. Canons légaux.
+> **Périmètre** : RGPD, CGU, juridique
+
+<!-- GENERATED:START -->
+<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2025-12-24 -->
+
+## Documents
+
+| Document | Status | Description |
+|----------|--------|-------------|
+| [PRIVACY_POLICY_V1.md](./PRIVACY_POLICY_V1.md) | active | Politique de Confidentialité PixelProwlers |
+| [rgpd_compliance.md](./rgpd_compliance.md) | draft | rgpd compliance |
+| [terms_of_service.md](./terms_of_service.md) | draft | terms of service |
+
+**Owners** : Marty
+
+<!-- GENERATED:END -->
+
+---
+
+**Parent** : [docs/README.md](../README.md)

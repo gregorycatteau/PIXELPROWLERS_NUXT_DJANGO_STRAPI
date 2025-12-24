@@ -1,3 +1,13 @@
+---
+id: PX_SKIP_SIGNAL_POLICY_V1
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Talia", "Marty"]
+scope: ["docs/20-product_specs/**"]
+tags: ["product_specs", "ux_content"]
+---
+
 # PX Skip Signal Policy V1
 
 ## Statut

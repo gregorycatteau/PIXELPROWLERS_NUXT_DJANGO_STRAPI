@@ -1,3 +1,22 @@
-# Mesure & feedback
+# 50 Measurement — Index
 
-Plan de mesure, KPIs, feedback utilisateur. Canons mesure.
+> **Périmètre** : Plan de mesure, KPIs
+
+<!-- GENERATED:START -->
+<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2025-12-24 -->
+
+## Documents
+
+| Document | Status | Description |
+|----------|--------|-------------|
+| [kpis_and_dashboard.md](./kpis_and_dashboard.md) | draft | kpis and dashboard |
+| [measurement_plan.md](./measurement_plan.md) | draft | measurement plan |
+| [user_feedback.md](./user_feedback.md) | draft | user feedback |
+
+**Owners** : Claire, Marty
+
+<!-- GENERATED:END -->
+
+---
+
+**Parent** : [docs/README.md](../README.md)

@@ -1,3 +1,17 @@
+---
+id: PX_V1_3_SECURITY_GUARDS_REGISTRY
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Eva", "Dan"]
+scope: ["frontend_nuxt"]
+tags:
+  - security
+  - guards
+  - ci
+  - ssot
+---
+
 # Guards Registry — SSOT V1.3
 
 > **Source of Truth** pour tous les guards de sécurité et qualité du frontend.

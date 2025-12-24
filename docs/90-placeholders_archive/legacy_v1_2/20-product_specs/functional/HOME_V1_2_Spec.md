@@ -1,3 +1,13 @@
+---
+id: HOME_V1_2_SPEC
+version: 1.0.0
+status: archived
+date: 2025-12-24
+owners: ["Marty"]
+scope: ["docs/20-product_specs/**"]
+tags: ["product_specs", "functional"]
+---
+
 <!-- 20-product_specs/functional/HOME_V1_2_SPEC.md -->
 
 # HOME V1.2 — Spécification fonctionnelle de la page d’accueil

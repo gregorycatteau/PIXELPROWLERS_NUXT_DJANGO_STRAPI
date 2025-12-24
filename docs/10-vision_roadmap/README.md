@@ -1,3 +1,24 @@
-# Vision & Roadmap
+# 10 Vision Roadmap — Index
 
-Sources canoniques : vision produit, roadmap, gaps par version, overview parcours. Versions explicites.
+> **Périmètre** : Vision, objectifs, backlog/epics, phases
+
+<!-- GENERATED:START -->
+<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2025-12-24 -->
+
+## Documents
+
+| Document | Status | Description |
+|----------|--------|-------------|
+| [backlog.generated.json](./backlog.generated.json) | active | Fichier JSON |
+| [backlog.generated.md](./backlog.generated.md) | active | 📋 Backlog Généré depuis le SSOT |
+| [epics_and_backlog.md](./epics_and_backlog.md) | draft | Epics & Backlog |
+| [mvp_objectives.md](./mvp_objectives.md) | draft | MVP Objectives |
+| [vision_produit.md](./vision_produit.md) | active | Vision Produit - PixelProwlers (Version définitive) |
+
+**Owners** : Marty
+
+<!-- GENERATED:END -->
+
+---
+
+**Parent** : [docs/README.md](../README.md)

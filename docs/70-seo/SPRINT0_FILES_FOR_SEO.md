@@ -1,3 +1,13 @@
+---
+id: SPRINT0_FILES_FOR_SEO
+version: 1.0.0
+status: draft
+date: 2025-12-24
+owners: ["Rand", "Julien"]
+scope: ["docs/70-seo/**"]
+tags: ["seo"]
+---
+
 # Fichiers utiles pour le travail SEO
 
 | Chemin relatif | Rôle pressenti | Priorité |

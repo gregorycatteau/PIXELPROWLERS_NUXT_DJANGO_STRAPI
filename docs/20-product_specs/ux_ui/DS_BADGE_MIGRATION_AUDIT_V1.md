@@ -1,3 +1,13 @@
+---
+id: DS_BADGE_MIGRATION_AUDIT_V1
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Heider", "Dan"]
+scope: ["docs/20-product_specs/**"]
+tags: ["product_specs", "ux_ui", "design_system"]
+---
+
 # DS_BADGE_MIGRATION_AUDIT_V1 — Inventaire Badge/Tag → PPBadge (ENFORCED)
 
 > Objectif : inventaire exhaustif pour migration mécanique vers `<PPBadge />`.

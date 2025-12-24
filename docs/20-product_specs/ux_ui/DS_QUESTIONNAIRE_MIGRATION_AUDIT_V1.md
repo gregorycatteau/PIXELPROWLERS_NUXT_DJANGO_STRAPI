@@ -1,3 +1,13 @@
+---
+id: DS_QUESTIONNAIRE_MIGRATION_AUDIT_V1
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Heider", "Dan"]
+scope: ["docs/20-product_specs/**"]
+tags: ["product_specs", "ux_ui", "design_system"]
+---
+
 # DS_QUESTIONNAIRE_MIGRATION_AUDIT_V1 — Inventaire Questionnaire → Atomes DS (ENFORCED)
 
 > Objectif : inventorier TOUS les éléments UI qui composent un questionnaire (step).

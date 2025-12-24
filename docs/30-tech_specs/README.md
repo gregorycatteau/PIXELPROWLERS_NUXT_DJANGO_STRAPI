@@ -1,3 +1,22 @@
-# Specs techniques
+# 30 Tech Specs — Index
 
-Architecture, frontend, backend, CMS, qualité (perf, accessibilité, SEO technique). Canons techniques.
+> **Périmètre** : Architecture, frontend/backend, CI/quality
+
+<!-- GENERATED:START -->
+<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2025-12-24 -->
+
+## Sous-dossiers
+
+- [architecture/](./architecture/)
+- [backend/](./backend/)
+- [cms/](./cms/)
+- [frontend/](./frontend/)
+- [quality/](./quality/)
+
+**Owners** : Marty
+
+<!-- GENERATED:END -->
+
+---
+
+**Parent** : [docs/README.md](../README.md)

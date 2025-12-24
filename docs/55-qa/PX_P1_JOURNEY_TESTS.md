@@ -1,3 +1,17 @@
+---
+id: PX_P1_JOURNEY_TESTS
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Dan", "Eva"]
+  - Marty
+scope:
+  - docs/55-qa/**
+tags:
+  - qa
+  - testing
+---
+
 # PX P1 — Script de tests manuels
 
 Scénarios à exécuter à chaque incrément du parcours P1. Objectif : vérifier la reprise, le storage et l’absence de fuite de données.

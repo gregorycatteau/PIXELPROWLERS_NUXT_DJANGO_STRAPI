@@ -1,3 +1,13 @@
+---
+id: PX_V1_2_TALIA_INVARIANTS_EMOTIONNELS
+version: 1.0.0
+status: archived
+date: 2025-12-24
+owners: ["Talia", "Marty"]
+scope: ["docs/20-product_specs/**"]
+tags: ["product_specs", "ux_content"]
+---
+
 # PX_V1_2_TALIA_INVARIANTS_EMOTIONNELS.md
 _Version 1.0 – Référence émotionnelle transverse P1–P5_
 

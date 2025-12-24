@@ -1,3 +1,16 @@
+---
+id: PHASES_DEV
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Jared", "Marty"]
+  - Marty
+scope:
+  - docs/00-foundations/**
+tags:
+  - foundations
+---
+
 # Phases projet
 
 - **Phase 1 (en cours)** : vitrine Nuxt + formulaire de contact relié au backend Django. Strapi préparé mais non utilisé.

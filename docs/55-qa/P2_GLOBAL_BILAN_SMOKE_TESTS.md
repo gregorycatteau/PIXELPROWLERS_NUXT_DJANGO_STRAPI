@@ -1,3 +1,17 @@
+---
+id: P2_GLOBAL_BILAN_SMOKE_TESTS
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Dan", "Eva"]
+  - Marty
+scope:
+  - docs/55-qa/**
+tags:
+  - qa
+  - testing
+---
+
 # P2 Global Bilan — Smoke tests (engine + adapter)
 
 Scénarios rapides pour valider le flow P2 core (E1 -> E2 -> Global + export).

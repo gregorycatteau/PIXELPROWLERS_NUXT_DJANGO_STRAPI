@@ -1,0 +1,538 @@
+# ============================================================================
+# OpenAPI 3.0.3 — PixelProwlers Backend API V1
+# ============================================================================
+# Généré depuis: docs/30-tech_specs/backend/API_SPEC_V1.md
+# Date: 2025-12-24
+# Owners: Tom
+# ============================================================================
+# IMPORTANT: Aucune URL interne, aucun secret. Erreurs neutres uniquement.
+# ============================================================================
+
+openapi: 3.0.3
+
+info:
+  title: PixelProwlers Backend API
+  version: "1.3.0"
+  description: |
+    API REST du backend Django PixelProwlers.
+    
+    ## Principes clés
+    - **Privacy-first** : Aucun tracking, minimisation des données
+    - **Erreurs neutres** : Pas d'info technique exposée (anti-probing)
+    - **Rate limiting** : Protection anti-abus sur tous les endpoints publics
+    - **No PII in logs** : Jamais d'email/message en clair dans les logs
+    
+    ## Authentification
+    - Endpoints publics (`/health/`, `/contact/`) : Aucune auth requise
+    - Endpoints Gate125 : API Key requise (future)
+    - Endpoints admin : Session Django
+  contact:
+    name: PixelProwlers Support
+    email: contact@pixelprowlers.io
+    url: https://pixelprowlers.io
+  license:
+    name: Proprietary
+    url: https://pixelprowlers.io/legal
+
+servers:
+  - url: "{protocol}://{host}"
+    description: Serveur configurable par environnement
+    variables:
+      protocol:
+        default: https
+        enum:
+          - http
+          - https
+        description: Protocole (http pour dev, https pour prod)
+      host:
+        default: api.pixelprowlers.com
+        description: Hostname de l'API (placeholder, remplacer selon env)
+
+tags:
+  - name: Health
+    description: Health checks et readiness probes
+  - name: Contact
+    description: Formulaire de contact public
+  - name: Gate125
+    description: Endpoints Operation 125 (accès restreint, future)
+  - name: Resources
+    description: Ressources et contenus (future)
+
+# ============================================================================
+# PATHS
+# ============================================================================
+
+paths:
+  # --------------------------------------------------------------------------
+  # HEALTH ENDPOINTS
+  # --------------------------------------------------------------------------
+  /api/v1/health/:
+    get:
+      operationId: getHealth
+      summary: Health check général
+      description: |
+        Vérifie que le service est opérationnel.
+        
+        **Rate limit**: Illimité
+      tags:
+        - Health
+      responses:
+        "200":
+          description: Service healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+              example:
+                status: healthy
+                version: "1.3.0"
+                timestamp: "2025-12-24T12:00:00Z"
+        "503":
+          description: Service unhealthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+              example:
+                status: unhealthy
+                version: "1.3.0"
+                timestamp: "2025-12-24T12:00:00Z"
+
+  /api/v1/health/ready/:
+    get:
+      operationId: getReadiness
+      summary: Readiness probe
+      description: |
+        Vérifie que le service est prêt à recevoir du trafic.
+        Utilisé par Kubernetes/Docker pour les health checks.
+        
+        **Rate limit**: Illimité
+      tags:
+        - Health
+      responses:
+        "200":
+          description: Service ready
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+        "503":
+          description: Service not ready
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+
+  # --------------------------------------------------------------------------
+  # CONTACT ENDPOINT
+  # --------------------------------------------------------------------------
+  /api/v1/contact/:
+    post:
+      operationId: submitContact
+      summary: Soumettre un formulaire de contact
+      description: |
+        Endpoint public pour soumettre un message de contact.
+        
+        **Rate limit**: 3 requêtes/minute/IP (cooldown 5 min après dépassement)
+        
+        **Anti-abus**:
+        - Honeypot field (must be empty)
+        - Rate limiting strict
+        - Validation allowlist sur subject
+        
+        **Erreurs neutres**: Toutes les erreurs de validation retournent 
+        un message générique "Données invalides" (anti-probing).
+      tags:
+        - Contact
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContactRequest"
+            examples:
+              valid:
+                summary: Requête valide
+                value:
+                  email: "example@domain.com"
+                  subject: "question_generale"
+                  message: "Bonjour, je souhaite en savoir plus sur vos services."
+                  honeypot: ""
+      responses:
+        "201":
+          description: Message envoyé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactSuccess"
+        "400":
+          description: Données invalides (message générique anti-probing)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        "429":
+          description: Rate limit dépassé
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/X-RateLimit-Limit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/X-RateLimit-Remaining"
+            X-RateLimit-Reset:
+              $ref: "#/components/headers/X-RateLimit-Reset"
+            Retry-After:
+              $ref: "#/components/headers/Retry-After"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RateLimitError"
+        "500":
+          description: Erreur serveur (message générique)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerError"
+
+  # --------------------------------------------------------------------------
+  # GATE125 ENDPOINTS (FUTURE)
+  # --------------------------------------------------------------------------
+  /api/v1/gate125/register/:
+    post:
+      operationId: registerGate125
+      summary: Inscription Operation 125
+      description: |
+        **STATUS: Future (non implémenté)**
+        
+        Endpoint pour l'inscription à l'Operation 125.
+        Accès restreint via API Key.
+        
+        **Rate limit**: 10 requêtes/heure/IP (cooldown 1h après dépassement)
+        
+        TODO: Définir le flow d'obtention de l'API Key
+      tags:
+        - Gate125
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Gate125RegisterRequest"
+      responses:
+        "201":
+          description: Inscription enregistrée
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Gate125RegisterSuccess"
+        "400":
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+        "401":
+          description: API Key manquante ou invalide
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedError"
+        "429":
+          description: Rate limit dépassé
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RateLimitError"
+
+  # --------------------------------------------------------------------------
+  # RESOURCES ENDPOINTS (FUTURE)
+  # --------------------------------------------------------------------------
+  /api/v1/resources/:
+    get:
+      operationId: listResources
+      summary: Liste des ressources
+      description: |
+        **STATUS: Future (V1.4)**
+        
+        Endpoint public pour lister les ressources disponibles.
+        
+        **Rate limit**: 60 requêtes/minute/IP
+        
+        TODO: Définir les filtres, pagination, format de réponse
+      tags:
+        - Resources
+      parameters:
+        - name: page
+          in: query
+          description: Numéro de page (TODO)
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          description: Nombre de résultats par page (TODO)
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        "200":
+          description: Liste des ressources
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResourcesListResponse"
+        "429":
+          description: Rate limit dépassé
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RateLimitError"
+
+# ============================================================================
+# COMPONENTS
+# ============================================================================
+
+components:
+  # --------------------------------------------------------------------------
+  # SECURITY SCHEMES
+  # --------------------------------------------------------------------------
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: |
+        API Key pour endpoints protégés Gate125.
+        Format: `Api-Key <KEY>`
+        
+        TODO: Définir process d'obtention de la clé
+
+  # --------------------------------------------------------------------------
+  # HEADERS
+  # --------------------------------------------------------------------------
+  headers:
+    X-RateLimit-Limit:
+      description: Nombre max de requêtes autorisées dans la fenêtre
+      schema:
+        type: integer
+        example: 3
+    X-RateLimit-Remaining:
+      description: Nombre de requêtes restantes dans la fenêtre
+      schema:
+        type: integer
+        example: 2
+    X-RateLimit-Reset:
+      description: Timestamp Unix de reset du rate limit
+      schema:
+        type: integer
+        example: 1703419200
+    Retry-After:
+      description: Secondes avant de pouvoir réessayer
+      schema:
+        type: integer
+        example: 300
+
+  # --------------------------------------------------------------------------
+  # SCHEMAS
+  # --------------------------------------------------------------------------
+  schemas:
+    # === HEALTH ===
+    HealthResponse:
+      type: object
+      required:
+        - status
+        - version
+        - timestamp
+      properties:
+        status:
+          type: string
+          enum:
+            - healthy
+            - unhealthy
+          description: Statut du service
+        version:
+          type: string
+          description: Version de l'API
+          example: "1.3.0"
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp ISO 8601
+          example: "2025-12-24T12:00:00Z"
+
+    # === CONTACT ===
+    ContactRequest:
+      type: object
+      required:
+        - email
+        - subject
+        - message
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 254
+          description: Email de contact (RFC 5322)
+          example: "example@domain.com"
+        subject:
+          type: string
+          enum:
+            - question_generale
+            - demande_accompagnement
+            - signalement_bug
+            - autre
+          description: Sujet du message (allowlist)
+          example: "question_generale"
+        message:
+          type: string
+          minLength: 10
+          maxLength: 2000
+          description: Corps du message
+          example: "Bonjour, je souhaite en savoir plus sur vos services."
+        honeypot:
+          type: string
+          maxLength: 0
+          description: |
+            Champ honeypot anti-bot. DOIT être vide.
+            Si rempli, la soumission est silencieusement ignorée.
+          example: ""
+
+    ContactSuccess:
+      type: object
+      required:
+        - success
+        - message
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Votre message a bien été envoyé."
+
+    # === GATE125 ===
+    Gate125RegisterRequest:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 254
+          description: Email d'inscription
+        organization:
+          type: string
+          maxLength: 200
+          description: Organisation (optionnel)
+        role:
+          type: string
+          enum:
+            - porteur_projet
+            - formateur
+            - accompagnant
+            - autre
+          description: Rôle dans le projet
+
+    Gate125RegisterSuccess:
+      type: object
+      required:
+        - success
+        - message
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Inscription enregistrée."
+
+    # === RESOURCES ===
+    ResourcesListResponse:
+      type: object
+      description: |
+        TODO: Définir la structure de réponse pour V1.4
+      properties:
+        items:
+          type: array
+          items:
+            type: object
+            description: TODO Resource schema
+        pagination:
+          type: object
+          description: TODO Pagination info
+
+    # === ERRORS ===
+    ValidationError:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          example: "Données invalides"
+          description: |
+            Message générique (anti-probing).
+            Ne révèle PAS quel champ est invalide.
+
+    RateLimitError:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          example: "Trop de requêtes"
+
+    ServerError:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          example: "Erreur serveur"
+          description: Message générique (jamais de stack trace)
+
+    UnauthorizedError:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          example: "Non autorisé"
+          description: API Key manquante ou invalide
+
+# ============================================================================
+# NOTES
+# ============================================================================
+# 
+# RATE LIMITS PAR ENDPOINT:
+# - /api/v1/health/*      : Illimité
+# - /api/v1/contact/      : 3/min/IP (cooldown 5 min)
+# - /api/v1/gate125/*     : 10/h/IP (cooldown 1h)
+# - /api/v1/resources/    : 60/min/IP
+#
+# SÉCURITÉ:
+# - CORS: pixelprowlers.com uniquement (+ localhost en dev)
+# - CSRF: Token cookie + header pour POST
+# - HSTS: Activé en production (max-age=31536000)
+# - Headers: X-Content-Type-Options, X-Frame-Options, etc.
+#
+# VALIDATION (appliquée côté serveur):
+# - NFKC normalization sur tous les strings
+# - Suppression caractères zero-width
+# - Trim whitespace
+# - Allowlist enum stricte pour subject/role
+#
+# LOGS:
+# - NO PII: jamais d'email/message en clair
+# - IP hashée avec salt rotatif journalier
+# - Correlation ID éphémère par requête
+#
+# ============================================================================

@@ -1,3 +1,13 @@
+---
+id: P1_GLOBAL_BILAN_REPERES_HANDOFF
+version: 1.0.0
+status: archived
+date: 2025-12-24
+owners: ["Heider"]
+scope: ["docs/99_handoff/**"]
+tags: ["handoff"]
+---
+
 # Handoff — Refactor UX du bloc « Repères (version publique) » (P1 Global Bilan)
 
 > Objectif de ce document : permettre à n’importe qui de reprendre le sujet **sans aucun contexte**, en comprenant :

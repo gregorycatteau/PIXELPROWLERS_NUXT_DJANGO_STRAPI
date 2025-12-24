@@ -1,3 +1,14 @@
-# CMS
+# 30 Tech Specs/Cms — Index
 
-Specs techniques CMS/Strapi. Canons techniques.
+> **Périmètre** : Documentation
+
+<!-- GENERATED:START -->
+<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2025-12-24 -->
+
+**Owners** : Dan
+
+<!-- GENERATED:END -->
+
+---
+
+**Parent** : [30-tech_specs/README.md](../README.md)

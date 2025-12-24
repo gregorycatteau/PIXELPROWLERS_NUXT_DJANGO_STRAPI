@@ -1,3 +1,17 @@
+---
+id: PX_V1_3_PARCOURS_UTILISATEURS_P1
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Marty", "Claire"]
+  - Marty
+scope:
+  - docs/20-product_specs/**
+tags:
+  - product_specs
+  - user_stories
+---
+
 # PX_V1_3_PARCOURS_UTILISATEURS_P1.md
 
 ## 1. Personas centraux

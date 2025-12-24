@@ -1,3 +1,13 @@
+---
+id: P1_GLOBAL_BILAN_REFACTOR_AUDIT
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Dan"]
+scope: ["docs/30-tech_specs/**"]
+tags: ["tech_specs", "frontend"]
+---
+
 # P1 Global Bilan — Refactor Audit
 
 - **Fichier source** : `frontend_nuxt/app/components/journey/p1/P1GlobalBilan.vue`

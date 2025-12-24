@@ -1,3 +1,17 @@
+---
+id: P1_GLOBAL_BILAN_SMOKE_TESTS
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Dan", "Eva"]
+  - Marty
+scope:
+  - docs/55-qa/**
+tags:
+  - qa
+  - testing
+---
+
 # P1 Global Bilan — Smoke tests (adapter/engine)
 
 Ce jeu de scénarios vérifie rapidement le nouveau moteur `GlobalBilanEngine` (branch `bilan_refactor`) sans couvrir les cas métier exhaustifs. Suivre l’ordre pour limiter les dépendances de state.

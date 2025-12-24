@@ -1,3 +1,13 @@
+---
+id: PIXELPROWLERS_V1_2_GAPS_ET_PHASES
+version: 1.0.0
+status: archived
+date: 2025-12-24
+owners: ["Marty"]
+scope: ["docs/10-vision_roadmap/**"]
+tags: ["roadmap", "vision"]
+---
+
 # PixelProwlers V1.2 — Parcours longue traîne : gaps et phasage
 
 ## 1) État des lieux rapide (V1 en place)

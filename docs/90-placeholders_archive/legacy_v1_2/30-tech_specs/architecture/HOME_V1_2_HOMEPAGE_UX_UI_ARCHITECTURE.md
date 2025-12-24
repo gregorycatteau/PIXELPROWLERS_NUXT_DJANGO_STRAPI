@@ -1,3 +1,13 @@
+---
+id: HOME_V1_2_HOMEPAGE_UX_UI_ARCHITECTURE
+version: 1.0.0
+status: archived
+date: 2025-12-24
+owners: ["Dan"]
+scope: ["docs/30-tech_specs/**"]
+tags: ["tech_specs", "architecture"]
+---
+
 ## 1. Contexte & périmètre
 
 ### 1.1. Rappel des sources fonctionnelles

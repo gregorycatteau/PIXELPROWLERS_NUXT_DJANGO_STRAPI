@@ -1,3 +1,17 @@
+---
+id: PX_V1_3_1_P1_PANORAMA_MODEL
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Marty"]
+  - Marty
+scope:
+  - docs/20-product_specs/**
+tags:
+  - product_specs
+  - functional
+---
+
 # PX_V1_3_1_P1_PANORAMA_MODEL.md
 
 ## 1. Objet

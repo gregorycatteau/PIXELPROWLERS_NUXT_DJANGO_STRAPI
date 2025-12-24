@@ -1,3 +1,13 @@
+---
+id: PX_V1_0_P1_ACTION_PLAN_SCHEMA
+version: 1.0.0
+status: archived
+date: 2025-12-24
+owners: ["Dan", "Marty"]
+scope: ["docs/20-product_specs/**"]
+tags: ["product_specs", "schemas"]
+---
+
 # PX_V1_0_P1_ACTION_PLAN_SCHEMA.md
 
 ## 1. Objectif du schéma

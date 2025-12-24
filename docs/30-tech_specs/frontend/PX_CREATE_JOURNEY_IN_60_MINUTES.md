@@ -1,3 +1,13 @@
+---
+id: PX_CREATE_JOURNEY_IN_60_MINUTES
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Dan"]
+scope: ["docs/30-tech_specs/**"]
+tags: ["tech_specs", "frontend"]
+---
+
 # PX Create Journey In 60 Minutes
 
 ## Objectif
@@ -35,7 +45,7 @@ Le parcours doit fonctionner en E0 -> E1 -> E2 -> Global avec un adapter bilan.
 - enregistrer dans `frontend_nuxt/app/adapters/bilan/registry.ts`
 
 8) Ajouter smoke tests
-- `docs/50-qa/PX_GLOBAL_BILAN_SMOKE_TESTS.md`
+- `docs/55-qa/PX_GLOBAL_BILAN_SMOKE_TESTS.md`
 
 ## Snippets minimaux
 

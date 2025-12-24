@@ -1,3 +1,17 @@
+---
+id: PARCOURS_UTILISATEURS_P1
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Marty", "Claire"]
+  - Marty
+scope:
+  - docs/20-product_specs/**
+tags:
+  - product_specs
+  - user_stories
+---
+
 # PX V1.2 – User stories Parcours P1 « Ma structure dysfonctionne »
 
 > Statut SSOT : document V1.2 conservé pour historique. Les user stories actives sont en V1.3 (`docs/20-product_specs/user_stories/PX_V1_3_PARCOURS_UTILISATEURS_P1.md`).

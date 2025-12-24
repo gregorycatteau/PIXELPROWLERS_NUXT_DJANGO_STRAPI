@@ -1,3 +1,13 @@
+---
+id: MODELES_DE_MENACES
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Eva", "Dan"]
+scope: ["docs/40-security/**"]
+tags: ["security"]
+---
+
 # Modèles de menaces — Vitrine, diagnostics, Relinium, Fit
 
 Intention : cadrer les menaces par brique et par mode (solo/offline vs accompagné).

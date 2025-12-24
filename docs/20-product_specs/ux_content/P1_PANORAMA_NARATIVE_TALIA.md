@@ -1,3 +1,13 @@
+---
+id: P1_PANORAMA_NARATIVE_TALIA
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Talia", "Marty"]
+scope: ["docs/20-product_specs/**"]
+tags: ["product_specs", "ux_content"]
+---
+
 # P1 – Panorama · Narratives (Talia)
 
 Document de référence pour le câblage des textes de bilan Panorama (E2).

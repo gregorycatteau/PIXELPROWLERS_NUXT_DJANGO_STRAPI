@@ -1,3 +1,17 @@
+---
+id: ENGAGEMENT_N1_N4_SMOKE_TESTS
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Dan", "Eva"]
+  - Marty
+scope:
+  - docs/55-qa/**
+tags:
+  - qa
+  - testing
+---
+
 # Engagement N1-N4 — Smoke tests
 
 Valider la presence du module engagement dans le Global Bilan, les CTA et l export.

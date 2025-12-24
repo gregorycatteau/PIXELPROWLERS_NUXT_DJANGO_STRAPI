@@ -1,3 +1,17 @@
+---
+id: PX_V1_3_P1_ENGAGEMENT_LEVELS
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Marty"]
+  - Marty
+scope:
+  - docs/20-product_specs/**
+tags:
+  - product_specs
+  - functional
+---
+
 # PX_V1_3_P1_ENGAGEMENT_LEVELS.md  
 ## Parcours P1 – « Ma structure dysfonctionne »  
 ## Niveaux d’engagement publics N1 → N4

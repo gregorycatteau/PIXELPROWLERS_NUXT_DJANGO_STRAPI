@@ -1,8 +1,22 @@
-# Specs produit
+# 20 Product Specs — Index
 
-Specs fonctionnelles, user stories, UX/émotionnel. Canon = specs par parcours/feature ; brouillons à archiver ailleurs.
+> **Périmètre** : Specs fonctionnelles, user stories, UX content, audits UX/UI
 
-## P1 — version active
+<!-- GENERATED:START -->
+<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2025-12-24 -->
 
-- Canon SSOT P1 : V1.3 (`functional/PX_V1_3_P1_DIAGNOSTIC_ATELIER.md`, `user_stories/PX_V1_3_PARCOURS_UTILISATEURS_P1.md`, `schemas/PX_V1_3_P1_QUESTION_SCHEMA.md`, `schemas/PX_V1_0_P1_ACTION_PLAN_SCHEMA.md`).
-- Les livrables V1.2 sont conservés pour historique et annotés comme superseded.
+## Sous-dossiers
+
+- [functional/](./functional/)
+- [schemas/](./schemas/)
+- [user_stories/](./user_stories/)
+- [ux_content/](./ux_content/)
+- [ux_ui/](./ux_ui/)
+
+**Owners** : Marty
+
+<!-- GENERATED:END -->
+
+---
+
+**Parent** : [docs/README.md](../README.md)

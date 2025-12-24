@@ -1,3 +1,13 @@
+---
+id: BILAN_ENGINE_ADAPTER_GUIDE
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Dan"]
+scope: ["docs/30-tech_specs/**"]
+tags: ["tech_specs", "frontend"]
+---
+
 # Guide d’adaptation — Bilan Engine (GlobalBilanEngine)
 
 Objectif: ajouter un nouvel adapter de bilan pour un parcours (P2/P3…) sans modifier l’UI ni le moteur.
@@ -37,4 +47,4 @@ State UI (sélections, toggles, scroll) reste dans l’engine/composables.
 4. Ajouter l’adapter au switch du `registry.ts`.
 5. Lancer `npm run --prefix frontend_nuxt typecheck`.
 6. Lancer `npm run --prefix frontend_nuxt bilan:guard` (tripwire anti “raw answers” en CI).
-7. Faire un smoke test ciblé (voir `docs/50-qa/P1_GLOBAL_BILAN_SMOKE_TESTS.md` comme référence).
+7. Faire un smoke test ciblé (voir `docs/55-qa/P1_GLOBAL_BILAN_SMOKE_TESTS.md` comme référence).

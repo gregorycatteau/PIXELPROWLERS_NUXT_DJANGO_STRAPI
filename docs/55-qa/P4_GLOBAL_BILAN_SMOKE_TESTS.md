@@ -1,3 +1,17 @@
+---
+id: P4_GLOBAL_BILAN_SMOKE_TESTS
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Dan", "Eva"]
+  - Marty
+scope:
+  - docs/55-qa/**
+tags:
+  - qa
+  - testing
+---
+
 # P4 Global Bilan — Smoke tests (engine + adapter)
 
 Scenarios rapides pour valider le flow P4 core (E0 -> E1 -> E2 -> Global + export).

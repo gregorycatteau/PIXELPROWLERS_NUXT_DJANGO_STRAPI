@@ -1,3 +1,16 @@
+---
+id: ENVIRONMENTS
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Jared", "Marty"]
+  - Marty
+scope:
+  - docs/00-foundations/**
+tags:
+  - foundations
+---
+
 # Environnements
 
 Trois environnements cohérents pour toutes les briques : `dev`, `test`, `prod`. Chaque environnement dispose de sa propre base PostgreSQL.

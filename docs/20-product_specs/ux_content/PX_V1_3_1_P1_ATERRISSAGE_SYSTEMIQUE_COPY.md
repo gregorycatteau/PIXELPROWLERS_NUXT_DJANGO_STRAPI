@@ -1,3 +1,13 @@
+---
+id: PX_V1_3_1_P1_ATERRISSAGE_SYSTEMIQUE_COPY
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Talia", "Marty"]
+scope: ["docs/20-product_specs/**"]
+tags: ["product_specs", "ux_content"]
+---
+
 # P1 V1.3.1 — Atterrissage systémique (copy canon)
 
 Objectif : proposer un miroir “système” (gouvernance, arbitrages, dépendances, capacité, contrôles), pour éviter de réduire la situation à “c’est humain”.

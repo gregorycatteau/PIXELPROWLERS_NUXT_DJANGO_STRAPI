@@ -1,3 +1,17 @@
+---
+id: PX_JOURNEY_ENGINE_SMOKE_TESTS
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Dan", "Eva"]
+  - Marty
+scope:
+  - docs/55-qa/**
+tags:
+  - qa
+  - testing
+---
+
 # PX Journey Engine — Smoke tests (P1/P2/P3/P4)
 
 Checklist rapide pour valider le moteur universel et le pipeline bilan (E0 -> E1 -> E2 -> Global).

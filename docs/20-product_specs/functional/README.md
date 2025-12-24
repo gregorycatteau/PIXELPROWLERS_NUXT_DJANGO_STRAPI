@@ -1,8 +1,28 @@
-# Specs fonctionnelles
+# 20 Product Specs/Functional — Index
 
-Comportements attendus par parcours/feature. Canon par parcours.
+> **Périmètre** : Documentation
 
-## P1 — référence
+<!-- GENERATED:START -->
+<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2025-12-24 -->
 
-- Version active : `PX_V1_3_P1_DIAGNOSTIC_ATELIER.md`.
-- Version V1.2 conservée pour archive : `PX_V1_2_LONGTAIL_DIAGNOSTIC_FONCTIONNEL.md`.
+## Documents
+
+| Document | Status | Description |
+|----------|--------|-------------|
+| [HOMEPAGE_V1_3_SPEC.md](./HOMEPAGE_V1_3_SPEC.md) | active | Homepage V1.3 — Spécification Fonctionnelle |
+| [PX_V1_3_1_P1_PANORAMA_MODEL.md](./PX_V1_3_1_P1_PANORAMA_MODEL.md) | active | PX_V1_3_1_P1_PANORAMA_MODEL.md |
+| [PX_V1_3_P1_DIAGNOSTIC_ATELIER.md](./PX_V1_3_P1_DIAGNOSTIC_ATELIER.md) | active | PX_V1_3_P1_DIAGNOSTIC_ATELIER.md |
+| [PX_V1_3_P1_ENGAGEMENT_INTEGRATION.md](./PX_V1_3_P1_ENGAGEMENT_INTEGRATION.md) | draft | PX_V1_3_P1_ENGAGEMENT_INTEGRATION.md |
+| [PX_V1_3_P1_ENGAGEMENT_LEVELS.md](./PX_V1_3_P1_ENGAGEMENT_LEVELS.md) | active | PX_V1_3_P1_ENGAGEMENT_LEVELS.md |
+| [PX_V1_3_X_OFFRE_FORMATIONS_ACCOMPAGNEMENT_OVERVIEW.md](./PX_V1_3_X_OFFRE_FORMATIONS_ACCOMPAGNEMENT_OVERVIEW.md) | active | Offre PixelProwlers — Formations & Accompagnement (Overview) — V1.3.x feature |
+| [PX_V1_3_X_OPERATION_125_PRODUCT_SPEC.md](./PX_V1_3_X_OPERATION_125_PRODUCT_SPEC.md) | active | OPÉRATION 125% — Product Spec (V1.3.x feature) |
+| [PX_V1_X_PIXELPROWLERS_ENGAGEMENT_LEVELS_PUBLIC.md](./PX_V1_X_PIXELPROWLERS_ENGAGEMENT_LEVELS_PUBLIC.md) | active | PixelProwlers – Niveaux d’engagement (version publique) |
+| [PX_V1_X_PIXELPROWLERS_LEVEL5_INTERNAL_ONLY.md](./PX_V1_X_PIXELPROWLERS_LEVEL5_INTERNAL_ONLY.md) | active | PixelProwlers – Level 5 (Interne uniquement) |
+
+**Owners** : Marty
+
+<!-- GENERATED:END -->
+
+---
+
+**Parent** : [20-product_specs/README.md](../README.md)

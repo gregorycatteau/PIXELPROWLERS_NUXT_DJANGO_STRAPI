@@ -1,3 +1,13 @@
+---
+id: HOME_V1_2_HOMEPAGE_UX_CONTENT_TALA
+version: 1.0.0
+status: archived
+date: 2025-12-24
+owners: ["Talia", "Marty"]
+scope: ["docs/20-product_specs/**"]
+tags: ["product_specs", "ux_content"]
+---
+
 <!--
   Fichier : docs/20-product_specs/ux_content/HOME_V1_2_HOMEPAGE_UX_CONTENT_TALIA.md
   Rôle   : fixer le corpus texte officiel de la homepage V1.2

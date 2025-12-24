@@ -1,3 +1,13 @@
+---
+id: PX_V1_3_1_P1_SYSTEM_SCALPELS_COPY
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Talia", "Marty"]
+scope: ["docs/20-product_specs/**"]
+tags: ["product_specs", "ux_content"]
+---
+
 # P1 System Scalpels Copy v1.3.1
 
 ## mission_cash

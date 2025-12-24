@@ -1,3 +1,13 @@
+---
+id: SECURITY_INDEX
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Eva", "Dan"]
+scope: ["docs/40-security/**"]
+tags: ["security"]
+---
+
 ## Sécurité & Privacy — SSOT PixelProwlers
 
 Point d’entrée pour les livrables sécurité/OPSEC/privacité. Structure proposée :

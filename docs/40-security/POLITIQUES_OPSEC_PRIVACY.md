@@ -1,3 +1,13 @@
+---
+id: POLITIQUES_OPSEC_PRIVACY
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Eva", "Dan"]
+scope: ["docs/40-security/**"]
+tags: ["security"]
+---
+
 # Politiques OPSEC, privacy & RGPD — squelette
 
 Objectif : formaliser les politiques de souveraineté, confidentialité, gestion des identités et consentements.

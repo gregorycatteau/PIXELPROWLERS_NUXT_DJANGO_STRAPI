@@ -1,3 +1,17 @@
+---
+id: PX_V1_X_PIXELPROWLERS_LEVEL5_INTERNAL_ONLY
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Marty"]
+  - Marty
+scope:
+  - docs/20-product_specs/**
+tags:
+  - product_specs
+  - functional
+---
+
 # PixelProwlers – Level 5 (Interne uniquement)
 
 ## Objet

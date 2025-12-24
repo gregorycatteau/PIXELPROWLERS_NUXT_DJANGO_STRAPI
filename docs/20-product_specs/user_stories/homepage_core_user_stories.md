@@ -1,3 +1,17 @@
+---
+id: HOMEPAGE_CORE_USER_STORIES
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Marty", "Claire"]
+  - Marty
+scope:
+  - docs/20-product_specs/**
+tags:
+  - product_specs
+  - user_stories
+---
+
 <!-- 20-product_specs/functional/user_stories/homepage_core_user_stories.md -->
 
 # User stories — Homepage V1.2

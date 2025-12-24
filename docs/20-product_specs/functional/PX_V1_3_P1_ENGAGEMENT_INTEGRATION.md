@@ -1,3 +1,17 @@
+---
+id: PX_V1_3_P1_ENGAGEMENT_INTEGRATION
+version: 1.0.0
+status: draft
+date: 2025-12-24
+owners: ["Marty"]
+  - Marty
+scope:
+  - docs/20-product_specs/**
+tags:
+  - product_specs
+  - functional
+---
+
 # PX_V1_3_P1_ENGAGEMENT_INTEGRATION.md
 ## Intégration des niveaux N1–N4 dans le parcours P1
 

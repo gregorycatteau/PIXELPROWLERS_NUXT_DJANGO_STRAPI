@@ -1,3 +1,13 @@
+---
+id: DS_CSS_ARCHITECTURE_V1
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Heider", "Dan"]
+scope: ["docs/20-product_specs/**"]
+tags: ["product_specs", "ux_ui", "design_system"]
+---
+
 # DS_CSS_ARCHITECTURE_V1 — Architecture CSS Design System (ENFORCED)
 
 > Statut : **ENFORCED**

@@ -1,3 +1,13 @@
+---
+id: JOURNEYS
+version: 1.0.0
+status: draft
+date: 2025-12-24
+owners: ["Dan"]
+scope: ["docs/30-tech_specs/**"]
+tags: ["tech_specs", "frontend"]
+---
+
 # Journeys (Nuxt) — TODO
 
 - Documenter `useJourneyEngine` (schema P1, navigation E0→E6) et conventions de mapping slug → journeyId.

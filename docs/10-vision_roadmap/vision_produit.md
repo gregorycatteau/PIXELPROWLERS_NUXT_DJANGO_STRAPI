@@ -1,3 +1,17 @@
+---
+id: VISION_PRODUIT
+version: 1.0.0
+status: active
+date: 2025-12-24
+owners: ["Marty", "Jared"]
+  - Marty
+scope:
+  - docs/10-vision_roadmap/**
+tags:
+  - roadmap
+  - vision
+---
+
 # Vision Produit - PixelProwlers (Version définitive)
 
 ## 1. Objectif principal
