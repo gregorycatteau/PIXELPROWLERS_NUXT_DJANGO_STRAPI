@@ -268,6 +268,17 @@
   --pp-bilan-section-title-size: 1.125rem;
   --pp-bilan-section-title-weight: 650;
 
+  /* DS: StepShell (PPJourneyStepShell) — layout générique steps */
+  --pp-step-shell-maxw: 48rem;
+  --pp-step-shell-maxw-wide: 64rem;
+  --pp-step-shell-gap: 1.5rem;
+  --pp-step-shell-gap-compact: 1rem;
+  --pp-step-shell-gap-comfort: 2rem;
+  --pp-step-shell-padding-block: 1rem;
+  --pp-step-shell-header-gap: 0.5rem;
+  --pp-step-shell-body-gap: 1rem;
+  --pp-step-shell-footer-gap: 0.75rem;
+
   /* Focus tokens (V1) — A11y enforced */
   --pp-focus-ring: var(--pp-color-accent-strong);
   --pp-focus-ring-offset: var(--pp-color-bg-page);
@@ -316,6 +327,38 @@
   --pp-reslib-pagination-btn-pad: 0.5rem 0.75rem;
   --pp-reslib-pagination-btn-radius: var(--pp-radius-md);
   --pp-reslib-empty-pad: 2rem;
+
+  /* DS: State components (PPEmptyState/PPErrorState/PPLoadingState) — V1.STATES-R1 */
+  --pp-state-pad: 2rem;
+  --pp-state-pad-compact: 1.5rem;
+  --pp-state-gap: 1rem;
+  --pp-state-gap-compact: 0.75rem;
+  --pp-state-icon-size: 48px;
+  --pp-state-icon-color: var(--pp-color-text-muted);
+  --pp-state-icon-error-color: var(--pp-color-error);
+  --pp-state-title-size: 1.125rem;
+  --pp-state-title-weight: 600;
+  --pp-state-title-color: var(--pp-color-text-primary);
+  --pp-state-desc-size: 0.9375rem;
+  --pp-state-desc-color: var(--pp-color-text-muted);
+  --pp-state-bg: var(--pp-color-panel-soft);
+  --pp-state-bg-error: var(--pp-color-error-soft);
+  --pp-state-border: var(--pp-color-border-soft);
+  --pp-state-border-error: var(--pp-color-error);
+  --pp-state-radius: var(--pp-radius-lg);
+
+  /* Skeleton tokens */
+  --pp-skeleton-bg: var(--pp-color-panel);
+  --pp-skeleton-shimmer: linear-gradient(90deg, var(--pp-color-panel) 0%, var(--pp-color-panel-alt) 50%, var(--pp-color-panel) 100%);
+  --pp-skeleton-radius: var(--pp-radius-md);
+  --pp-skeleton-card-h: 180px;
+  --pp-skeleton-bar-h: 1rem;
+  --pp-skeleton-bar-h-title: 1.25rem;
+
+  /* Spinner tokens */
+  --pp-spinner-size: 40px;
+  --pp-spinner-color: var(--pp-color-accent);
+  --pp-spinner-duration: 1s;
 
   /* Compatibility aliases (DEPRECATED) — avoid ambiguous token regressions */
   --color-text: var(--color-text-primary);

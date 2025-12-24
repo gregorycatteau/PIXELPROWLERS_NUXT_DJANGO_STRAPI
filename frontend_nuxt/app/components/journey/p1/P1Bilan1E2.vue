@@ -1,40 +1,53 @@
 <template>
   <JourneyLayout>
-    <div class="pp-journey-panel space-y-5" role="region" aria-labelledby="journey-step-heading-E2">
-      <JourneyStepHeader
-        title="Bilan 1 — où sont les frictions ?"
-        subtitle="Lecture rapide par axe. Rien n’est envoyé au serveur."
-        heading-id="journey-step-heading-E2"
-      />
-      <div class="pp-journey-section">
+    <PPJourneyStepShell
+      as="section"
+      align="center"
+      density="default"
+      aria-labelledby="journey-step-heading-E2"
+      focus-target-id="journey-step-heading-E2"
+    >
+      <template #header>
+        <JourneyStepHeader
+          title="Bilan 1 — où sont les frictions ?"
+          subtitle="Lecture rapide par axe. Rien n'est envoyé au serveur."
+          heading-id="journey-step-heading-E2"
+        />
+      </template>
+
+      <!-- Body -->
+      <div class="space-y-4">
         <p class="pp-journey-meta">Axes prioritaires</p>
         <div class="grid gap-3 sm:grid-cols-2">
-        <PPBadge
-          v-for="(axis, index) in axisList"
-          :key="axis.key"
-          as="div"
-          variant="neutral"
-          size="sm"
-          class="pp-journey-reveal"
-          :style="{ '--pp-stagger-delay': `${index * 80}ms` }"
-        >
-          <span class="font-semibold">{{ axis.label }}</span>
-          <span class="text-sm text-[color:var(--color-text-muted)]">{{ formatScore(axis.value) }}</span>
-        </PPBadge>
+          <PPBadge
+            v-for="(axis, index) in axisList"
+            :key="axis.key"
+            as="div"
+            variant="neutral"
+            size="sm"
+            class="pp-journey-reveal"
+            :style="{ '--pp-stagger-delay': `${index * 80}ms` }"
+          >
+            <span class="font-semibold">{{ axis.label }}</span>
+            <span class="text-sm text-[color:var(--pp-color-text-muted)]">{{ formatScore(axis.value) }}</span>
+          </PPBadge>
+        </div>
+        <div class="space-y-2 text-sm text-[color:var(--pp-color-text-muted)]">
+          <p>Lecture indicative : plus la valeur est élevée, plus l'axe mérite de l'attention en priorité. Ce n'est pas un verdict, juste un repère pour t'aider à choisir par où commencer.</p>
+        </div>
       </div>
-      <div class="space-y-2 text-sm text-[color:var(--color-text-muted)]">
-        <p>Lecture indicative : plus la valeur est élevée, plus l’axe mérite de l’attention en priorité. Ce n’est pas un verdict, juste un repère pour t’aider à choisir par où commencer.</p>
-      </div>
-      </div>
-      <div class="flex flex-wrap gap-3">
-        <button type="button" class="pp-journey-cta-primary" @click="$emit('continue')">
-          Passer à l’étape suivante
-        </button>
-        <button type="button" class="pp-journey-cta-secondary" @click="$emit('clearStorage')">
-          Effacer mes scores enregistrés sur cet appareil
-        </button>
-      </div>
-    </div>
+
+      <template #footer>
+        <div class="flex flex-wrap gap-3 justify-center">
+          <button type="button" class="pp-cta-primary" @click="$emit('continue')">
+            Passer à l'étape suivante
+          </button>
+          <button type="button" class="pp-cta-secondary" @click="$emit('clearStorage')">
+            Effacer mes scores enregistrés sur cet appareil
+          </button>
+        </div>
+      </template>
+    </PPJourneyStepShell>
   </JourneyLayout>
 </template>
 

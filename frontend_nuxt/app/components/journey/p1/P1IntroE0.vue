@@ -1,24 +1,27 @@
 <template>
   <JourneyLayout>
-    <section
-      class="pp-journey-intro-shell"
-      role="region"
+    <PPJourneyStepShell
+      as="section"
+      align="center"
+      density="default"
       aria-labelledby="journey-step-heading-E0_intro"
+      focus-target-id="journey-step-heading-E0_intro"
     >
-      <div class="pp-journey-intro-header">
+      <template #header>
         <h1
           id="journey-step-heading-E0_intro"
-          class="pp-journey-intro-title"
+          class="pp-step-shell__title"
         >
           {{ p1EngagementCopy.introE0.title }}
         </h1>
-        <p class="pp-journey-intro-subtitle">
+        <p class="pp-step-shell__subtitle">
           {{ headerSubtitle }}
         </p>
-      </div>
+      </template>
 
-      <div class="pp-journey-intro-body">
-        <div class="pp-journey-intro-text">
+      <!-- Body -->
+      <div class="space-y-4">
+        <div class="space-y-3">
           <p
             v-for="paragraph in bodyParagraphs"
             :key="paragraph"
@@ -28,34 +31,33 @@
           </p>
         </div>
 
-        <aside class="pp-journey-intro-sovereignty" aria-labelledby="p1-intro-sovereignty">
-          <h2 id="p1-intro-sovereignty" class="pp-journey-intro-sovereignty-title">
-            <span class="pp-journey-intro-sovereignty-icon">🛡️</span>
+        <aside class="pp-card pp-card--soft space-y-2" aria-labelledby="p1-intro-sovereignty">
+          <h2 id="p1-intro-sovereignty" class="text-base font-semibold flex items-center gap-2">
+            <span>🛡️</span>
             <span>Souveraineté</span>
           </h2>
-          <p class="pp-journey-intro-sovereignty-text">
+          <p class="text-sm text-[color:var(--pp-color-text-muted)]">
             {{ sovereignty }}
           </p>
-          <p class="pp-journey-intro-sovereignty-text">
+          <p class="text-sm text-[color:var(--pp-color-text-muted)]">
             {{ sharedDeviceWarning }}
           </p>
         </aside>
       </div>
 
-      <div class="pp-journey-intro-footer">
-        <p class="pp-journey-intro-footer-hint">
+      <template #footer>
+        <p class="text-sm text-[color:var(--pp-color-text-muted)] text-center">
           {{ footerHint }}
         </p>
         <button
           type="button"
-          class="pp-journey-cta-primary pp-journey-cta-pulse-once pp-journey-intro-cta"
-          style="animation-delay: 320ms"
+          class="pp-cta-primary"
           @click="goToStep('E1_panorama')"
         >
           {{ ctaLabel }}
         </button>
-      </div>
-    </section>
+      </template>
+    </PPJourneyStepShell>
   </JourneyLayout>
 </template>
 

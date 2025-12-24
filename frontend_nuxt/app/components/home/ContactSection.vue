@@ -94,26 +94,20 @@
         On utilise tes informations uniquement pour te répondre.
         Pas de newsletter cachée, pas de partage à des tiers, pas de suivi publicitaire derrière ton dos.
       </p>
-      <div
-        v-if="statusMessage"
-        class="FormStatusSuccess pp-status-success"
-        role="status"
-        aria-live="polite"
-      >
-        Merci, c’est bien arrivé. {{ statusMessage }}
-        On va prendre le temps de lire ton message et de te répondre sans script commercial, en te disant franchement
-        si et comment on peut t’aider.
-      </div>
-      <div
+      <PPErrorState
         v-if="errorMessage"
-        class="FormStatusError pp-status-error"
-        role="status"
-        aria-live="polite"
+        title="Oups, quelque chose a coincé"
+        description="Le formulaire n'a pas pu partir. Vérifie ta connexion ou réessaie dans quelques minutes."
+        tone="neutral"
+        class="md:col-span-2"
+        @retry="submitForm"
       >
-        Oups, quelque chose a coincé.
-        Le formulaire n’a pas pu partir. Vérifie ta connexion ou réessaie dans quelques minutes.
-        Si le problème persiste, tu peux aussi nous écrire directement à contact@pixelprowlers.io.
-      </div>
+        <template #action>
+          <p class="text-sm text-[color:var(--color-text-muted)]">
+            Si le problème persiste, tu peux aussi nous écrire directement à contact@pixelprowlers.io
+          </p>
+        </template>
+      </PPErrorState>
     </form>
   </section>
 </template>

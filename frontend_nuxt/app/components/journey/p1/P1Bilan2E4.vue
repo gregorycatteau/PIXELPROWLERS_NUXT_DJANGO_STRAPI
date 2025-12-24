@@ -1,12 +1,23 @@
 <template>
   <JourneyLayout>
-    <div class="pp-journey-panel space-y-5" role="region" aria-labelledby="journey-step-heading-E4">
-      <JourneyStepHeader
-        title="Bilan 2 — lecture VUCA & valeurs"
-        subtitle="Synthèse courte, exportable côté navigateur."
-        heading-id="journey-step-heading-E4"
-      />
-      <div class="space-y-3">
+    <PPJourneyStepShell
+      as="section"
+      align="center"
+      density="default"
+      aria-labelledby="journey-step-heading-E4"
+      focus-target-id="journey-step-heading-E4"
+    >
+      <template #header>
+        <JourneyStepHeader
+          title="Bilan 2 — lecture VUCA & valeurs"
+          subtitle="Synthèse courte, exportable côté navigateur."
+          heading-id="journey-step-heading-E4"
+        />
+      </template>
+
+      <!-- Body -->
+      <div class="space-y-5">
+        <div class="space-y-3">
         <div class="BilanBlock pp-journey-reveal">
           <p class="BilanLabel">Indice VUCA</p>
           <p class="BilanValue">{{ formatScore(vucaProfile.vucaIndex) }}</p>
@@ -37,15 +48,19 @@
           Imprimer ce bilan
         </button>
       </div>
-      <div class="flex flex-wrap gap-3">
-        <button type="button" class="pp-journey-cta-primary" @click="$emit('continue')">
-          Continuer vers les ressources
-        </button>
-        <button type="button" class="pp-journey-cta-secondary" @click="$emit('clearStorage')">
-          Effacer mes réponses de cet appareil
-        </button>
       </div>
-    </div>
+
+      <template #footer>
+        <div class="flex flex-wrap gap-3 justify-center">
+          <button type="button" class="pp-cta-primary" @click="$emit('continue')">
+            Continuer vers les ressources
+          </button>
+          <button type="button" class="pp-cta-secondary" @click="$emit('clearStorage')">
+            Effacer mes réponses de cet appareil
+          </button>
+        </div>
+      </template>
+    </PPJourneyStepShell>
   </JourneyLayout>
 </template>
 

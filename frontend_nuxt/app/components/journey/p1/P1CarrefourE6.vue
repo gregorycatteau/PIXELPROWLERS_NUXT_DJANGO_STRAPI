@@ -1,10 +1,16 @@
 <template>
   <JourneyLayout>
-    <div class="pp-journey-panel space-y-6" role="region" aria-labelledby="journey-step-heading-E6">
-      <JourneyStepHeader
-        title="Et maintenant ?"
-        heading-id="journey-step-heading-E6"
-      />
+    <PPJourneyStepShell
+      aria-labelledby="journey-step-heading-E6"
+      focus-target-id="journey-step-heading-E6"
+    >
+      <template #header>
+        <JourneyStepHeader
+          title="Et maintenant ?"
+          heading-id="journey-step-heading-E6"
+        />
+      </template>
+
       <div class="space-y-2">
         <p
           v-for="paragraph in introParagraphs"
@@ -15,7 +21,7 @@
         </p>
       </div>
       <CarrefourChoices :options="optionsResolved" @select="(id) => $emit('selectOption', id)" />
-    </div>
+    </PPJourneyStepShell>
   </JourneyLayout>
 </template>
 
@@ -24,6 +30,7 @@ import { computed } from 'vue';
 import CarrefourChoices from '~/components/journey/CarrefourChoices.vue';
 import JourneyLayout from '~/components/journey/JourneyLayout.vue';
 import JourneyStepHeader from '~/components/journey/JourneyStepHeader.vue';
+import PPJourneyStepShell from '~/components/journey/PPJourneyStepShell.vue';
 import type { CarrefourChoiceCardProps } from '~/components/journey/CarrefourChoices.vue';
 import { p1EngagementCopy } from '~/config/journeys/p1EngagementCopy';
 

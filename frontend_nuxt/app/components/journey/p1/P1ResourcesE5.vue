@@ -1,11 +1,14 @@
 <template>
   <JourneyLayout>
-    <div class="pp-journey-panel space-y-6" role="region" aria-labelledby="journey-step-heading-E5">
-      <JourneyStepHeader
-        title="Ressources open source"
-        subtitle="Prioritaires maintenant, et une sélection pour plus tard. Utilisables sans compte, sans retour obligatoire ici."
-        heading-id="journey-step-heading-E5"
-      />
+    <PPJourneyStepShell role="region" aria-labelledby="journey-step-heading-E5">
+      <template #header>
+        <JourneyStepHeader
+          title="Ressources open source"
+          subtitle="Prioritaires maintenant, et une sélection pour plus tard. Utilisables sans compte, sans retour obligatoire ici."
+          heading-id="journey-step-heading-E5"
+        />
+      </template>
+
       <div class="space-y-5">
         <ResourcesList
           title="Prioritaire pour toi maintenant"
@@ -18,15 +21,19 @@
           @select="handleSelect"
         />
       </div>
-      <div class="flex flex-wrap gap-3">
-        <button type="button" class="pp-journey-cta-primary" @click="$emit('goToCarrefour')">
-          Aller au carrefour final
-        </button>
-      </div>
+
       <p class="text-sm text-[color:var(--color-text-muted)]">
-        Ces ressources sont externes ; rien n’est renvoyé vers PixelProwlers lorsque tu les ouvres. Tu peux t’en servir sans jamais revenir ici, et c’est parfaitement ok.
+        Ces ressources sont externes ; rien n'est renvoyé vers PixelProwlers lorsque tu les ouvres. Tu peux t'en servir sans jamais revenir ici, et c'est parfaitement ok.
       </p>
-    </div>
+
+      <template #footer>
+        <div class="flex flex-wrap gap-3">
+          <button type="button" class="pp-cta-primary" @click="$emit('goToCarrefour')">
+            Aller au carrefour final
+          </button>
+        </div>
+      </template>
+    </PPJourneyStepShell>
   </JourneyLayout>
 </template>
 

@@ -9,24 +9,12 @@
 -->
 <template>
   <div class="pp-reslib">
-    <!-- Error State -->
-    <div
+    <!-- Error State — DS:PPErrorState -->
+    <PPErrorState
       v-if="hasError"
-      class="pp-reslib__error"
-      role="alert"
-      aria-live="polite"
-    >
-      <p class="pp-reslib__error-message">
-        {{ errorMessage || 'Une erreur est survenue lors du chargement.' }}
-      </p>
-      <button
-        type="button"
-        class="pp-cta-secondary"
-        @click="clearAll"
-      >
-        Réessayer
-      </button>
-    </div>
+      :description="errorMessage || undefined"
+      @retry="clearAll"
+    />
 
     <!-- Main Content -->
     <div v-else class="pp-reslib__layout">
@@ -53,61 +41,33 @@
           @sort-change="setSortBy"
         />
 
-        <!-- Loading State -->
-        <div
+        <!-- Loading State — DS:PPLoadingState -->
+        <PPLoadingState
           v-if="isLoading"
-          class="pp-reslib__loading"
-          aria-label="Chargement des ressources"
-        >
-          <div class="pp-reslib__skeleton-grid">
-            <div
-              v-for="i in 6"
-              :key="i"
-              class="pp-reslib__skeleton-card"
-              aria-hidden="true"
-            />
-          </div>
-        </div>
+          label="Chargement des ressources…"
+          variant="skeleton"
+          :count="6"
+        />
 
-        <!-- Empty Catalogue State -->
-        <div
+        <!-- Empty Catalogue State — DS:PPEmptyState -->
+        <PPEmptyState
           v-else-if="totalResults === 0 && !hasActiveFilters"
-          class="pp-reslib__empty"
-          role="status"
-        >
-          <p class="pp-reslib__empty-title">
-            Aucune ressource disponible
-          </p>
-          <p class="pp-reslib__empty-message">
-            Aucune ressource disponible pour le moment. Découvrez nos parcours
-            pour des recommandations personnalisées.
-          </p>
-          <NuxtLink to="/parcours/p1" class="pp-cta-primary">
-            Découvrir le parcours P1
-          </NuxtLink>
-        </div>
+          icon="folder"
+          title="Aucune ressource disponible"
+          description="Aucune ressource disponible pour le moment. Découvrez nos parcours pour des recommandations personnalisées."
+          action-label="Découvrir le parcours P1"
+          action-to="/parcours/p1"
+        />
 
-        <!-- No Results State -->
-        <div
+        <!-- No Results State — DS:PPEmptyState -->
+        <PPEmptyState
           v-else-if="totalResults === 0 && hasActiveFilters"
-          class="pp-reslib__no-results"
-          role="status"
-        >
-          <p class="pp-reslib__no-results-title">
-            Aucun résultat
-          </p>
-          <p class="pp-reslib__no-results-message">
-            Aucune ressource ne correspond à vos critères. Essayez d'élargir vos
-            filtres ou de rechercher un autre terme.
-          </p>
-          <button
-            type="button"
-            class="pp-cta-secondary"
-            @click="clearAll"
-          >
-            Effacer les filtres
-          </button>
-        </div>
+          icon="search"
+          title="Aucun résultat"
+          description="Aucune ressource ne correspond à vos critères. Essayez d'élargir vos filtres ou de rechercher un autre terme."
+          action-label="Effacer les filtres"
+          @action="clearAll"
+        />
 
         <!-- Resources Grid -->
         <PPResourcesLibraryGrid

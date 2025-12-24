@@ -49,9 +49,12 @@
       </template>
     </PPHypothesesPicker>
 
-    <p v-else class="text-sm text-[color:var(--color-text-muted)]">
-      À ce stade, aucune hypothèse structurante ne ressort nettement. Tu peux continuer avec les blocs ou le plan d'action.
-    </p>
+    <PPEmptyState
+      v-else
+      title="Aucune hypothèse pour l'instant"
+      description="À ce stade, aucune hypothèse structurante ne ressort nettement. Tu peux continuer avec les blocs ou le plan d'action."
+      tone="neutral"
+    />
   </section>
 </template>
 

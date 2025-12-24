@@ -1332,4 +1332,144 @@
     font-size: var(--pp-reslib-results-size);
     color: var(--pp-color-text-muted);
   }
+
+  /* ==========================================================
+     DS State Components (PPEmptyState/PPErrorState/PPLoadingState)
+     V1.STATES-R1
+     ========================================================== */
+
+  .pp-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--pp-state-gap);
+    padding: var(--pp-state-pad);
+    text-align: center;
+    background: var(--pp-state-bg);
+    border: 1px solid var(--pp-state-border);
+    border-radius: var(--pp-state-radius);
+  }
+
+  .pp-state--compact {
+    gap: var(--pp-state-gap-compact);
+    padding: var(--pp-state-pad-compact);
+  }
+
+  .pp-state--neutral {
+    background: var(--pp-state-bg);
+    border-color: var(--pp-state-border);
+  }
+
+  .pp-state--info {
+    background: color-mix(in srgb, var(--pp-color-accent) 10%, transparent);
+    border-color: var(--pp-color-accent);
+  }
+
+  .pp-state--warning {
+    background: var(--pp-state-bg-error);
+    border-color: var(--pp-state-border-error);
+  }
+
+  .pp-state__icon {
+    width: var(--pp-state-icon-size);
+    height: var(--pp-state-icon-size);
+    color: var(--pp-state-icon-color);
+  }
+
+  .pp-state__icon--error {
+    color: var(--pp-state-icon-error-color);
+  }
+
+  .pp-state__title {
+    margin: 0;
+    font-size: var(--pp-state-title-size);
+    font-weight: var(--pp-state-title-weight);
+    line-height: 1.3;
+    color: var(--pp-state-title-color);
+  }
+
+  .pp-state__description {
+    max-width: 400px;
+    margin: 0;
+    font-size: var(--pp-state-desc-size);
+    line-height: 1.5;
+    color: var(--pp-state-desc-color);
+  }
+
+  .pp-state__content {
+    width: 100%;
+  }
+
+  .pp-state__action {
+    margin-top: 0.5rem;
+  }
+
+  .pp-state__label {
+    font-size: var(--pp-state-desc-size);
+    color: var(--pp-state-desc-color);
+  }
+
+  /* Loading state specific */
+  .pp-state--loading {
+    min-height: 200px;
+  }
+
+  .pp-state__spinner-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .pp-state__spinner {
+    width: var(--pp-spinner-size);
+    height: var(--pp-spinner-size);
+    color: var(--pp-spinner-color);
+    animation: pp-spin var(--pp-spinner-duration) linear infinite;
+  }
+
+  @keyframes pp-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* Skeleton grid */
+  .pp-state__skeleton-grid {
+    display: grid;
+    gap: var(--pp-reslib-grid-gap);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+    width: 100%;
+  }
+
+  .pp-state__skeleton-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+    height: var(--pp-skeleton-card-h);
+    background: var(--pp-skeleton-bg);
+    border: 1px solid var(--pp-state-border);
+    border-radius: var(--pp-skeleton-radius);
+  }
+
+  .pp-state__skeleton-bar {
+    height: var(--pp-skeleton-bar-h);
+    background: var(--pp-skeleton-shimmer);
+    background-size: 200% 100%;
+    border-radius: var(--pp-skeleton-radius);
+    animation: pp-shimmer 1.5s infinite;
+  }
+
+  .pp-state__skeleton-bar--title {
+    height: var(--pp-skeleton-bar-h-title);
+    width: 60%;
+  }
+
+  .pp-state__skeleton-bar--text {
+    width: 100%;
+  }
+
+  .pp-state__skeleton-bar--short {
+    width: 40%;
+  }
 }

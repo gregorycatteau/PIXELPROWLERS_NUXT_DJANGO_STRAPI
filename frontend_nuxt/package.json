@@ -8,7 +8,7 @@
     "build": "nuxt build",
     "start": "nuxt preview",
     "typecheck": "npx nuxi prepare && npx vue-tsc --noEmit -p tsconfig.json",
-    "guards:ci": "npm run no-remote-assets:guard && npm run no-v-html:guard && npm run no-innerhtml:guard && npm run no-console:guard && npm run data-only:guard && npm run bilan:guard && npm run journey:guard && npm run engagement:guard && npm run markdown-safe:guard && npm run reco:guard && npm run resourcesdeeplink:guard && npm run resourceslib:r2:guard",
+    "guards:ci": "npm run no-remote-assets:guard && npm run no-v-html:guard && npm run no-innerhtml:guard && npm run no-console:guard && npm run data-only:guard && npm run bilan:guard && npm run journey:guard && npm run engagement:guard && npm run markdown-safe:guard && npm run reco:guard && npm run resourcesdeeplink:guard && npm run resourceslib:r2:guard && npm run ds:guard && npm run stepshell:r1:guard && npm run stepshell:r2:guard && npm run states:r1:guard && npm run states:r2:guard",
     "bilan:guard": "npx nuxi prepare && tsx --tsconfig .nuxt/tsconfig.json tools/bilan_adapter_guard.ts",
     "journey:guard": "tsx tools/journey_manifest_guard.ts",
     "journey:nodup": "tsx tools/journey_no_wrappers_guard.ts",
@@ -47,7 +47,17 @@
     "resourcesdeeplink:guard": "RESOURCESDEEPLINK_SCOPE=r3 node scripts/guards/no-manual-resources-query.mjs",
     "resourcesdeeplink:r1:guard": "RESOURCESDEEPLINK_SCOPE=pilot node scripts/guards/no-manual-resources-query.mjs",
     "resourcesdeeplink:r2:guard": "RESOURCESDEEPLINK_SCOPE=r2 node scripts/guards/no-manual-resources-query.mjs",
-    "resourcesdeeplink:r3:guard": "RESOURCESDEEPLINK_SCOPE=r3 node scripts/guards/no-manual-resources-query.mjs"
+    "resourcesdeeplink:r3:guard": "RESOURCESDEEPLINK_SCOPE=r3 node scripts/guards/no-manual-resources-query.mjs",
+    "ds:guard": "node scripts/guards/no-ds-page-in-prod.mjs",
+    "stepshell:r1:guard": "node scripts/guards/no-legacy-step-shell-r1.mjs",
+    "stepshell:r2:guard": "node scripts/guards/no-legacy-step-shell-r2.mjs",
+    "states:r1:guard": "node scripts/guards/no-ad-hoc-states-r1.mjs",
+    "states:r2:guard": "node scripts/guards/no-ad-hoc-states-r2.mjs",
+    "ssot:lint": "cd .. && python3 tools/ssot_lint.py",
+    "ssot:lint:strict": "cd .. && python3 tools/ssot_lint.py --strict",
+    "api:generate": "npx openapi-typescript@7.4.4 ../docs/30-tech_specs/backend/openapi.v1.yaml --output ./app/types/api.generated.ts --export-type --alphabetize",
+    "api:validate": "cd .. && python3 tools/openapi_validate.py",
+    "api:mock": "npx @stoplight/prism-cli@5.11.2 mock ../docs/30-tech_specs/backend/openapi.v1.yaml --port 4010"
   },
   "keywords": [
     "nuxt",
