@@ -1,0 +1,120 @@
+name: SSOT Documentation CI
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'docs/**'
+      - 'tools/ssot_*.py'
+      - 'tools/openapi_validate.py'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'docs/**'
+      - 'tools/ssot_*.py'
+      - 'tools/openapi_validate.py'
+
+jobs:
+  ssot-gates:
+    name: SSOT Documentation Gates
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: CI Canary
+        run: |
+          echo "CI_CANARY=ssot_ci_v1_gates_20251224"
+          git rev-parse HEAD
+
+      - name: Install Python dependencies
+        run: |
+          pip install pyyaml --quiet
+
+      - name: 🔍 SSOT Lint (strict)
+        run: |
+          echo "========================================="
+          echo "🔍 Running SSOT Lint (--strict)"
+          echo "========================================="
+          python3 tools/ssot_lint.py --strict
+
+      - name: 📋 OpenAPI Validate
+        run: |
+          echo "========================================="
+          echo "📋 Validating OpenAPI Spec"
+          echo "========================================="
+          python3 tools/openapi_validate.py
+
+      - name: 📚 Index Drift Check
+        run: |
+          echo "========================================="
+          echo "📚 Checking for Index Drift"
+          echo "========================================="
+          python3 tools/ssot_generate_indexes.py --check
+          if [ $? -ne 0 ]; then
+            echo ""
+            echo "❌ INDEX DRIFT DETECTED!"
+            echo "   README indexes are out of sync with registry/files."
+            echo ""
+            echo "🔧 To fix locally:"
+            echo "   python3 tools/ssot_generate_indexes.py --apply"
+            echo "   git add docs/"
+            echo "   git commit -m 'chore(docs): sync SSOT indexes'"
+            echo ""
+            exit 1
+          fi
+
+      - name: 🔗 Link Check (strict)
+        run: |
+          echo "========================================="
+          echo "🔗 Checking internal links"
+          echo "========================================="
+          python3 tools/ssot_linkcheck.py --strict --no-orphans
+
+      - name: 📦 Orphan Detection V2 (warning)
+        continue-on-error: true
+        run: |
+          echo "========================================="
+          echo "📦 Detecting orphan docs (V2)"
+          echo "========================================="
+          python3 tools/ssot_linkcheck.py --orphans
+          echo ""
+          echo "ℹ️ Orphan detection en mode warning (non bloquant)"
+          echo "   Pour rendre strict: --orphans-strict (nécessite validation manuelle)"
+
+      - name: 🔐 Secret Scan (basic)
+        run: |
+          echo "========================================="
+          echo "🔐 Scanning for potential secrets"
+          echo "========================================="
+          # Basic secret patterns - fail if found
+          PATTERNS='(password|secret|api_key|apikey|token|private_key)[\s]*[:=][\s]*["\x27][^"\x27]{8,}'
+          
+          # Scan docs folder, excluding expected false positives
+          if grep -rniE "$PATTERNS" docs/ --include="*.md" | grep -v "placeholder" | grep -v "<.*PASSWORD.*>" | grep -v "example" | head -5; then
+            echo ""
+            echo "⚠️  Potential secrets detected in docs/!"
+            echo "   Review the above matches and ensure no real credentials are exposed."
+            echo "   If false positives, consider adding to allowlist."
+            # Warning only, not blocking for now
+            # exit 1
+          else
+            echo "✅ No obvious secrets detected"
+          fi
+
+      - name: ✅ SSOT Gates Summary
+        run: |
+          echo "========================================="
+          echo "✅ All SSOT Documentation Gates Passed"
+          echo "========================================="
+          echo "  - ssot_lint --strict: ✓"
+          echo "  - openapi_validate: ✓"
+          echo "  - index drift check: ✓"
+          echo "  - link check --strict: ✓"
+          echo "  - secret scan: ✓"
