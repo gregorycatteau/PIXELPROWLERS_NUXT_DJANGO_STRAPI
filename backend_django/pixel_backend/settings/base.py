@@ -49,6 +49,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "apps.core.middleware.RateLimitMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -98,6 +99,24 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
     "DEFAULT_PARSER_CLASSES": ["rest_framework.parsers.JSONParser"],
+}
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "pixel_backend_default",
+    }
+}
+
+PX_RATE_LIMITS = {
+    "contact": {"limit": 3, "window": 60},
+    "gate125": {"limit": 10, "window": 3600},
+    "resources": {"limit": 60, "window": 60},
+}
+
+PX_COOLDOWNS = {
+    "contact": 300,
+    "gate125": 3600,
 }
 
 CORS_ALLOW_ALL_ORIGINS = False

@@ -276,6 +276,11 @@ X-RateLimit-Remaining: 2
 X-RateLimit-Reset: 1703419200
 ```
 
+Notes :
+- Ces headers sont renvoyés pour toute réponse **429** des endpoints rate-limités.
+- `Retry-After` est présent uniquement quand un cooldown est actif (contact, gate125).
+- En production, le rate limiting doit s'appuyer sur un cache partagé (ex: Redis).
+
 ### 5.3 Honeypot anti-bot
 
 ```python

@@ -240,6 +240,15 @@ paths:
                 $ref: "#/components/schemas/UnauthorizedError"
         "429":
           description: Rate limit dépassé
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/X-RateLimit-Limit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/X-RateLimit-Remaining"
+            X-RateLimit-Reset:
+              $ref: "#/components/headers/X-RateLimit-Reset"
+            Retry-After:
+              $ref: "#/components/headers/Retry-After"
           content:
             application/json:
               schema:
@@ -287,6 +296,13 @@ paths:
                 $ref: "#/components/schemas/ResourcesListResponse"
         "429":
           description: Rate limit dépassé
+          headers:
+            X-RateLimit-Limit:
+              $ref: "#/components/headers/X-RateLimit-Limit"
+            X-RateLimit-Remaining:
+              $ref: "#/components/headers/X-RateLimit-Remaining"
+            X-RateLimit-Reset:
+              $ref: "#/components/headers/X-RateLimit-Reset"
           content:
             application/json:
               schema:
