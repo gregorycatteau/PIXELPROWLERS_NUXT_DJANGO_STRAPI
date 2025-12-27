@@ -15,6 +15,8 @@
 | [PX_V1_3_BACKEND_TESTS_DECISION_V1.md](./PX_V1_3_BACKEND_TESTS_DECISION_V1.md) | draft | Backend Tests Decision (V1.3) |
 | [PX_V1_3_CONTACT_RETENTION_PURGE_REPORT.md](./PX_V1_3_CONTACT_RETENTION_PURGE_REPORT.md) | active | Contact Retention & Purge — Report V1.3 |
 | [PX_V1_3_GATE125_APIKEY_M2_REPORT.md](./PX_V1_3_GATE125_APIKEY_M2_REPORT.md) | active | Gate125 API Key — Report M2 |
+| [PX_V1_3_RESOURCES_CATALOG_A_REPORT.md](./PX_V1_3_RESOURCES_CATALOG_A_REPORT.md) | active | Resources Catalog V1 — Report A |
+| [PX_V1_3_RESOURCES_CATALOG_A_SPEC.md](./PX_V1_3_RESOURCES_CATALOG_A_SPEC.md) | active | Resources Catalog V1 — Option A (SSOT‑backed) |
 | [openapi.v1.yaml](./openapi.v1.yaml) | active | Fichier YAML |
 
 **Owners** : Tom
