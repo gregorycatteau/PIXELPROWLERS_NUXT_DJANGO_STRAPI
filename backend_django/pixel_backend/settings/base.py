@@ -123,6 +123,14 @@ CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS: list[str] = []
 CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",") if os.getenv("CSRF_TRUSTED_ORIGINS") else []
 
+
+def _split_env_list(name: str) -> list[str]:
+    return [item.strip() for item in os.environ.get(name, "").split(",") if item.strip()]
+
+
+GATE125_API_KEYS = _split_env_list("GATE125_API_KEYS")
+GATE125_API_KEY_HASHES = _split_env_list("GATE125_API_KEY_HASHES")
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,

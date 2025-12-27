@@ -324,6 +324,7 @@ components:
       description: |
         API Key pour endpoints protégés Gate125.
         Format: `Api-Key <KEY>`
+        Header alternatif accepté: `X-API-Key: <KEY>`
         
         TODO: Définir process d'obtention de la clé
 
@@ -521,7 +522,7 @@ components:
       properties:
         error:
           type: string
-          example: "Non autorisé"
+          example: "Accès non autorisé"
           description: API Key manquante ou invalide
 
 # ============================================================================

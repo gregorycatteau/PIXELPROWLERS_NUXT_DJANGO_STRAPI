@@ -16,6 +16,8 @@ from rest_framework.views import APIView
 
 from apps.core.logging import categorize_user_agent, get_client_ip, hash_ip
 
+from .auth import Gate125ApiKeyPermission
+
 logger = logging.getLogger(__name__)
 
 # Messages de réponse (constantes pour cohérence)
@@ -35,7 +37,7 @@ class Gate125RegisterView(APIView):
     """
 
     authentication_classes: list[Any] = []
-    permission_classes: list[Any] = []
+    permission_classes = [Gate125ApiKeyPermission]
 
     def post(self, request, *args, **kwargs) -> Response:
         """

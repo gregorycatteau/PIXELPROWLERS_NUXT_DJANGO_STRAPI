@@ -174,6 +174,7 @@ POST /api/v1/gate125/register/
 Authorization: Api-Key <KEY>
 Content-Type: application/json
 ```
+Header alternatif accepté : `X-API-Key: <KEY>`
 
 **Request Body Schema**
 ```json
@@ -191,6 +192,12 @@ Content-Type: application/json
   "message": "Inscription enregistrée."
 }
 ```
+
+**Response Errors (neutres)**
+
+| Code | Body | Cause réelle (non exposée) |
+|------|------|---------------------------|
+| 401 | `{"error": "Accès non autorisé"}` | API Key manquante ou invalide |
 
 > **Isolation** : Gate 125 endpoints sur path séparé, API Key obligatoire, rate limit strict.
 
