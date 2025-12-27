@@ -370,13 +370,15 @@
               </div>
             </BilanLandingPanel>
 
-            <ResourcesActionsPanel
-              v-if="resourcesActionsModule"
-              :recommended="resourcesActionsModule.recommended"
-              :library="resourcesActionsModule.library"
-              :tags="resourcesActionsModule.tags"
-              @go-export="scrollToSection('gb_export')"
-            />
+            <PPBilanSection
+              v-if="actionsPanelEnabled"
+              id-base="actions_panel"
+              title="Actions prioritaires"
+              description="Des actions concretes pour avancer, issues de ton bilan."
+              density="default"
+            >
+              <PPActionsPanel :actions="actionsPanelItems" />
+            </PPBilanSection>
 
             <PPBilanSection
               v-if="modules.actions"
@@ -555,6 +557,7 @@ import JourneyLayout from "~/components/journey/JourneyLayout.vue";
 import JourneyStepHeader from "~/components/journey/JourneyStepHeader.vue";
 import PPBilanShell from "~/components/PPBilanShell.vue";
 import PPBilanSection from "~/components/PPBilanSection.vue";
+import PPActionsPanel from "@/components/PPActionsPanel.vue";
 import P1GlobalBilanAside from "@/components/journey/p1/P1GlobalBilanAside.vue";
 import P1SystemicLandingSection from "@/components/journey/p1/P1SystemicLandingSection.vue";
 import GlobalBilanExportPanel from "@/components/journey/bilan/GlobalBilanExportPanel.vue";
@@ -565,7 +568,6 @@ import BilanHypothesesSection from "@/components/journey/bilan/BilanHypothesesSe
 import BilanLandingPanel from "@/components/journey/bilan/BilanLandingPanel.vue";
 import EngagementLevelsPanel from "@/components/journey/bilan/EngagementLevelsPanel.vue";
 import { useBilanHypothesesState } from "@/composables/bilan/useBilanHypothesesState";
-import ResourcesActionsPanel from "@/components/journey/bilan/ResourcesActionsPanel.vue";
 import { P1_EXPORT_COPY } from "@/config/journeys/p1ExportCopyV1_3";
 import { P1_ERASE_COPY } from "@/config/journeys/p1CopyV1_3";
 import { useDiagnosticStorage } from "~/composables/useDiagnosticStorage";
@@ -579,7 +581,7 @@ import { BILAN_SKIP_SIGNAL_COPY } from "@/config/bilan/bilanSkipSignalCopy";
 import { getManifestById } from "@/config/journeys/manifests/registry";
 import { useUniversalRecommendationsState } from "@/composables/reco/useUniversalRecommendations";
 import { buildUniversalBilanMarkdown } from "@/utils/export/buildUniversalBilanMarkdown";
-import { safeFilePath } from "@/utils/cta/safeCta";
+import { buildActionsFromBilan } from "@/utils/actions/buildActionsFromBilan";
 
 const props = defineProps<{
   journeyId: string;
@@ -633,7 +635,7 @@ const engineState = computed<
   return "ready";
 });
 const modules = computed(() => vm.value.modules ?? {});
-const resourcesActionsEnabled = computed(() =>
+const actionsPanelEnabled = computed(() =>
   Boolean(manifest.value?.modules?.recommendations)
 );
 const maturityLabel = computed(() =>
@@ -668,49 +670,13 @@ const recommendationsState = useUniversalRecommendationsState(
   () => vm.value,
   () => manifest.value
 );
-const resourcesActionsModule = computed(() => {
-  if (!resourcesActionsEnabled.value) return null;
-  const recommended = recommendationsState.value.recommended ?? [];
-  const library = recommendationsState.value.library ?? [];
-  const tags = Array.from(
-    new Set(
-      library.flatMap((item) => (Array.isArray(item.tags) ? item.tags : []))
-    )
-  ).sort((a, b) => a.localeCompare(b));
-
-  const safeFileTarget = (filePath?: string) => {
-    if (!filePath) return null;
-    try {
-      return safeFilePath(filePath);
-    } catch {
-      return null;
-    }
-  };
-
-  const mapItem = (item: (typeof recommended)[number]) => {
-    const safeTarget = safeFileTarget(item.filePath);
-    const cta = safeTarget
-      ? { type: "file" as const, label: "Ouvrir", target: safeTarget }
-      : { type: "none" as const, label: "Indisponible" };
-    return {
-      id: item.id,
-      kind: item.kind,
-      title: item.title,
-      description: item.summary,
-      tags: item.tags,
-      horizon: item.horizon,
-      format: item.format,
-      cta,
-      reason: item.reason,
-    };
-  };
-
-  return {
-    recommended: recommended.map(mapItem),
-    library: library.map(mapItem),
-    tags,
-  };
-});
+const actionsPanelItems = computed(() =>
+  buildActionsFromBilan({
+    vm: vm.value,
+    recommendations: recommendationsState.value,
+    manifest: manifest.value,
+  })
+);
 const axisSummary = computed(
   () =>
     vm.value?.panorama.axes.map((axis) => ({
