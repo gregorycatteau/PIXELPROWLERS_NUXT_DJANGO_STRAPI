@@ -275,6 +275,10 @@ VALID_ROLES_GATE125 = frozenset([
 | `/api/v1/resources/` | 60 | 1 min | IP | 429 |
 | `/api/v1/health/*` | ∞ | - | - | - |
 
+Notes :
+- En production multi‑instance, le rate limiting nécessite un **cache partagé** (Redis).
+- En cas d'indisponibilité du cache en prod, la réponse est **fail‑closed** (429 neutre).
+
 ### 5.2 Headers de rate limit
 
 ```http

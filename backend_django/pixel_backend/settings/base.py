@@ -108,6 +108,10 @@ CACHES = {
     }
 }
 
+PX_CACHE_FAIL_CLOSED = False
+PX_CACHE_FAIL_RETRY_AFTER = 60
+PX_HEALTH_CHECK_CACHE = False
+
 PX_RATE_LIMITS = {
     "contact": {"limit": 3, "window": 60},
     "gate125": {"limit": 10, "window": 3600},

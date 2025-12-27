@@ -1,5 +1,7 @@
 import json
 
+import pytest
+
 from django.conf import settings as dj_settings
 from django.core.cache import cache
 from django.http import JsonResponse
@@ -37,6 +39,8 @@ def _ensure_settings():
         "contact": 300,
         "gate125": 1,
     }
+    dj_settings.PX_CACHE_FAIL_CLOSED = False
+    dj_settings.PX_CACHE_FAIL_RETRY_AFTER = 60
 
 
 def test_rate_limit_middleware_behaviors():
@@ -93,3 +97,21 @@ def test_rate_limit_middleware_behaviors():
     body = json.dumps(json.loads(response.content)).lower()
     assert "limit" not in body
     assert "window" not in body
+
+
+def test_rate_limit_fail_closed_on_cache_error(monkeypatch):
+    _ensure_settings()
+    dj_settings.PX_CACHE_FAIL_CLOSED = True
+    dj_settings.PX_CACHE_FAIL_RETRY_AFTER = 60
+
+    def _boom(*_args, **_kwargs):
+        raise RuntimeError("cache down")
+
+    monkeypatch.setattr(cache, "get", _boom)
+
+    middleware = RateLimitMiddleware(lambda _req: JsonResponse({"ok": True}, status=200))
+    response = middleware(DummyRequest("/api/v1/contact/", method="POST"))
+
+    assert response.status_code == 429
+    assert json.loads(response.content) == {"error": "Trop de requêtes"}
+    assert response.headers.get("Retry-After") == "60"

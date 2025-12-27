@@ -11,6 +11,7 @@ from datetime import datetime, timezone
 from typing import Any
 
 from django.conf import settings
+from django.core.cache import cache
 from django.db import connection
 from rest_framework import status
 from rest_framework.response import Response
@@ -73,8 +74,11 @@ class ReadinessView(APIView):
 
         # Vérification DB
         db_ok = self._check_database()
+        cache_ok = True
+        if getattr(settings, "PX_HEALTH_CHECK_CACHE", False):
+            cache_ok = self._check_cache()
 
-        if db_ok:
+        if db_ok and cache_ok:
             return Response(
                 {
                     "status": "healthy",
@@ -107,4 +111,15 @@ class ReadinessView(APIView):
             return True
         except Exception:
             # Log sans détails (anti-probing)
+            return False
+
+    def _check_cache(self) -> bool:
+        """
+        Vérifie la connectivité cache (optionnel).
+        """
+        try:
+            cache_key = "health_cache_check"
+            cache.set(cache_key, "1", timeout=5)
+            return cache.get(cache_key) == "1"
+        except Exception:
             return False

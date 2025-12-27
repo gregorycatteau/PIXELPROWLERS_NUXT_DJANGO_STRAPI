@@ -93,6 +93,18 @@ REST_FRAMEWORK = {
     "DEFAULT_PARSER_CLASSES": ["rest_framework.parsers.JSONParser"],
 }
 
+# Cache
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "pixel_backend_test",
+    }
+}
+
+PX_CACHE_FAIL_CLOSED = False
+PX_CACHE_FAIL_RETRY_AFTER = 60
+PX_HEALTH_CHECK_CACHE = False
+
 # CORS
 CORS_ALLOW_ALL_ORIGINS = True
 
