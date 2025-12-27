@@ -45,18 +45,9 @@
         </aside>
       </div>
 
-      <template #footer>
-        <p class="text-sm text-[color:var(--pp-color-text-muted)] text-center">
-          {{ footerHint }}
-        </p>
-        <button
-          type="button"
-          class="pp-cta-primary"
-          @click="goToStep('E1_panorama')"
-        >
-          {{ ctaLabel }}
-        </button>
-      </template>
+      <p class="text-sm text-[color:var(--pp-color-text-muted)] text-center">
+        {{ footerHint }}
+      </p>
     </PPJourneyStepShell>
   </JourneyLayout>
 </template>
@@ -72,7 +63,6 @@ defineProps<{
   goToStep: (stepId: string) => void;
 }>();
 
-const ctaLabel = computed(() => p1Copy.intro.cta);
 const footerHint = computed(() => p1Copy.intro.meta || P1_INTRO_COPY.stopAnytime);
 
 const mainParagraphs = computed(() => p1EngagementCopy.introE0.main.split('\n\n').filter(Boolean));

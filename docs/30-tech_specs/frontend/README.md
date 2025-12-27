@@ -18,6 +18,7 @@
 | [PX_NO_VHTML_DOCTRINE_V1.md](./PX_NO_VHTML_DOCTRINE_V1.md) | active | PX No v-html Doctrine V1 |
 | [PX_V1_3_ACTIONS_PANEL_UNIVERSAL_R1.md](./PX_V1_3_ACTIONS_PANEL_UNIVERSAL_R1.md) | active | PX V1.3 — Actions Panel universel (R1) |
 | [PX_V1_3_JOURNEY_ENTRYPOINT_REGRESSION_R1.md](./PX_V1_3_JOURNEY_ENTRYPOINT_REGRESSION_R1.md) | active | PX V1.3 — Regression entree parcours (R1) |
+| [PX_V1_3_JOURNEY_NAVIGATION_SHELL_R1.md](./PX_V1_3_JOURNEY_NAVIGATION_SHELL_R1.md) | active | PX V1.3 — Navigation universelle Step Shell (R1) |
 | [PX_V1_3_RESOURCES_LIBRARY_INTEGRATION.md](./PX_V1_3_RESOURCES_LIBRARY_INTEGRATION.md) | active | Resources Library — Integration Frontend (V1.3) |
 | [journeys.md](./journeys.md) | draft | Journeys (Nuxt) — TODO |
 

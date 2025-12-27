@@ -23,6 +23,30 @@
     <div v-if="$slots.footer" class="pp-step-shell__footer">
       <slot name="footer" />
     </div>
+
+    <!-- Default navigation -->
+    <div
+      v-if="showDefaultNav"
+      class="pp-step-shell__nav"
+      data-step-shell-nav="default"
+    >
+      <button
+        v-if="prevStepId"
+        type="button"
+        class="pp-cta-secondary"
+        @click="goToStep(prevStepId)"
+      >
+        {{ prevLabel }}
+      </button>
+      <button
+        v-if="nextStepId"
+        type="button"
+        class="pp-cta-primary"
+        @click="goToStep(nextStepId)"
+      >
+        {{ nextLabel }}
+      </button>
+    </div>
   </component>
 </template>
 
@@ -58,8 +82,11 @@
  *   </template>
  * </PPJourneyStepShell>
  */
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, useSlots } from 'vue';
+import { useRoute, useRouter } from '#imports';
 import PPCard from '~/components/PPCard.vue';
+import { getManifestBySlug } from '~/config/journeys/manifests/registry';
+import { getJourneySchemaById } from '~/config/journeys/schemaRegistry';
 
 export interface PPJourneyStepShellProps {
   /** Densité d'espacement */
@@ -74,6 +101,12 @@ export interface PPJourneyStepShellProps {
   focusTargetId?: string;
   /** Si true, wrap le body dans PPCard variant="soft" */
   withCard?: boolean;
+  /** Affiche la navigation par defaut (prev/next) si disponible */
+  showNav?: boolean;
+  /** Label CTA next (optionnel) */
+  nextLabel?: string;
+  /** Label CTA prev (optionnel) */
+  prevLabel?: string;
 }
 
 const props = withDefaults(defineProps<PPJourneyStepShellProps>(), {
@@ -83,7 +116,14 @@ const props = withDefaults(defineProps<PPJourneyStepShellProps>(), {
   ariaLabelledby: undefined,
   focusTargetId: undefined,
   withCard: false,
+  showNav: true,
+  nextLabel: undefined,
+  prevLabel: 'Retour',
 });
+
+const slots = useSlots();
+const route = useRoute();
+const router = useRouter();
 
 // Classes DS
 const shellClasses = computed(() => [
@@ -95,6 +135,65 @@ const shellClasses = computed(() => [
 const bodyClasses = computed(() => [
   'pp-step-shell__body',
 ]);
+
+const journeyId = computed(() => {
+  const slug = typeof route.params.journeySlug === 'string' ? route.params.journeySlug : '';
+  const manifest = slug ? getManifestBySlug(slug) : null;
+  return manifest?.id ?? null;
+});
+
+const schema = computed(() => {
+  if (!journeyId.value) return null;
+  return getJourneySchemaById(journeyId.value);
+});
+
+const stepIds = computed(() => schema.value?.steps.map((step) => step.stepId) ?? []);
+const allowedSet = computed(() => new Set(stepIds.value));
+const currentStepId = computed(() => {
+  const stepParam = typeof route.query.step === 'string' ? route.query.step : null;
+  if (stepParam && allowedSet.value.has(stepParam)) return stepParam;
+  return stepIds.value[0] ?? null;
+});
+
+const stepMeta = computed(() =>
+  schema.value?.steps.find((step) => step.stepId === currentStepId.value) ?? null
+);
+
+const resolveByOrder = (offset: number) => {
+  const index = stepIds.value.indexOf(currentStepId.value ?? '');
+  if (index === -1) return null;
+  return stepIds.value[index + offset] ?? null;
+};
+
+const prevStepId = computed(() => {
+  const candidate = stepMeta.value?.prev;
+  if (candidate && allowedSet.value.has(candidate)) return candidate;
+  return resolveByOrder(-1);
+});
+
+const nextStepId = computed(() => {
+  const candidate = stepMeta.value?.next;
+  if (candidate && allowedSet.value.has(candidate)) return candidate;
+  return resolveByOrder(1);
+});
+
+const hasFooterSlot = computed(() => Boolean(slots.footer));
+const showDefaultNav = computed(
+  () => props.showNav && !hasFooterSlot.value && (prevStepId.value || nextStepId.value)
+);
+
+const nextLabel = computed(() => {
+  if (props.nextLabel) return props.nextLabel;
+  if (currentStepId.value?.startsWith('E0')) return 'Commencer';
+  return 'Continuer';
+});
+
+const prevLabel = computed(() => props.prevLabel);
+
+const goToStep = (stepId: string) => {
+  if (!stepId || !allowedSet.value.has(stepId)) return;
+  router.push({ path: route.path, query: { ...route.query, step: stepId } });
+};
 
 // Focus management a11y
 onMounted(() => {
@@ -165,5 +264,12 @@ onMounted(() => {
   flex-direction: column;
   gap: var(--pp-step-shell-footer-gap, 0.75rem);
   margin-top: auto;
+}
+
+.pp-step-shell__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pp-step-shell-footer-gap, 0.75rem);
+  justify-content: center;
 }
 </style>
