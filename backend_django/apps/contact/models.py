@@ -8,7 +8,7 @@ class Prospect(models.Model):
     name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
     organisation = models.CharField(max_length=255, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
 
     class Meta:
         ordering = ("-created_at",)
@@ -22,7 +22,7 @@ class ContactMessage(models.Model):
 
     prospect = models.ForeignKey(Prospect, related_name="messages", on_delete=models.CASCADE)
     message = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
 
     class Meta:
         ordering = ("-created_at",)
