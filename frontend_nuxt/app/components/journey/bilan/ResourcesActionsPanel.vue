@@ -154,13 +154,11 @@ const CONTACT_ROUTE = safeRoutePath('/contact');
 const RESOURCES_ROUTE = safeRoutePath('/ressources');
 
 /**
- * Deep link vers /ressources filtré P1 + tri impact (pilote SafeDeepLinkKit)
+ * Deep link vers /ressources filtre P1 (SafeDeepLinkKit)
  * @see frontend_nuxt/app/utils/deeplinks/resourcesDeepLink.ts
  */
 const P1_IMPACT_RESOURCES_LINK = buildResourcesDeepLink({
   tags: ['p1'],
-  sort: 'impact',
-  page: 1,
 });
 
 const safeRouteTarget = (target?: string | null) => {

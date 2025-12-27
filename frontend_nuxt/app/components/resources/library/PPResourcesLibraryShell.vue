@@ -25,10 +25,11 @@
         :filter-options="filterOptions"
         :has-active-filters="hasActiveFilters"
         @search="handleSearch"
-        @toggle-kind="toggleKind"
         @toggle-tag="toggleTag"
-        @toggle-effort="toggleEffort"
-        @toggle-impact="toggleImpact"
+        @toggle-category="toggleCategory"
+        @toggle-level="toggleLevel"
+        @toggle-journey="toggleJourney"
+        @toggle-type="toggleType"
         @clear-all="clearAll"
       />
 
@@ -37,8 +38,6 @@
         <!-- Toolbar -->
         <PPResourcesLibraryToolbar
           :total-results="totalResults"
-          :sort-by="sortBy"
-          @sort-change="setSortBy"
         />
 
         <!-- Loading State — DS:PPLoadingState -->
@@ -72,7 +71,7 @@
         <!-- Resources Grid -->
         <PPResourcesLibraryGrid
           v-else
-          :resources="paginatedResults"
+          :resources="resources"
         />
 
         <!-- Pagination -->
@@ -89,8 +88,7 @@
 </template>
 
 <script setup lang="ts">
-import { useResourcesLibrary, type SortOption } from '@/composables/useResourcesLibrary';
-import type { ResourceKind, EffortLevel, ImpactLevel } from '@/data/resourcesData';
+import { useResourcesLibrary } from '@/composables/useResourcesLibrary';
 
 // -----------------------------------------------------------------------------
 // COMPOSABLE
@@ -99,18 +97,17 @@ import type { ResourceKind, EffortLevel, ImpactLevel } from '@/data/resourcesDat
 const {
   searchQuery,
   filters,
-  sortBy,
   currentPage,
-  paginatedResults,
+  resources,
   totalResults,
   totalPages,
   filterOptions,
   setSearchQuery,
-  toggleKind,
   toggleTag,
-  toggleEffort,
-  toggleImpact,
-  setSortBy,
+  toggleCategory,
+  toggleLevel,
+  toggleJourney,
+  toggleType,
   nextPage,
   prevPage,
   clearAll,

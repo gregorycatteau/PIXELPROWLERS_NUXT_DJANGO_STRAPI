@@ -16,20 +16,16 @@
       v-for="resource in resources"
       :key="resource.id"
       :title="resource.title"
-      :description="resource.description"
-      :href="resource.href"
-      :to="resource.to"
+      :description="resource.summary"
+      :to="resourceLink(resource)"
       :meta="{
-        kind: resource.kind,
-        effort: EFFORT_LABELS[resource.effort],
-        impact: IMPACT_LABELS[resource.impact],
+        kind: resource.type,
       }"
-      :badge="getResourceBadge(resource)"
       :chips="getResourceChips(resource)"
       :cta-aria-label="`Voir la ressource ${resource.title}`"
     >
       <template #cta-label>
-        {{ resource.href ? `Voir sur ${resource.sourceDomain || 'le site'}` : 'Consulter' }}
+        Consulter
       </template>
     </PPResourceCard>
   </PPResourcesShell>
@@ -37,12 +33,11 @@
 
 <script setup lang="ts">
 import {
-  EFFORT_LABELS,
-  IMPACT_LABELS,
-  STATUS_LABELS,
+  RESOURCE_CATEGORY_LABELS,
+  RESOURCE_LEVEL_LABELS,
   type ResourceItem,
-  type ResourceStatus,
 } from '@/data/resourcesData';
+import { safeRoutePath } from '@/utils/cta/safeCta';
 
 // -----------------------------------------------------------------------------
 // PROPS
@@ -56,25 +51,32 @@ defineProps<{
 // HELPERS
 // -----------------------------------------------------------------------------
 
-function getResourceBadge(
-  resource: ResourceItem
-): { variant: 'status' | 'info'; label: string; ariaLabel?: string } | undefined {
-  if (resource.status && resource.status !== null) {
-    return {
-      variant: 'status',
-      label: STATUS_LABELS[resource.status as Exclude<ResourceStatus, null>],
-      ariaLabel: `Statut: ${STATUS_LABELS[resource.status as Exclude<ResourceStatus, null>]}`,
-    };
+function getResourceChips(resource: ResourceItem): { variant: 'tag' | 'stat'; label: string }[] {
+  const chips: { variant: 'tag' | 'stat'; label: string }[] = [];
+
+  chips.push({
+    variant: 'stat',
+    label: RESOURCE_LEVEL_LABELS[resource.level],
+  });
+
+  chips.push({
+    variant: 'stat',
+    label: RESOURCE_CATEGORY_LABELS[resource.category],
+  });
+
+  for (const tag of resource.tags.slice(0, 2)) {
+    chips.push({ variant: 'tag', label: tag });
   }
-  return undefined;
+
+  return chips;
 }
 
-function getResourceChips(resource: ResourceItem): { variant: 'tag'; label: string }[] {
-  // Show first 2 tags as chips
-  return resource.tags.slice(0, 2).map((tag) => ({
-    variant: 'tag' as const,
-    label: tag,
-  }));
+function resourceLink(resource: ResourceItem): string {
+  try {
+    return safeRoutePath(resource.path);
+  } catch {
+    return '/ressources';
+  }
 }
 </script>
 
