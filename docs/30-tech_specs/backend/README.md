@@ -19,6 +19,7 @@
 | [PX_V1_3_RESOURCES_CATALOG_A_SPEC.md](./PX_V1_3_RESOURCES_CATALOG_A_SPEC.md) | active | Resources Catalog V1 — Option A (SSOT‑backed) |
 | [PX_V1_3_RESOURCES_CATALOG_OPTION_B_DECISION.md](./PX_V1_3_RESOURCES_CATALOG_OPTION_B_DECISION.md) | draft | Resources Catalog Option B — Decision & Migration Plan |
 | [openapi.v1.yaml](./openapi.v1.yaml) | active | Fichier YAML |
+| [resources_catalog.schema.json](./resources_catalog.schema.json) | active | Fichier JSON |
 
 **Owners** : Tom
 

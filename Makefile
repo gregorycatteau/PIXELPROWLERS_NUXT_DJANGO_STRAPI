@@ -1,7 +1,7 @@
 # PixelProwlers — Makefile
 # Commandes locales pour SSOT, CI, et développement
 
-.PHONY: help ssot-check ssot-lint ssot-openapi ssot-index-check ssot-index-apply ssot-linkcheck ssot-all agent-start agent-prompt agent-scope-check agent-close agent-list
+.PHONY: help ssot-check ssot-lint ssot-openapi ssot-index-check ssot-index-apply ssot-linkcheck ssot-resources-validate ssot-all agent-start agent-prompt agent-scope-check agent-close agent-list
 
 # Default target
 help:
@@ -12,6 +12,7 @@ help:
 	@echo "║    make ssot-check        Exécute tous les checks SSOT       ║"
 	@echo "║    make ssot-lint         Lint frontmatter + IDs             ║"
 	@echo "║    make ssot-openapi      Valide OpenAPI spec                ║"
+	@echo "║    make ssot-resources-validate  Valide le catalog resources ║"
 	@echo "║    make ssot-index-check  Vérifie index drift (CI mode)      ║"
 	@echo "║    make ssot-index-apply  Applique les index générés         ║"
 	@echo "║    make ssot-linkcheck    Vérifie liens + détecte orphelins  ║"
@@ -37,6 +38,10 @@ ssot-lint:
 ssot-openapi:
 	@echo "📋 Validating OpenAPI Spec..."
 	@python3 tools/openapi_validate.py
+
+ssot-resources-validate:
+	@echo "📦 Validating resources catalog..."
+	@python3 tools/ssot_resources_catalog_validate.py
 
 ssot-index-check:
 	@echo "📚 Checking for Index Drift..."
@@ -110,7 +115,7 @@ ssot-render-sprint:
 	fi
 	@python3 tools/ssot_sprint_planner.py render-sprint SPRINT=$(SPRINT) --format cline
 
-ssot-check: ssot-lint ssot-openapi ssot-index-check ssot-linkcheck
+ssot-check: ssot-lint ssot-openapi ssot-resources-validate ssot-index-check ssot-linkcheck
 	@echo ""
 	@echo "✅ All SSOT checks passed!"
 
