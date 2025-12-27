@@ -2,7 +2,7 @@
   PPResourcesLibraryFilters.vue — DS CELL (V1.R2)
   
   Sidebar filtres pour la bibliothèque de ressources.
-  Inclut : recherche (avec sanitization), filtres par type/effort/impact/tags.
+  Inclut : recherche (avec sanitization), filtres par type/category/level/journey/tags.
   
   @props
   - searchQuery: string — valeur actuelle de la recherche
@@ -12,10 +12,11 @@
   
   @emits
   - search(query: string) — quand l'utilisateur tape
-  - toggle-kind(kind: ResourceKind) — toggle filtre type
+  - toggle-type(type: ResourceType) — toggle filtre type
   - toggle-tag(tag: string) — toggle filtre tag
-  - toggle-effort(effort: EffortLevel) — toggle filtre effort
-  - toggle-impact(impact: ImpactLevel) — toggle filtre impact
+  - toggle-category(category: ResourceCategory) — toggle filtre category
+  - toggle-level(level: ResourceLevel) — toggle filtre level
+  - toggle-journey(journey: ResourceJourney) — toggle filtre journey
   - clear-all() — effacer tous les filtres
 -->
 <template>
@@ -41,48 +42,65 @@
       <legend class="pp-reslib__filter-label">Type</legend>
       <div class="pp-reslib__filter-chips">
         <PPChip
-          v-for="kind in filterOptions.kinds"
-          :key="kind"
+          v-for="rtype in filterOptions.types"
+          :key="rtype"
           variant="action"
           size="sm"
-          :aria-pressed="filters.kinds.includes(kind)"
-          @click="$emit('toggle-kind', kind)"
+          :aria-pressed="filters.type === rtype"
+          @click="$emit('toggle-type', rtype)"
         >
-          {{ RESOURCE_KIND_LABELS[kind] }}
+          {{ RESOURCE_TYPE_LABELS[rtype] }}
         </PPChip>
       </div>
     </fieldset>
 
-    <!-- Effort Filter -->
+    <!-- Category Filter -->
     <fieldset class="pp-reslib__filter-group">
-      <legend class="pp-reslib__filter-label">Effort</legend>
+      <legend class="pp-reslib__filter-label">Categorie</legend>
       <div class="pp-reslib__filter-chips">
         <PPChip
-          v-for="effort in filterOptions.efforts"
-          :key="effort"
+          v-for="category in filterOptions.categories"
+          :key="category"
           variant="action"
           size="sm"
-          :aria-pressed="filters.efforts.includes(effort)"
-          @click="$emit('toggle-effort', effort)"
+          :aria-pressed="filters.category === category"
+          @click="$emit('toggle-category', category)"
         >
-          {{ EFFORT_LABELS[effort] }}
+          {{ RESOURCE_CATEGORY_LABELS[category] }}
         </PPChip>
       </div>
     </fieldset>
 
-    <!-- Impact Filter -->
+    <!-- Level Filter -->
     <fieldset class="pp-reslib__filter-group">
-      <legend class="pp-reslib__filter-label">Impact</legend>
+      <legend class="pp-reslib__filter-label">Niveau</legend>
       <div class="pp-reslib__filter-chips">
         <PPChip
-          v-for="impact in filterOptions.impacts"
-          :key="impact"
+          v-for="level in filterOptions.levels"
+          :key="level"
           variant="action"
           size="sm"
-          :aria-pressed="filters.impacts.includes(impact)"
-          @click="$emit('toggle-impact', impact)"
+          :aria-pressed="filters.level === level"
+          @click="$emit('toggle-level', level)"
         >
-          {{ IMPACT_LABELS[impact] }}
+          {{ RESOURCE_LEVEL_LABELS[level] }}
+        </PPChip>
+      </div>
+    </fieldset>
+
+    <!-- Journey Filter -->
+    <fieldset class="pp-reslib__filter-group">
+      <legend class="pp-reslib__filter-label">Parcours</legend>
+      <div class="pp-reslib__filter-chips">
+        <PPChip
+          v-for="journey in filterOptions.journeys"
+          :key="journey"
+          variant="action"
+          size="sm"
+          :aria-pressed="filters.journey === journey"
+          @click="$emit('toggle-journey', journey)"
+        >
+          {{ RESOURCE_JOURNEY_LABELS[journey] }}
         </PPChip>
       </div>
     </fieldset>
@@ -127,13 +145,15 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import {
-  RESOURCE_KIND_LABELS,
-  EFFORT_LABELS,
-  IMPACT_LABELS,
-  type ResourceKind,
-  type EffortLevel,
-  type ImpactLevel,
+  RESOURCE_CATEGORY_LABELS,
+  RESOURCE_JOURNEY_LABELS,
+  RESOURCE_LEVEL_LABELS,
+  RESOURCE_TYPE_LABELS,
   type FilterOptions,
+  type ResourceCategory,
+  type ResourceJourney,
+  type ResourceLevel,
+  type ResourceType,
 } from '@/data/resourcesData';
 import type { ResourceFilters } from '@/composables/useResourcesLibrary';
 
@@ -160,10 +180,11 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'search', query: string): void;
-  (e: 'toggle-kind', kind: ResourceKind): void;
+  (e: 'toggle-type', rtype: ResourceType): void;
   (e: 'toggle-tag', tag: string): void;
-  (e: 'toggle-effort', effort: EffortLevel): void;
-  (e: 'toggle-impact', impact: ImpactLevel): void;
+  (e: 'toggle-category', category: ResourceCategory): void;
+  (e: 'toggle-level', level: ResourceLevel): void;
+  (e: 'toggle-journey', journey: ResourceJourney): void;
   (e: 'clear-all'): void;
 }>();
 

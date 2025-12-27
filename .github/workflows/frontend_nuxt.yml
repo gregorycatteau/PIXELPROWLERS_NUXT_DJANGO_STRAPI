@@ -21,7 +21,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version-file: frontend_nuxt/.nvmrc
           cache: "npm"
           cache-dependency-path: frontend_nuxt/package-lock.json
 

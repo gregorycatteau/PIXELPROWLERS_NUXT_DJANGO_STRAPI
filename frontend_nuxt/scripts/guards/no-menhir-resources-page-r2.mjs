@@ -3,13 +3,13 @@
  * no-menhir-resources-page-r2.mjs
  * 
  * Guard anti-MENHIR pour la page /ressources.
- * Vérifie que ressources.vue est "thin" (montage + SEO uniquement).
+ * Vérifie que ressources/index.vue est "thin" (montage + SEO uniquement).
  * 
  * Règles :
- * - ressources.vue doit contenir PPResourcesLibraryShell
- * - ressources.vue doit contenir useHead (SEO)
- * - ressources.vue NE doit PAS contenir de classes "pp-resources-library__*" (MENHIR pattern)
- * - ressources.vue NE doit PAS contenir de logique lourde (useResourcesLibrary directement)
+ * - ressources/index.vue doit contenir PPResourcesLibraryShell
+ * - ressources/index.vue doit contenir useHead (SEO)
+ * - ressources/index.vue NE doit PAS contenir de classes "pp-resources-library__*" (MENHIR pattern)
+ * - ressources/index.vue NE doit PAS contenir de logique lourde (useResourcesLibrary directement)
  * 
  * Exit codes:
  * - 0 = PASS
@@ -26,7 +26,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '../..');
 
 // Files to check
-const PAGE_PATH = resolve(ROOT, 'app/pages/ressources.vue');
+const PAGE_PATH = resolve(ROOT, 'app/pages/ressources/index.vue');
 const SHELL_PATH = resolve(ROOT, 'app/components/resources/library/PPResourcesLibraryShell.vue');
 const FILTERS_PATH = resolve(ROOT, 'app/components/resources/library/PPResourcesLibraryFilters.vue');
 const TOOLBAR_PATH = resolve(ROOT, 'app/components/resources/library/PPResourcesLibraryToolbar.vue');
@@ -41,7 +41,7 @@ const SEO_PATTERN = /useHead\s*\(/;
 const V_HTML_PATTERN = /v-html/;
 
 console.log('🔍 Guard: no-menhir-resources-page-r2');
-console.log('   Checking that ressources.vue is thin (NO MENHIR)...\n');
+console.log('   Checking that ressources/index.vue is thin (NO MENHIR)...\n');
 
 const errors = [];
 const warnings = [];
@@ -51,42 +51,42 @@ const warnings = [];
 // -----------------------------------------------------------------------------
 
 if (!existsSync(PAGE_PATH)) {
-  errors.push('❌ app/pages/ressources.vue does not exist');
+  errors.push('❌ app/pages/ressources/index.vue does not exist');
 } else {
   const pageContent = readFileSync(PAGE_PATH, 'utf-8');
   
   // Check for PPResourcesLibraryShell usage
   if (!SHELL_USAGE_PATTERN.test(pageContent)) {
-    errors.push('❌ ressources.vue must use <PPResourcesLibraryShell />');
+    errors.push('❌ ressources/index.vue must use <PPResourcesLibraryShell />');
   }
   
   // Check for useHead (SEO)
   if (!SEO_PATTERN.test(pageContent)) {
-    errors.push('❌ ressources.vue must use useHead() for SEO');
+    errors.push('❌ ressources/index.vue must use useHead() for SEO');
   }
   
   // Check for MENHIR pattern (pp-resources-library__* classes in page)
   const menhirMatches = pageContent.match(MENHIR_CLASS_PATTERN);
   if (menhirMatches && menhirMatches.length > 0) {
-    errors.push(`❌ MENHIR detected: ressources.vue contains ${menhirMatches.length} "pp-resources-library__*" classes`);
+    errors.push(`❌ MENHIR detected: ressources/index.vue contains ${menhirMatches.length} "pp-resources-library__*" classes`);
     errors.push('   → Move these styles to DS cells or pp.components.css');
   }
   
   // Check for direct useResourcesLibrary import (should be in Shell, not page)
   if (LEGACY_IMPORT_PATTERN.test(pageContent)) {
-    errors.push('❌ ressources.vue should NOT import useResourcesLibrary directly');
+    errors.push('❌ ressources/index.vue should NOT import useResourcesLibrary directly');
     errors.push('   → Logic should live in PPResourcesLibraryShell');
   }
   
   // Check for v-html (forbidden)
   if (V_HTML_PATTERN.test(pageContent)) {
-    errors.push('❌ ressources.vue must NOT use v-html');
+    errors.push('❌ ressources/index.vue must NOT use v-html');
   }
   
   // Check page is small (thin page check)
   const lines = pageContent.split('\n').length;
   if (lines > 80) {
-    warnings.push(`⚠️  ressources.vue has ${lines} lines (thin page should be < 80 lines)`);
+    warnings.push(`⚠️  ressources/index.vue has ${lines} lines (thin page should be < 80 lines)`);
   }
 }
 
@@ -144,7 +144,7 @@ if (errors.length > 0) {
 }
 
 console.log('✅ Guard PASSED — Resources Page is thin (NO MENHIR)');
-console.log('   ├── pages/ressources.vue uses PPResourcesLibraryShell + useHead');
+console.log('   ├── pages/ressources/index.vue uses PPResourcesLibraryShell + useHead');
 console.log('   ├── No "pp-resources-library__*" classes in page');
 console.log('   ├── All 5 CELLS exist');
 console.log('   └── No v-html detected');

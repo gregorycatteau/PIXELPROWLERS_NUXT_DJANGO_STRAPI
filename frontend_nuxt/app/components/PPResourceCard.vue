@@ -72,7 +72,7 @@
 import { computed } from 'vue';
 import type { RouteLocationRaw } from 'vue-router';
 
-export type ResourceKind = 'tool' | 'read' | 'watch' | 'template';
+export type ResourceKind = 'tool' | 'read' | 'watch' | 'template' | 'checklist';
 export type ChipVariant = 'stat' | 'tag' | 'action';
 export type BadgeVariant = 'status' | 'risk' | 'info';
 
@@ -128,6 +128,7 @@ const KIND_LABELS: Record<ResourceKind, string> = {
   read: 'Lecture',
   watch: 'Vidéo',
   template: 'Template',
+  checklist: 'Checklist',
 };
 
 const kindLabel = computed(() =>

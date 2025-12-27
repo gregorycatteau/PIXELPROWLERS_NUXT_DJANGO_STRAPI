@@ -40,12 +40,16 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "corsheaders",
+    # PixelProwlers apps
+    "apps.core",
+    "apps.health",
     "apps.contact",
 ]
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "apps.core.middleware.RateLimitMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -97,9 +101,39 @@ REST_FRAMEWORK = {
     "DEFAULT_PARSER_CLASSES": ["rest_framework.parsers.JSONParser"],
 }
 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "pixel_backend_default",
+    }
+}
+
+PX_CACHE_FAIL_CLOSED = False
+PX_CACHE_FAIL_RETRY_AFTER = 60
+PX_HEALTH_CHECK_CACHE = False
+
+PX_RATE_LIMITS = {
+    "contact": {"limit": 3, "window": 60},
+    "gate125": {"limit": 10, "window": 3600},
+    "resources": {"limit": 60, "window": 60},
+}
+
+PX_COOLDOWNS = {
+    "contact": 300,
+    "gate125": 3600,
+}
+
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS: list[str] = []
 CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",") if os.getenv("CSRF_TRUSTED_ORIGINS") else []
+
+
+def _split_env_list(name: str) -> list[str]:
+    return [item.strip() for item in os.environ.get(name, "").split(",") if item.strip()]
+
+
+GATE125_API_KEYS = _split_env_list("GATE125_API_KEYS")
+GATE125_API_KEY_HASHES = _split_env_list("GATE125_API_KEY_HASHES")
 
 LOGGING = {
     "version": 1,

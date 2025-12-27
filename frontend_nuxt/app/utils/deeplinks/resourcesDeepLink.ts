@@ -2,159 +2,86 @@
  * resourcesDeepLink.ts — Safe Deep Link Kit pour /ressources
  *
  * API canonique pour construire et parser les deep links vers /ressources.
- * Garanties sécurité P0 :
- * - Allowlist stricte des clés/valeurs query params
+ * Garanties securite P0 :
+ * - Allowlist stricte des cles/valeurs query params
  * - Sanitization NFKC + strip zero-width + trim + clamp
- * - Zéro throw : payload hostile => fallback neutre
+ * - Zero throw : payload hostile => fallback neutre
  * - Pas de logs sur query brutes
- *
- * @see docs/40-security/contracts/PX_V1_3_SECURITY_P0_DEEPLINKS_DOM_GUARDS.md
  */
 
 import type { RouteLocationRaw } from '#vue-router';
-import {
-  type ResourceKind,
-  type EffortLevel,
-  type ImpactLevel,
-  type ResourceLanguage,
+import type {
+  ResourceCategory,
+  ResourceJourney,
+  ResourceLevel,
+  ResourceType,
 } from '@/data/resourcesData';
 
 // =============================================================================
 // CONSTANTS
 // =============================================================================
 
-/** Max length for search query */
 const MAX_QUERY_LENGTH = 120;
-
-/** Max tags allowed */
 const MAX_TAGS = 5;
+const MAX_LIMIT = 50;
+const MAX_OFFSET = 1000;
 
-/** Max page number (anti-phantom pages) */
-const MAX_PAGE = 50;
+const VALID_TYPES = new Set<string>(['tool', 'read', 'checklist']);
+const VALID_CATEGORIES = new Set<string>(['tool', 'guide', 'checklist']);
+const VALID_LEVELS = new Set<string>(['intro', 'intermediate']);
+const VALID_JOURNEYS = new Set<string>(['p1']);
 
-/** Allowlist for query param keys */
-const ALLOWED_KEYS = new Set([
-  'q',
-  'kind',
-  'tags',
-  'effort',
-  'impact',
-  'language',
-  'sort',
-  'page',
-]);
-
-/** Valid sort options */
-const VALID_SORT_OPTIONS = new Set(['default', 'updatedAt', 'effort', 'impact']);
-
-/** Valid kind options */
-const VALID_KINDS = new Set<string>(['tool', 'read', 'watch', 'template']);
-
-/** Valid effort options */
-const VALID_EFFORTS = new Set<string>(['low', 'medium', 'high']);
-
-/** Valid impact options */
-const VALID_IMPACTS = new Set<string>(['low', 'medium', 'high']);
-
-/** Valid language options */
-const VALID_LANGUAGES = new Set<string>(['fr', 'en']);
-
-/** Zero-width characters to strip */
 const ZERO_WIDTH_CHARS = /[\u200B\u200C\u200D\u200E\u200F\u2060\uFEFF]/g;
-
-/** Control characters to strip (U+0000–U+001F + U+007F) */
 const CONTROL_CHARS = /[\u0000-\u001F\u007F]/g;
-
-/** Tag validation pattern (kebab-case lowercase) */
 const TAG_PATTERN = /^[a-z0-9-]+$/;
 
 // =============================================================================
 // TYPES
 // =============================================================================
 
-export type SortOption = 'default' | 'updatedAt' | 'effort' | 'impact';
-
-/**
- * Normalized filters for /ressources page.
- * All arrays are non-null, strings are sanitized.
- */
 export interface FiltersNormalized {
   q: string;
-  kinds: ResourceKind[];
   tags: string[];
-  efforts: EffortLevel[];
-  impacts: ImpactLevel[];
-  languages: ResourceLanguage[];
-  sort: SortOption;
-  page: number;
+  category: ResourceCategory | '';
+  level: ResourceLevel | '';
+  journey: ResourceJourney | '';
+  type: ResourceType | '';
+  limit: number;
+  offset: number;
 }
 
-/**
- * Partial input for building a deep link.
- */
 export interface DeepLinkInput {
   q?: string;
-  kind?: ResourceKind | ResourceKind[];
-  kinds?: ResourceKind[];
   tags?: string | string[];
-  effort?: EffortLevel | EffortLevel[];
-  efforts?: EffortLevel[];
-  impact?: ImpactLevel | ImpactLevel[];
-  impacts?: ImpactLevel[];
-  language?: ResourceLanguage | ResourceLanguage[];
-  languages?: ResourceLanguage[];
-  sort?: SortOption;
-  page?: number;
+  category?: ResourceCategory;
+  level?: ResourceLevel;
+  journey?: ResourceJourney;
+  type?: ResourceType;
+  limit?: number;
+  offset?: number;
 }
 
 // =============================================================================
 // SANITIZATION HELPERS
 // =============================================================================
 
-/**
- * Sanitize a string for safe use in query params.
- * - NFKC normalization
- * - Strip zero-width characters (silent, no throw)
- * - Trim whitespace
- * - Clamp to maxLength
- *
- * @returns sanitized string, or empty string if invalid
- */
 function sanitizeString(value: unknown, maxLength: number = MAX_QUERY_LENGTH): string {
   if (typeof value !== 'string') return '';
-  
+
   try {
-    // NFKC normalization
     let result = value.normalize('NFKC');
-    
-    // Strip control characters (U+0000–U+001F + U+007F) — security hardening
     result = result.replace(CONTROL_CHARS, '');
-    
-    // Strip zero-width characters (silent)
     result = result.replace(ZERO_WIDTH_CHARS, '');
-    
-    // Trim whitespace
     result = result.trim();
-    
-    // Clamp length
     if (result.length > maxLength) {
       result = result.slice(0, maxLength);
     }
-    
     return result;
   } catch {
-    // Any error => return empty
     return '';
   }
 }
 
-/**
- * Normalize a tag string.
- * - Sanitize + lowercase
- * - Validate kebab-case pattern
- *
- * @returns normalized tag, or null if invalid
- */
 function normalizeTag(value: unknown): string | null {
   const sanitized = sanitizeString(value, 50).toLowerCase();
   if (!sanitized || !TAG_PATTERN.test(sanitized)) {
@@ -163,61 +90,10 @@ function normalizeTag(value: unknown): string | null {
   return sanitized;
 }
 
-/**
- * Parse an array-like query param (can be string or string[]).
- * Returns an array of sanitized, validated values.
- */
-function parseArrayParam<T extends string>(
-  value: unknown,
-  validSet: Set<string>,
-  maxItems: number = 10
-): T[] {
-  const result: T[] = [];
-  
-  try {
-    // Handle string (single value or comma-separated)
-    if (typeof value === 'string') {
-      const items = value.includes(',') ? value.split(',') : [value];
-      for (const item of items) {
-        const sanitized = sanitizeString(item, 50).toLowerCase();
-        if (sanitized && validSet.has(sanitized)) {
-          result.push(sanitized as T);
-        }
-        if (result.length >= maxItems) break;
-      }
-      return result;
-    }
-    
-    // Handle array
-    if (Array.isArray(value)) {
-      for (const item of value) {
-        if (typeof item === 'string') {
-          const sanitized = sanitizeString(item, 50).toLowerCase();
-          if (sanitized && validSet.has(sanitized)) {
-            result.push(sanitized as T);
-          }
-        }
-        if (result.length >= maxItems) break;
-      }
-      return result;
-    }
-  } catch {
-    // Silent failure
-  }
-  
-  return result;
-}
-
-/**
- * Parse tags from query param.
- * Tags can be comma-separated string or array.
- * Validates kebab-case pattern.
- */
 function parseTags(value: unknown): string[] {
   const result: string[] = [];
-  
+
   try {
-    // Handle string (comma-separated)
     if (typeof value === 'string') {
       const items = value.split(',');
       for (const item of items) {
@@ -229,8 +105,7 @@ function parseTags(value: unknown): string[] {
       }
       return result;
     }
-    
-    // Handle array
+
     if (Array.isArray(value)) {
       for (const item of value) {
         const tag = normalizeTag(item);
@@ -242,271 +117,185 @@ function parseTags(value: unknown): string[] {
       return result;
     }
   } catch {
-    // Silent failure
+    return result;
   }
-  
+
   return result;
 }
 
-/**
- * Parse page number from query param.
- * Returns clamped value between 1 and MAX_PAGE.
- */
-function parsePage(value: unknown): number {
-  try {
-    if (typeof value === 'string') {
-      const parsed = parseInt(value, 10);
-      if (!isNaN(parsed)) {
-        return Math.max(1, Math.min(parsed, MAX_PAGE));
-      }
-    }
-    if (typeof value === 'number') {
-      return Math.max(1, Math.min(Math.floor(value), MAX_PAGE));
-    }
-  } catch {
-    // Silent failure
+function parseAllowlistValue<T extends string>(
+  value: unknown,
+  validSet: Set<string>
+): T | '' {
+  if (typeof value !== 'string') return '';
+  const sanitized = sanitizeString(value, 50).toLowerCase();
+  if (sanitized && validSet.has(sanitized)) {
+    return sanitized as T;
   }
-  return 1;
+  return '';
 }
 
-/**
- * Parse sort option from query param.
- * Returns 'default' if invalid.
- */
-function parseSort(value: unknown): SortOption {
-  try {
-    if (typeof value === 'string') {
-      const sanitized = sanitizeString(value, 20).toLowerCase();
-      if (VALID_SORT_OPTIONS.has(sanitized)) {
-        return sanitized as SortOption;
-      }
+function parseLimit(value: unknown, fallback: number): number {
+  if (typeof value === 'string') {
+    const parsed = parseInt(value, 10);
+    if (!isNaN(parsed)) {
+      return Math.max(1, Math.min(parsed, MAX_LIMIT));
     }
-  } catch {
-    // Silent failure
   }
-  return 'default';
+  if (typeof value === 'number') {
+    return Math.max(1, Math.min(Math.floor(value), MAX_LIMIT));
+  }
+  return fallback;
+}
+
+function parseOffset(value: unknown): number {
+  if (typeof value === 'string') {
+    const parsed = parseInt(value, 10);
+    if (!isNaN(parsed)) {
+      return Math.max(0, Math.min(parsed, MAX_OFFSET));
+    }
+  }
+  if (typeof value === 'number') {
+    return Math.max(0, Math.min(Math.floor(value), MAX_OFFSET));
+  }
+  return 0;
 }
 
 // =============================================================================
 // PUBLIC API
 // =============================================================================
 
-/**
- * Default/empty filters.
- */
 export const DEFAULT_FILTERS: FiltersNormalized = {
   q: '',
-  kinds: [],
   tags: [],
-  efforts: [],
-  impacts: [],
-  languages: [],
-  sort: 'default',
-  page: 1,
+  category: '',
+  level: '',
+  journey: '',
+  type: '',
+  limit: 12,
+  offset: 0,
 };
 
-/**
- * Parse query params from route into normalized filters.
- * Zéro throw : any invalid input => fallback to defaults.
- * 
- * SECURITY: Direct key access only (no Object.keys iteration)
- * to prevent prototype pollution attacks.
- *
- * @param query - route.query (Record<string, unknown>)
- * @returns FiltersNormalized with safe, validated values
- */
 export function parseResourcesDeepLink(
   query: Record<string, unknown> | undefined | null
 ): FiltersNormalized {
-  // Start with defaults
   const result: FiltersNormalized = { ...DEFAULT_FILTERS };
-  
+
   if (!query || typeof query !== 'object') {
     return result;
   }
-  
+
   try {
-    // SECURITY: Direct key access only — no Object.keys() iteration
-    // This prevents prototype pollution from hostile query objects
-    
-    // q (search query)
     if ('q' in query) {
       result.q = sanitizeString(query['q'], MAX_QUERY_LENGTH);
     }
-    
-    // kind (resource type filter)
-    if ('kind' in query) {
-      result.kinds = parseArrayParam<ResourceKind>(query['kind'], VALID_KINDS, 4);
-    }
-    
-    // tags (comma-separated or array)
     if ('tags' in query) {
       result.tags = parseTags(query['tags']);
     }
-    
-    // effort (effort level filter)
-    if ('effort' in query) {
-      result.efforts = parseArrayParam<EffortLevel>(query['effort'], VALID_EFFORTS, 3);
+    if ('category' in query) {
+      result.category = parseAllowlistValue<ResourceCategory>(
+        query['category'],
+        VALID_CATEGORIES
+      );
     }
-    
-    // impact (impact level filter)
-    if ('impact' in query) {
-      result.impacts = parseArrayParam<ImpactLevel>(query['impact'], VALID_IMPACTS, 3);
+    if ('level' in query) {
+      result.level = parseAllowlistValue<ResourceLevel>(
+        query['level'],
+        VALID_LEVELS
+      );
     }
-    
-    // language (language filter)
-    if ('language' in query) {
-      result.languages = parseArrayParam<ResourceLanguage>(query['language'], VALID_LANGUAGES, 2);
+    if ('journey' in query) {
+      result.journey = parseAllowlistValue<ResourceJourney>(
+        query['journey'],
+        VALID_JOURNEYS
+      );
     }
-    
-    // sort (sort option)
-    if ('sort' in query) {
-      result.sort = parseSort(query['sort']);
+    if ('type' in query) {
+      result.type = parseAllowlistValue<ResourceType>(
+        query['type'],
+        VALID_TYPES
+      );
     }
-    
-    // page (pagination)
-    if ('page' in query) {
-      result.page = parsePage(query['page']);
+    if ('limit' in query) {
+      result.limit = parseLimit(query['limit'], result.limit);
+    }
+    if ('offset' in query) {
+      result.offset = parseOffset(query['offset']);
     }
   } catch {
-    // Any error => return current result (partial parse is OK)
-    // Dev feedback (no query exposure in prod)
     if (import.meta.dev) {
       console.debug('[resourcesDeepLink] dropped invalid query param');
     }
   }
-  
+
   return result;
 }
 
-/**
- * Build a RouteLocationRaw for /ressources with given filters.
- * Only includes non-default values in query params.
- * Sanitizes all values before including in URL.
- *
- * @param input - partial filters to apply
- * @returns RouteLocationRaw safe to use with NuxtLink or router.push
- */
 export function buildResourcesDeepLink(
   input: DeepLinkInput | undefined | null
 ): RouteLocationRaw {
-  const query: Record<string, string | string[]> = {};
-  
+  const query: Record<string, string> = {};
+
   if (!input || typeof input !== 'object') {
     return { path: '/ressources' };
   }
-  
+
   try {
-    // Search query
     const q = sanitizeString(input.q, MAX_QUERY_LENGTH);
     if (q) {
       query.q = q;
     }
-    
-    // Kinds (accept both 'kind' and 'kinds')
-    const kinds = normalizeArrayInput<ResourceKind>(
-      input.kinds ?? input.kind,
-      VALID_KINDS as Set<string>,
-      4
-    );
-    if (kinds.length > 0) {
-      query.kind = kinds;
-    }
-    
-    // Tags
+
     const tags = normalizeTagsInput(input.tags);
     if (tags.length > 0) {
       query.tags = tags.join(',');
     }
-    
-    // Efforts (accept both 'effort' and 'efforts')
-    const efforts = normalizeArrayInput<EffortLevel>(
-      input.efforts ?? input.effort,
-      VALID_EFFORTS as Set<string>,
-      3
-    );
-    if (efforts.length > 0) {
-      query.effort = efforts;
+
+    if (input.category && VALID_CATEGORIES.has(input.category)) {
+      query.category = input.category;
     }
-    
-    // Impacts (accept both 'impact' and 'impacts')
-    const impacts = normalizeArrayInput<ImpactLevel>(
-      input.impacts ?? input.impact,
-      VALID_IMPACTS as Set<string>,
-      3
-    );
-    if (impacts.length > 0) {
-      query.impact = impacts;
+
+    if (input.level && VALID_LEVELS.has(input.level)) {
+      query.level = input.level;
     }
-    
-    // Languages (accept both 'language' and 'languages')
-    const languages = normalizeArrayInput<ResourceLanguage>(
-      input.languages ?? input.language,
-      VALID_LANGUAGES as Set<string>,
-      2
-    );
-    if (languages.length > 0) {
-      query.language = languages;
+
+    if (input.journey && VALID_JOURNEYS.has(input.journey)) {
+      query.journey = input.journey;
     }
-    
-    // Sort (only if not default)
-    if (input.sort && VALID_SORT_OPTIONS.has(input.sort) && input.sort !== 'default') {
-      query.sort = input.sort;
+
+    if (input.type && VALID_TYPES.has(input.type)) {
+      query.type = input.type;
     }
-    
-    // Page (only if > 1)
-    if (input.page && typeof input.page === 'number') {
-      const page = Math.max(1, Math.min(Math.floor(input.page), MAX_PAGE));
-      if (page > 1) {
-        query.page = String(page);
+
+    if (typeof input.limit === 'number') {
+      const limit = Math.max(1, Math.min(Math.floor(input.limit), MAX_LIMIT));
+      if (limit !== DEFAULT_FILTERS.limit) {
+        query.limit = String(limit);
+      }
+    }
+
+    if (typeof input.offset === 'number') {
+      const offset = Math.max(0, Math.min(Math.floor(input.offset), MAX_OFFSET));
+      if (offset > 0) {
+        query.offset = String(offset);
       }
     }
   } catch {
-    // Any error => return base route without query
     return { path: '/ressources' };
   }
-  
+
   return {
     path: '/ressources',
     query: Object.keys(query).length > 0 ? query : undefined,
   };
 }
 
-/**
- * Helper to normalize array input for building deep links.
- */
-function normalizeArrayInput<T extends string>(
-  value: T | T[] | undefined,
-  validSet: Set<string>,
-  maxItems: number
-): T[] {
-  if (!value) return [];
-  
-  const items = Array.isArray(value) ? value : [value];
-  const result: T[] = [];
-  
-  for (const item of items) {
-    if (typeof item === 'string') {
-      const sanitized = sanitizeString(item, 50).toLowerCase();
-      if (sanitized && validSet.has(sanitized)) {
-        result.push(sanitized as T);
-      }
-    }
-    if (result.length >= maxItems) break;
-  }
-  
-  return result;
-}
-
-/**
- * Helper to normalize tags input for building deep links.
- */
 function normalizeTagsInput(value: string | string[] | undefined): string[] {
   if (!value) return [];
-  
+
   const items = Array.isArray(value) ? value : [value];
   const result: string[] = [];
-  
+
   for (const item of items) {
     const tag = normalizeTag(item);
     if (tag && !result.includes(tag)) {
@@ -514,6 +303,6 @@ function normalizeTagsInput(value: string | string[] | undefined): string[] {
     }
     if (result.length >= MAX_TAGS) break;
   }
-  
+
   return result;
 }

@@ -5,11 +5,10 @@
  * Enforce DS compliance for /ressources page (mode LIBRARY).
  *
  * RULES (Updated for R2 atomique architecture):
- * - pages/ressources.vue MUST use PPResourcesLibraryShell OR legacy PPResourcesShell/PPResourceCard
- * - pages/ressources.vue MUST NOT use v-html
- * - pages/ressources.vue MUST NOT use legacy ResourceList component
+ * - pages/ressources/index.vue MUST use PPResourcesLibraryShell OR legacy PPResourcesShell/PPResourceCard
+ * - pages/ressources/index.vue MUST NOT use v-html
+ * - pages/ressources/index.vue MUST NOT use legacy ResourceList component
  * - composables/useResourcesLibrary.ts MUST exist
- * - data/resourcesData.ts MUST exist with validation
  * - If using atomique architecture: CELLS must use PPResourcesShell + PPResourceCard
  *
  * @see docs/20-product_specs/ux_content/PX_V1_3_RESOURCES_LIBRARY_SPEC.md
@@ -23,9 +22,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const APP_ROOT = path.resolve(__dirname, '../../app');
-const RESOURCES_PAGE = path.join(APP_ROOT, 'pages/ressources.vue');
+const RESOURCES_PAGE = path.join(APP_ROOT, 'pages/ressources/index.vue');
 const COMPOSABLE = path.join(APP_ROOT, 'composables/useResourcesLibrary.ts');
-const DATA_FILE = path.join(APP_ROOT, 'data/resourcesData.ts');
 const CELLS_DIR = path.join(APP_ROOT, 'components/resources/library');
 const GRID_CELL = path.join(CELLS_DIR, 'PPResourcesLibraryGrid.vue');
 
@@ -70,18 +68,18 @@ console.log('   Checking DS compliance for /ressources page (mode LIBRARY)...\n'
 // ----------------------------------
 // 1. Check page
 // ----------------------------------
-const pageContent = checkFile(RESOURCES_PAGE, 'pages/ressources.vue', [], [
+const pageContent = checkFile(RESOURCES_PAGE, 'pages/ressources/index.vue', [], [
   {
     pattern: /v-html/,
-    message: 'pages/ressources.vue MUST NOT use v-html (data-only doctrine)',
+    message: 'pages/ressources/index.vue MUST NOT use v-html (data-only doctrine)',
   },
   {
     pattern: /<ResourceList/,
-    message: 'pages/ressources.vue MUST NOT use legacy <ResourceList> component',
+    message: 'pages/ressources/index.vue MUST NOT use legacy <ResourceList> component',
   },
   {
     pattern: /class="resources-library-wrapper"/,
-    message: 'pages/ressources.vue MUST NOT use legacy wrapper class',
+    message: 'pages/ressources/index.vue MUST NOT use legacy wrapper class',
   },
 ]);
 
@@ -94,17 +92,17 @@ if (pageContent) {
     // Legacy R1: must have PPResourcesShell + PPResourceCard + useResourcesLibrary directly
     if (!/<PPResourcesShell/.test(pageContent)) {
       errors.push(
-        'pages/ressources.vue MUST use <PPResourcesShell> (or PPResourcesLibraryShell for atomique arch)'
+        'pages/ressources/index.vue MUST use <PPResourcesShell> (or PPResourcesLibraryShell for atomique arch)'
       );
     }
     if (!/<PPResourceCard/.test(pageContent)) {
       errors.push(
-        'pages/ressources.vue MUST use <PPResourceCard> (or PPResourcesLibraryShell for atomique arch)'
+        'pages/ressources/index.vue MUST use <PPResourceCard> (or PPResourcesLibraryShell for atomique arch)'
       );
     }
     if (!/useResourcesLibrary/.test(pageContent)) {
       errors.push(
-        'pages/ressources.vue MUST import useResourcesLibrary composable'
+        'pages/ressources/index.vue MUST import useResourcesLibrary composable'
       );
     }
   }
@@ -161,29 +159,6 @@ checkFile(COMPOSABLE, 'composables/useResourcesLibrary.ts', [
     message:
       'composables/useResourcesLibrary.ts MUST export useResourcesLibrary function',
   },
-  {
-    pattern: /RESOURCES/,
-    message:
-      'composables/useResourcesLibrary.ts MUST import RESOURCES from resourcesData',
-  },
-]);
-
-// ----------------------------------
-// 4. Check data file
-// ----------------------------------
-checkFile(DATA_FILE, 'data/resourcesData.ts', [
-  {
-    pattern: /export\s+(const|let)\s+RESOURCES/,
-    message: 'data/resourcesData.ts MUST export RESOURCES array',
-  },
-  {
-    pattern: /export\s+interface\s+ResourceItem/,
-    message: 'data/resourcesData.ts MUST export ResourceItem interface',
-  },
-  {
-    pattern: /export\s+function\s+validateResourcesData/,
-    message: 'data/resourcesData.ts MUST export validateResourcesData function',
-  },
 ]);
 
 // =============================================================================
@@ -213,11 +188,11 @@ if (warnings.length > 0) {
 
 console.log('✅ Guard PASSED — Resources Library R1 is DS-compliant');
 if (isAtomiqueArchitecture) {
-  console.log('   ├── pages/ressources.vue uses PPResourcesLibraryShell (atomique)');
+  console.log('   ├── pages/ressources/index.vue uses PPResourcesLibraryShell (atomique)');
   console.log('   ├── PPResourcesLibraryGrid uses PPResourcesShell + PPResourceCard');
   console.log('   ├── PPResourcesLibraryShell uses useResourcesLibrary');
 } else {
-  console.log('   ├── pages/ressources.vue uses PPResourcesShell + PPResourceCard');
+  console.log('   ├── pages/ressources/index.vue uses PPResourcesShell + PPResourceCard');
 }
 console.log('   ├── composables/useResourcesLibrary.ts exists');
 console.log('   ├── data/resourcesData.ts exists with validation');

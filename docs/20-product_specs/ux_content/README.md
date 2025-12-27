@@ -3,7 +3,7 @@
 > **Périmètre** : Documentation
 
 <!-- GENERATED:START -->
-<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2025-12-24 -->
+<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2025-12-27 -->
 
 ## Documents
 
@@ -16,6 +16,7 @@
 | [PX_V1_3_1_P1_ATERRISSAGE_SYSTEMIQUE_COPY.md](./PX_V1_3_1_P1_ATERRISSAGE_SYSTEMIQUE_COPY.md) | active | P1 V1.3.1 — Atterrissage systémique (copy canon) |
 | [PX_V1_3_1_P1_HYPOTHESES_STRUCTURANTES_COPY.md](./PX_V1_3_1_P1_HYPOTHESES_STRUCTURANTES_COPY.md) | active | P1 — Hypothèses structurantes (atterrissage + première vérif) |
 | [PX_V1_3_1_P1_SYSTEM_SCALPELS_COPY.md](./PX_V1_3_1_P1_SYSTEM_SCALPELS_COPY.md) | active | P1 System Scalpels Copy v1.3.1 |
+| [PX_V1_3_RESOURCES_CATALOG_V1.json](./PX_V1_3_RESOURCES_CATALOG_V1.json) | active | Fichier JSON |
 | [PX_V1_3_RESOURCES_LIBRARY_SPEC.md](./PX_V1_3_RESOURCES_LIBRARY_SPEC.md) | active | PX_V1_3_RESOURCES_LIBRARY_SPEC |
 
 **Owners** : Talia

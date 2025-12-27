@@ -3,7 +3,7 @@
 > **Périmètre** : Documentation
 
 <!-- GENERATED:START -->
-<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2025-12-24 -->
+<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2025-12-27 -->
 
 ## Documents
 
@@ -16,6 +16,7 @@
 | [PX_CREATE_JOURNEY_IN_60_MINUTES.md](./PX_CREATE_JOURNEY_IN_60_MINUTES.md) | active | PX Create Journey In 60 Minutes |
 | [PX_JOURNEY_ENGINE_UNIVERSAL_V1.md](./PX_JOURNEY_ENGINE_UNIVERSAL_V1.md) | active | PX Journey Engine Universal V1 |
 | [PX_NO_VHTML_DOCTRINE_V1.md](./PX_NO_VHTML_DOCTRINE_V1.md) | active | PX No v-html Doctrine V1 |
+| [PX_V1_3_RESOURCES_LIBRARY_INTEGRATION.md](./PX_V1_3_RESOURCES_LIBRARY_INTEGRATION.md) | active | Resources Library — Integration Frontend (V1.3) |
 | [journeys.md](./journeys.md) | draft | Journeys (Nuxt) — TODO |
 
 **Owners** : Dan, Heider

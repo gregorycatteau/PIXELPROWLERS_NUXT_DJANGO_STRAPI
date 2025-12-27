@@ -27,7 +27,7 @@ tags:
 
 | Outil | Version pinnée | Installation |
 |-------|----------------|--------------|
-| Node.js | `>=20.x` | Via `.nvmrc` |
+| Node.js | `22.12.0` | Via `.nvmrc` |
 | npm | `>=10.x` | Inclus avec Node |
 | openapi-typescript | `7.4.4` | `npm install -D openapi-typescript@7.4.4` |
 | openapi-fetch | `0.13.4` | `npm install openapi-fetch@0.13.4` |

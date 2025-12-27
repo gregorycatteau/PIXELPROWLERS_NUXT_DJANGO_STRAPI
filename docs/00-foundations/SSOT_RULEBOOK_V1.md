@@ -281,6 +281,7 @@ Le workflow CI SSOT est déclenché sur :
 |------|----------|-------------|----------|
 | **SSOT Lint** | `python3 tools/ssot_lint.py --strict` | Valide frontmatter, status, unicité ID | ✅ Oui |
 | **OpenAPI Validate** | `python3 tools/openapi_validate.py` | Valide spec OpenAPI backend | ✅ Oui |
+| **Resources Catalog Validate** | `python3 tools/ssot_resources_catalog_validate.py` | Valide le catalog resources (schema + sécurité) | ✅ Oui |
 | **Index Drift Check** | `python3 tools/ssot_generate_indexes.py --check` | Détecte drift README vs fichiers réels | ✅ Oui |
 | **Secret Scan** | grep patterns sensibles | Détecte secrets/tokens/clés | ✅ Oui |
 
@@ -299,6 +300,7 @@ make ssot-check
 # Commandes individuelles
 make ssot-lint           # Lint strict
 make ssot-openapi        # Validation OpenAPI
+make ssot-resources-validate  # Validation catalog resources
 make ssot-index-check    # Détection drift index
 
 # Correction (après détection drift)
