@@ -3,7 +3,7 @@
 > **Périmètre** : Checklists, smoke tests
 
 <!-- GENERATED:START -->
-<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2025-12-24 -->
+<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2025-12-27 -->
 
 ## Documents
 
