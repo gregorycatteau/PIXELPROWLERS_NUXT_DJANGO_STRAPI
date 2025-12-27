@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "corsheaders",
+    # PixelProwlers apps
+    "apps.core",
+    "apps.health",
     "apps.contact",
 ]
 
