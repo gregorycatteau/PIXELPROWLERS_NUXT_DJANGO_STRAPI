@@ -91,16 +91,21 @@ const journeySchemas: Record<string, { steps: { stepId: string }[] }> = {
   p3: p3JourneySchema
 };
 const allowedSteps = computed(() => journeySchemas[journeyId.value ?? '']?.steps.map((s) => s.stepId) ?? []);
+const stepParam = computed(() => (typeof route.query.step === 'string' ? route.query.step : null));
+const landingRequested = computed(() => journeyId.value === 'p1' && route.query.landing === '1');
+const defaultStepId = computed(() => allowedSteps.value[0] ?? null);
 const initialStepId = computed(() => {
-  const stepParam = typeof route.query.step === 'string' ? route.query.step : null;
   const steps = allowedSteps.value;
-  if (stepParam && steps.includes(stepParam)) {
-    return stepParam;
+  if (stepParam.value && steps.includes(stepParam.value)) {
+    return stepParam.value;
   }
-  return null;
+  if (landingRequested.value) {
+    return null;
+  }
+  return defaultStepId.value;
 });
 
-const showLanding = computed(() => journeyId.value === 'p1' && !initialStepId.value);
+const showLanding = computed(() => landingRequested.value && !initialStepId.value);
 
 const resourcePreview = computed<P1Resource[]>(() => {
   const ids: P1ResourceId[] = ['kit_p1_demarrage', 'kit_mission_cash', 'kit_gouvernance_veto'];
