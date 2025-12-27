@@ -1,0 +1,38 @@
+{
+  "version": "1.0.0",
+  "resources": [
+    {
+      "id": "res-001",
+      "slug": "canvas-probleme",
+      "title": "Canvas probleme",
+      "summary": "Un canevas simple pour clarifier le probleme a traiter avant d'agir.",
+      "tags": ["diagnostic", "clarte"],
+      "category": "tool",
+      "level": "intro",
+      "journey": "p1",
+      "type": "tool"
+    },
+    {
+      "id": "res-002",
+      "slug": "guide-pilotage-rythme",
+      "title": "Guide pilotage du rythme",
+      "summary": "Un guide court pour stabiliser le tempo et limiter le mode pompier.",
+      "tags": ["rythme", "organisation"],
+      "category": "guide",
+      "level": "intermediate",
+      "journey": "p1",
+      "type": "read"
+    },
+    {
+      "id": "res-003",
+      "slug": "checklist-robustesse",
+      "title": "Checklist robustesse",
+      "summary": "Checklist pragmatique pour reduire les dependances critiques.",
+      "tags": ["robustesse", "dependances"],
+      "category": "checklist",
+      "level": "intro",
+      "journey": "p1",
+      "type": "checklist"
+    }
+  ]
+}

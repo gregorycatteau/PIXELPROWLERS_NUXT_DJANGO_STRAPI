@@ -262,31 +262,60 @@ paths:
       operationId: listResources
       summary: Liste des ressources
       description: |
-        **STATUS: Future (V1.4)**
-        
         Endpoint public pour lister les ressources disponibles.
+        Source canonique SSOT (catalogue versionné).
         
         **Rate limit**: 60 requêtes/minute/IP
-        
-        TODO: Définir les filtres, pagination, format de réponse
       tags:
         - Resources
       parameters:
-        - name: page
+        - name: q
           in: query
-          description: Numéro de page (TODO)
+          description: Recherche simple sur title/summary
           schema:
-            type: integer
-            minimum: 1
-            default: 1
+            type: string
+            maxLength: 120
+        - name: tags
+          in: query
+          description: Tags (CSV, max 5)
+          schema:
+            type: string
+        - name: category
+          in: query
+          description: Catégorie (allowlist)
+          schema:
+            type: string
+        - name: level
+          in: query
+          description: Niveau (allowlist)
+          schema:
+            type: string
+        - name: journey
+          in: query
+          description: Parcours (allowlist)
+          schema:
+            type: string
+        - name: type
+          in: query
+          description: Type (allowlist)
+          schema:
+            type: string
         - name: limit
           in: query
-          description: Nombre de résultats par page (TODO)
+          description: Nombre de résultats (max 50)
           schema:
             type: integer
             minimum: 1
-            maximum: 100
+            maximum: 50
             default: 20
+        - name: offset
+          in: query
+          description: Décalage (max 1000)
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 1000
+            default: 0
       responses:
         "200":
           description: Liste des ressources
@@ -294,6 +323,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ResourcesListResponse"
+        "400":
+          description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
         "429":
           description: Rate limit dépassé
           headers:
@@ -472,16 +507,55 @@ components:
     ResourcesListResponse:
       type: object
       description: |
-        TODO: Définir la structure de réponse pour V1.4
+        Réponse paginée du catalogue.
       properties:
-        items:
+        resources:
           type: array
           items:
-            type: object
-            description: TODO Resource schema
-        pagination:
-          type: object
-          description: TODO Pagination info
+            $ref: "#/components/schemas/ResourceItem"
+        total:
+          type: integer
+        limit:
+          type: integer
+        offset:
+          type: integer
+
+    ResourceItem:
+      type: object
+      required:
+        - id
+        - slug
+        - title
+        - summary
+        - tags
+        - category
+        - level
+        - journey
+        - type
+        - path
+      properties:
+        id:
+          type: string
+        slug:
+          type: string
+        title:
+          type: string
+        summary:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        category:
+          type: string
+        level:
+          type: string
+        journey:
+          type: string
+        type:
+          type: string
+        path:
+          type: string
 
     # === ERRORS ===
     ValidationError:

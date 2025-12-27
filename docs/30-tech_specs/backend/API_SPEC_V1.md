@@ -91,7 +91,7 @@ Cette spécification couvre l'API REST du backend Django PixelProwlers :
 | `GET` | `/api/v1/health/` | Health check | Non | ∞ |
 | `GET` | `/api/v1/health/ready/` | Readiness probe | Non | ∞ |
 | `POST` | `/api/v1/contact/` | Soumettre formulaire contact | Non | 3/min/IP |
-| `GET` | `/api/v1/resources/` | Liste ressources (future) | Non | 60/min/IP |
+| `GET` | `/api/v1/resources/` | Liste ressources | Non | 60/min/IP |
 | `POST` | `/api/v1/gate125/register/` | Inscription Operation 125 | API Key | 10/h/IP |
 
 ---
@@ -200,6 +200,57 @@ Header alternatif accepté : `X-API-Key: <KEY>`
 | 401 | `{"error": "Accès non autorisé"}` | API Key manquante ou invalide |
 
 > **Isolation** : Gate 125 endpoints sur path séparé, API Key obligatoire, rate limit strict.
+
+---
+
+### 3.5 Endpoint : Resources Catalog (Option A)
+
+```
+GET /api/v1/resources/
+```
+
+**Source** : Catalogue SSOT versionné (pas de DB).
+
+**Query params (allowlist + clamp)**  
+- `q` : recherche simple (title/summary), max 120 chars  
+- `tags` : CSV (max 5 tags)  
+- `category` : allowlist du catalogue  
+- `level` : allowlist du catalogue  
+- `journey` : allowlist du catalogue  
+- `type` : allowlist du catalogue  
+- `limit` : 1..50 (default 20)  
+- `offset` : 0..1000 (default 0)  
+
+**Response Success (200)**
+```json
+{
+  "resources": [
+    {
+      "id": "res-001",
+      "slug": "canvas-probleme",
+      "title": "Canvas probleme",
+      "summary": "Un canevas simple pour clarifier le probleme a traiter.",
+      "tags": ["diagnostic", "clarte"],
+      "category": "tool",
+      "level": "intro",
+      "journey": "p1",
+      "type": "tool",
+      "path": "/ressources/canvas-probleme"
+    }
+  ],
+  "total": 1,
+  "limit": 20,
+  "offset": 0
+}
+```
+
+**Response Errors (neutres)**
+
+| Code | Body | Cause réelle (non exposée) |
+|------|------|---------------------------|
+| 400 | `{"error": "Données invalides"}` | Paramètre invalide |
+
+> **Sécurité** : liens relatifs uniquement, aucune URL externe.
 
 ---
 
@@ -542,7 +593,7 @@ Retry-After: 300
 
 | Endpoint | Priority | Sprint cible |
 |----------|----------|--------------|
-| `GET /api/v1/resources/` | P2 | V1.4 |
+| `GET /api/v1/resources/` | P1 | V1.3 |
 | `GET /api/v1/resources/:id/` | P2 | V1.4 |
 | `POST /api/v1/gate125/register/` | P1 | V1.3.1 |
 | `POST /api/v1/diagnostic/submit/` | P2 | V1.5 |
