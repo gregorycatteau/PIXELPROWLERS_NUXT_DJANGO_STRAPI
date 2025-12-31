@@ -1,3 +1,14 @@
+---
+id: PX_ADR_JOURNEY_ENTRYPOINT_RULE_NAVIGATION_SHELL
+title: "ADR — Journey Entrypoint Rule + Navigation Shell"
+version: 1.0.0
+status: draft
+date: 2025-12-31
+owners: ["Marty"]
+scope: ["pixelprowlers.io", "frontend_nuxt", "journeys"]
+tags: ["ssot", "adr", "journey", "entrypoint", "navigation", "shell", "security"]
+---
+
 # ADR — JourneyEntrypointRule + NavigationShell
 
 ## Status

@@ -1,3 +1,14 @@
+---
+id: PX_SPEC_PPJOURNEYSTEPSHELL_V1
+title: "SPEC — PPJourneyStepShell v1"
+version: 1.0.0
+status: draft
+date: 2025-12-31
+owners: ["Marty"]
+scope: ["pixelprowlers.io", "frontend_nuxt", "journeys", "ds"]
+tags: ["ssot", "spec", "design-system", "journey", "shell", "navigation", "security"]
+---
+
 # SPEC — PPJourneyStepShell v1
 
 ## Purpose
