@@ -85,9 +85,12 @@
 import { computed, inject, onMounted, useSlots } from 'vue';
 import { useRoute, useRouter } from '#imports';
 import PPCard from '~/components/PPCard.vue';
+import type { JourneyManifestV1 } from '~/config/journeys/manifests/types';
+import type { JourneySchema } from '~/config/journeys/p1JourneySchema';
 import { getManifestBySlug } from '~/config/journeys/manifests/registry';
 import { getJourneySchemaById } from '~/config/journeys/schemaRegistry';
 import { journeyNavigationKey } from '~/composables/journeyNavigation';
+import { parseStepParam } from '~/utils/journeys/stepParam';
 
 export interface PPJourneyStepShellProps {
   /** Densité d'espacement */
@@ -108,6 +111,12 @@ export interface PPJourneyStepShellProps {
   nextLabel?: string;
   /** Label CTA prev (optionnel) */
   prevLabel?: string;
+  /** Manifest (optionnel) */
+  manifest?: JourneyManifestV1 | null;
+  /** Schema (optionnel) */
+  schema?: JourneySchema | null;
+  /** Step effectif (optionnel) */
+  stepId?: string | null;
 }
 
 const props = withDefaults(defineProps<PPJourneyStepShellProps>(), {
@@ -139,12 +148,16 @@ const bodyClasses = computed(() => [
 ]);
 
 const journeyId = computed(() => {
+  if (props.manifest) {
+    return props.manifest.id;
+  }
   const slug = typeof route.params.journeySlug === 'string' ? route.params.journeySlug : '';
   const manifest = slug ? getManifestBySlug(slug) : null;
   return manifest?.id ?? null;
 });
 
 const schema = computed(() => {
+  if (props.schema) return props.schema;
   if (!journeyId.value) return null;
   return getJourneySchemaById(journeyId.value);
 });
@@ -152,15 +165,12 @@ const schema = computed(() => {
 const stepIds = computed(() => schema.value?.steps.map((step) => step.stepId) ?? []);
 const allowedSet = computed(() => new Set(stepIds.value));
 const currentStepId = computed(() => {
-  const stepParam = typeof route.query.step === 'string' ? route.query.step : null;
-  if (stepParam && allowedSet.value.has(stepParam)) return stepParam;
+  const candidate = props.stepId ?? parseStepParam(route.query.step);
+  if (candidate && allowedSet.value.has(candidate)) {
+    return candidate;
+  }
   return stepIds.value[0] ?? null;
 });
-
-const stepMeta = computed(() =>
-  schema.value?.steps.find((step) => step.stepId === currentStepId.value) ?? null
-);
-
 const resolveByOrder = (offset: number) => {
   const index = stepIds.value.indexOf(currentStepId.value ?? '');
   if (index === -1) return null;
@@ -168,14 +178,10 @@ const resolveByOrder = (offset: number) => {
 };
 
 const prevStepId = computed(() => {
-  const candidate = stepMeta.value?.prev;
-  if (candidate && allowedSet.value.has(candidate)) return candidate;
   return resolveByOrder(-1);
 });
 
 const nextStepId = computed(() => {
-  const candidate = stepMeta.value?.next;
-  if (candidate && allowedSet.value.has(candidate)) return candidate;
   return resolveByOrder(1);
 });
 

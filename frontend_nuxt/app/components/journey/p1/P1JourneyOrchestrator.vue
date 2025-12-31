@@ -37,6 +37,7 @@ import { useJourneyEngine } from '~/composables/useJourneyEngine';
 import { journeyNavigationKey } from '~/composables/journeyNavigation';
 import { p1JourneySchema } from '~/config/journeys/p1JourneySchema';
 import { hasP1GlobalBilanAccess } from '~/utils/p1GlobalBilanAccess';
+import { parseStepParam } from '~/utils/journeys/stepParam';
 import P1Block1Bilan from '~/components/journey/p1/P1Block1Bilan.vue';
 import P1Block1Questionnaire from '~/components/journey/p1/P1Block1Questionnaire.vue';
 import P1Block2Bilan from '~/components/journey/p1/P1Block2Bilan.vue';
@@ -69,9 +70,10 @@ const allowedSteps = computed(() => {
 });
 const allowedSet = computed(() => new Set(allowedSteps.value));
 
-const normalizeStep = (value?: string | null) => {
-  if (!value) return null;
-  return allowedSet.value.has(value) ? value : null;
+const normalizeStep = (value?: unknown) => {
+  const parsed = parseStepParam(value);
+  if (!parsed) return null;
+  return allowedSet.value.has(parsed) ? parsed : null;
 };
 
 const recommendedStep = computed(() => {
@@ -140,7 +142,7 @@ const stepProps = computed(() => {
 });
 
 const applyInitialStep = () => {
-  const requested = normalizeStep(props.initialStepId ?? (typeof route.query.step === 'string' ? route.query.step : null));
+  const requested = normalizeStep(props.initialStepId ?? route.query.step);
   if (requested) {
     resumePromptStep.value = null;
     safeGoToStep(requested);

@@ -70,10 +70,9 @@ import ResourceList from '@/components/resources/ResourceList.vue';
 import P1JourneyOrchestrator from '~/components/journey/p1/P1JourneyOrchestrator.vue';
 import JourneyEngineUniversal from '~/components/journey/JourneyEngineUniversal.vue';
 import { P1_RESOURCES_V1_3, type P1Resource, type P1ResourceId } from '@/config/resources/p1ResourcesV1_3';
-import { p1JourneySchema } from '~/config/journeys/p1JourneySchema';
-import { p2JourneySchema } from '~/config/journeys/p2JourneySchema';
-import { p3JourneySchema } from '~/config/journeys/p3JourneySchema';
 import { getManifestBySlug } from '~/config/journeys/manifests/registry';
+import { getJourneySchemaById } from '~/config/journeys/schemaRegistry';
+import { parseStepParam } from '~/utils/journeys/stepParam';
 
 const normalizeJourneySlug = (raw: unknown) => (typeof raw === 'string' ? raw.trim() : '');
 const isValidJourneySlug = (slug: string) => {
@@ -105,24 +104,21 @@ if (!isValidJourneySlug(journeySlug.value) || !manifest.value) {
 
 const journeyId = computed(() => manifest.value?.id ?? null);
 
-const journeySchemas: Record<string, { steps: { stepId: string }[] }> = {
-  p1: p1JourneySchema,
-  p2: p2JourneySchema,
-  p3: p3JourneySchema
-};
-const allowedSteps = computed(() => journeySchemas[journeyId.value ?? '']?.steps.map((s) => s.stepId) ?? []);
-const stepParam = computed(() => (typeof route.query.step === 'string' ? route.query.step : null));
+const journeySchema = computed(() => (journeyId.value ? getJourneySchemaById(journeyId.value) : null));
+const allowedSteps = computed(() => journeySchema.value?.steps.map((s) => s.stepId) ?? []);
+const allowedSet = computed(() => new Set(allowedSteps.value));
+const stepParam = computed(() => parseStepParam(route.query.step));
 const landingRequested = computed(() => journeyId.value === 'p1' && route.query.landing === '1');
-const defaultStepId = computed(() => allowedSteps.value[0] ?? null);
+const entrypointStepId = computed(() => allowedSteps.value[0] ?? null);
 const initialStepId = computed(() => {
-  const steps = allowedSteps.value;
-  if (stepParam.value && steps.includes(stepParam.value)) {
-    return stepParam.value;
+  const candidate = stepParam.value;
+  if (candidate && allowedSet.value.has(candidate)) {
+    return candidate;
   }
   if (landingRequested.value) {
     return null;
   }
-  return defaultStepId.value;
+  return entrypointStepId.value;
 });
 
 const showLanding = computed(() => landingRequested.value && !initialStepId.value);

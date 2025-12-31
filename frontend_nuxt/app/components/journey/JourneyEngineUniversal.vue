@@ -39,6 +39,7 @@ import { useCoreJourneyStorage } from '~/composables/useCoreJourneyStorage';
 import { getJourneySchemaById } from '~/config/journeys/schemaRegistry';
 import { journeyNavigationKey } from '~/composables/journeyNavigation';
 import JourneyStepRenderer from '~/components/journey/JourneyStepRenderer.vue';
+import { parseStepParam } from '~/utils/journeys/stepParam';
 
 const props = defineProps<{
   manifest: JourneyManifestV1;
@@ -59,9 +60,10 @@ const resumePromptStep = ref<string | null>(null);
 
 const hasPanoramaScores = computed(() => Boolean(scores.value?.panorama) || Boolean(meta.value?.panoramaCompleted));
 
-const normalizeStep = (value?: string | null) => {
-  if (!value) return null;
-  return allowedSet.value.has(value) ? value : null;
+const normalizeStep = (value?: unknown) => {
+  const parsed = parseStepParam(value);
+  if (!parsed) return null;
+  return allowedSet.value.has(parsed) ? parsed : null;
 };
 
 const recommendedStep = computed(() => {
@@ -91,7 +93,7 @@ const safeGoToStep = (stepId: string) => {
 provide(journeyNavigationKey, safeGoToStep);
 
 const applyInitialStep = () => {
-  const requested = normalizeStep(props.initialStepId ?? (typeof route.query.step === 'string' ? route.query.step : null));
+  const requested = normalizeStep(props.initialStepId ?? route.query.step);
   if (requested) {
     resumePromptStep.value = null;
     safeGoToStep(requested);

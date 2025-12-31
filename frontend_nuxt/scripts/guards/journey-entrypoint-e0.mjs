@@ -45,8 +45,8 @@ function checkEntrypoint(file) {
   if (!file.content) {
     return { ok: false, reason: 'missing entrypoint file' };
   }
-  const hasDefaultStep = /defaultStepId/.test(file.content);
-  const returnsDefault = /return\s+defaultStepId(?:\.value)?/s.test(file.content);
+  const hasDefaultStep = /defaultStepId|entrypointStepId/.test(file.content);
+  const returnsDefault = /return\s+(?:defaultStepId|entrypointStepId)(?:\.value)?/s.test(file.content);
   if (!hasDefaultStep || !returnsDefault) {
     return { ok: false, reason: 'missing default step fallback' };
   }

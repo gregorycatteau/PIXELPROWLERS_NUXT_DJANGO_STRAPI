@@ -23,6 +23,7 @@ const currentComponent = computed(() => {
     case 'E0_intro':
       return StepIntroE0;
     case 'E1_panorama':
+    case 'E_panorama':
       return StepPanoramaE1;
     case 'E2_panorama_bilan':
       return StepPanoramaBilanE2;

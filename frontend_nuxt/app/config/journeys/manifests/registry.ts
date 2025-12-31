@@ -11,7 +11,15 @@ import { p4_stubManifest } from './p4_stub.manifest';
 
 
 
-const registry: JourneyManifestV1[] = [p1Manifest, p2Manifest, p3Manifest, p4Manifest];
+const registry: JourneyManifestV1[] = [
+  p1Manifest,
+  p2Manifest,
+  p3Manifest,
+  p4Manifest,
+  p2_stubManifest,
+  p3_stubManifest,
+  p4_stubManifest
+];
 
 export const listManifests = (): JourneyManifestV1[] => registry.slice();
 
