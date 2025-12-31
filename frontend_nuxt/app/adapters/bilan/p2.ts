@@ -8,6 +8,7 @@ import { p2PanoramaAxesMeta, P2_PANORAMA_AXIS_ORDER, type P2PanoramaAxisId } fro
 import { BILAN_SKIP_SIGNAL_COPY } from '@/config/bilan/bilanSkipSignalCopy';
 import { getEngagementPack } from '@/config/engagement/registry';
 import type { EngagementLevelId } from '@/config/engagement/types';
+import { createEmptySections } from '@/adapters/bilan/universalBilanViewModel';
 
 export const p2BilanAdapter: JourneyBilanAdapter = {
   journeyId: 'p2',
@@ -97,6 +98,33 @@ export const p2BilanAdapter: JourneyBilanAdapter = {
           }))
         }
       : undefined;
+    const repereCount = panoramaAxes.value.length;
+    const sections = createEmptySections({
+      reperes: {
+        title: 'Repères',
+        summary: 'Vue d’ensemble des axes.',
+        state: repereCount > 0 && panoramaSkippedCount.value === 0 ? 'full' : repereCount > 0 ? 'partial' : 'empty',
+        itemsCount: repereCount
+      },
+      risques: {
+        title: 'Risques',
+        summary: 'Signaux à surveiller.',
+        state: 'empty',
+        itemsCount: 0
+      },
+      recommandations: {
+        title: 'Recommandations',
+        summary: 'Pistes à explorer.',
+        state: 'empty',
+        itemsCount: 0
+      },
+      actions: {
+        title: 'Actions',
+        summary: 'Actions à court terme.',
+        state: 'empty',
+        itemsCount: 0
+      }
+    });
 
     const vm: GlobalBilanViewModel = {
       copy: p2Copy.global,
@@ -117,6 +145,7 @@ export const p2BilanAdapter: JourneyBilanAdapter = {
         blocks: blocks.value,
         completedLabel: completedBlocksLabel.value
       },
+      sections,
       modules: {
         skipSignal: skipSignal.value,
         engagement: engagementModule

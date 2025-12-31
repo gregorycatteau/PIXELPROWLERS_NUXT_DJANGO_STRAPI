@@ -12,6 +12,7 @@ const requiredRootKeys = [
   'panoramaAnsweredLabel',
   'summaryNav',
   'panorama',
+  'sections',
   'blocksSummaryHeading',
   'completedBlocks',
   'exportPanel'
@@ -37,6 +38,8 @@ const requiredExportPanelKeys = [
   'globalSkipText',
   'globalMissing'
 ];
+const requiredSectionKeys = ['reperes', 'risques', 'recommandations', 'actions'];
+const requiredSectionEntryKeys = ['id', 'title', 'summary', 'state', 'itemsCount'];
 
 const assertKeys = (label: string, obj: Record<string, unknown>, keys: string[]) => {
   for (const key of keys) {
@@ -49,6 +52,11 @@ const assertKeys = (label: string, obj: Record<string, unknown>, keys: string[])
 const assertMandatory = (vm: UniversalBilanViewModel) => {
   assertKeys('vm', vm as Record<string, unknown>, requiredRootKeys);
   assertKeys('vm.panorama', vm.panorama as Record<string, unknown>, requiredPanoramaKeys);
+  assertKeys('vm.sections', vm.sections as Record<string, unknown>, requiredSectionKeys);
+  requiredSectionKeys.forEach((key) => {
+    const entry = (vm.sections as Record<string, unknown>)[key] as Record<string, unknown>;
+    assertKeys(`vm.sections.${key}`, entry, requiredSectionEntryKeys);
+  });
   assertKeys('vm.exportPanel', vm.exportPanel as Record<string, unknown>, requiredExportPanelKeys);
 };
 

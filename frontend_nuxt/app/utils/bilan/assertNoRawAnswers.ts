@@ -35,6 +35,7 @@ const allowedRootKeys = new Set([
   'blocksSummaryHeading',
   'completedBlocks',
   'panorama',
+  'sections',
   'modules',
   'exportPanel',
   'meta'
@@ -115,6 +116,7 @@ const allowedModulesKeys = new Set([
   'skipSignal'
 ]);
 const allowedMetaKeys = new Set(['isEmpty', 'partial', 'maturity', 'exportMode']);
+const allowedSectionKeys = new Set(['id', 'title', 'summary', 'state', 'itemsCount']);
 
 function isQuestionPattern(key: string) {
   return /^p[0-9]+_q/i.test(key) || /questionId/i.test(key);
@@ -156,6 +158,15 @@ function validateObjectKeys(obj: Record<string, unknown>, path: string) {
       break;
     case 'panorama.blocks[].themes[]':
       enforceKeys(allowedBlockThemeKeys);
+      break;
+    case 'sections':
+      enforceKeys(new Set(['reperes', 'risques', 'recommandations', 'actions']));
+      break;
+    case 'sections.reperes':
+    case 'sections.risques':
+    case 'sections.recommandations':
+    case 'sections.actions':
+      enforceKeys(allowedSectionKeys);
       break;
     case 'modules':
       enforceKeys(allowedModulesKeys);

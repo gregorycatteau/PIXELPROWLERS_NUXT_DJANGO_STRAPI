@@ -1,6 +1,6 @@
-import type { UniversalBilanViewModel } from '@/types/bilan';
+import type { UniversalBilanViewModelV1 } from '@/adapters/bilan/universalBilanViewModel';
 
 export interface JourneyBilanAdapter {
   journeyId: string;
-  buildViewModel: () => UniversalBilanViewModel;
+  buildViewModel: () => UniversalBilanViewModelV1;
 }

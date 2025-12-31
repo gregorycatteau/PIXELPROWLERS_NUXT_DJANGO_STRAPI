@@ -25,6 +25,7 @@ import { BILAN_SKIP_SIGNAL_COPY } from '@/config/bilan/bilanSkipSignalCopy';
 import type { JourneyBilanAdapter } from './types';
 import type { GlobalBilanViewModel, BilanIssueBullet } from '@/types/bilan';
 import { assertNoRawAnswers } from '@/utils/bilan/assertNoRawAnswers';
+import { createEmptySections } from '@/adapters/bilan/universalBilanViewModel';
 
 type SystemicScalpelCopy = (typeof P1_SYSTEM_SCALPELS_COPY)[keyof typeof P1_SYSTEM_SCALPELS_COPY];
 type AxisId = 'human' | 'movement' | 'decisions' | 'structure';
@@ -197,6 +198,10 @@ const blockCompletion = (block: BlockSummary) => {
 };
 const isBlockComplete = (block: BlockSummary) =>
   (block.skippedCount ?? 0) === 0 && (block.unseenCount ?? 0) === 0 && (block.answeredCount ?? 0) > 0;
+const toSectionState = (count: number, partial = false) => {
+  if (!count) return 'empty';
+  return partial ? 'partial' : 'full';
+};
 
 export const p1BilanAdapter: JourneyBilanAdapter = {
   journeyId: 'p1',
@@ -498,6 +503,37 @@ export const p1BilanAdapter: JourneyBilanAdapter = {
       { id: 'gb_options', label: 'Choisir la suite' }
     ];
     const splitParagraphs = (text: string) => text.split('\n\n').filter(Boolean);
+    const repereCount = panoramaAxesForCard.value.length;
+    const risquesStrong = issuesForCard.value.length;
+    const risquesWatch = watchlistForCard.value.length;
+    const recoCount = recommendedResources.value.length;
+    const actionCount = Object.values(filteredActionsByHorizon.value ?? {}).reduce((sum, list) => sum + list.length, 0);
+    const sections = createEmptySections({
+      reperes: {
+        title: 'Repères',
+        summary: 'Vue d’ensemble des axes et blocs clés.',
+        state: toSectionState(repereCount, panoramaSkippedCount.value > 0),
+        itemsCount: repereCount
+      },
+      risques: {
+        title: 'Risques',
+        summary: 'Signaux forts et points de vigilance.',
+        state: toSectionState(risquesStrong + risquesWatch, risquesStrong === 0 && risquesWatch > 0),
+        itemsCount: risquesStrong + risquesWatch
+      },
+      recommandations: {
+        title: 'Recommandations',
+        summary: 'Ressources et pistes priorisées.',
+        state: toSectionState(recoCount, recoCount > 0 && recoCount < 3),
+        itemsCount: recoCount
+      },
+      actions: {
+        title: 'Actions',
+        summary: 'Actions concrètes à court terme.',
+        state: toSectionState(actionCount, actionCount > 0 && actionCount < 3),
+        itemsCount: actionCount
+      }
+    });
 
     const vm: GlobalBilanViewModel = {
       copy: p1Copy.global,
@@ -515,6 +551,7 @@ export const p1BilanAdapter: JourneyBilanAdapter = {
         blocks: blockSummariesForCard.value,
         completedLabel: completedBlocksLabel.value
       },
+      sections,
       modules: {
         issues: {
           list: issuesForCard.value,

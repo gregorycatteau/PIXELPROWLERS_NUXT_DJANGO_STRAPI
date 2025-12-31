@@ -135,6 +135,24 @@ export type BilanSkipSignalVM = {
   };
 };
 
+export type UniversalBilanSectionId = 'reperes' | 'risques' | 'recommandations' | 'actions';
+export type UniversalBilanSectionState = 'empty' | 'partial' | 'full';
+
+export type UniversalBilanSectionVM = {
+  id: UniversalBilanSectionId;
+  title: string;
+  summary: string;
+  state: UniversalBilanSectionState;
+  itemsCount: number;
+};
+
+export type UniversalBilanSectionsVM = {
+  reperes: UniversalBilanSectionVM;
+  risques: UniversalBilanSectionVM;
+  recommandations: UniversalBilanSectionVM;
+  actions: UniversalBilanSectionVM;
+};
+
 type GlobalBilanViewModelBase = {
   copy: any;
   axisSummaryLabel: string;
@@ -149,6 +167,7 @@ type GlobalBilanViewModelBase = {
     blocks: BilanBlockVM[];
     completedLabel: string;
   };
+  sections: UniversalBilanSectionsVM;
   blocksSummaryHeading: string;
   completedBlocks: string;
   meta?: {
@@ -239,6 +258,36 @@ const EMPTY_EXPORT_PANEL: GlobalBilanViewModelBase['exportPanel'] = {
   globalSkipText: '',
   globalMissing: 0
 };
+const EMPTY_SECTIONS: GlobalBilanViewModelBase['sections'] = {
+  reperes: {
+    id: 'reperes',
+    title: '',
+    summary: '',
+    state: 'empty',
+    itemsCount: 0
+  },
+  risques: {
+    id: 'risques',
+    title: '',
+    summary: '',
+    state: 'empty',
+    itemsCount: 0
+  },
+  recommandations: {
+    id: 'recommandations',
+    title: '',
+    summary: '',
+    state: 'empty',
+    itemsCount: 0
+  },
+  actions: {
+    id: 'actions',
+    title: '',
+    summary: '',
+    state: 'empty',
+    itemsCount: 0
+  }
+};
 
 export const createEmptyUniversalBilanViewModel = (
   overrides?: Partial<UniversalBilanViewModel>
@@ -252,6 +301,7 @@ export const createEmptyUniversalBilanViewModel = (
     blocksSummaryHeading: '',
     completedBlocks: '',
     panorama: { ...EMPTY_PANORAMA },
+    sections: { ...EMPTY_SECTIONS },
     exportPanel: { ...EMPTY_EXPORT_PANEL },
     meta: { isEmpty: true, partial: true }
   };
@@ -264,6 +314,10 @@ export const createEmptyUniversalBilanViewModel = (
     ...EMPTY_EXPORT_PANEL,
     ...(overrides?.exportPanel ?? {})
   };
+  const sections = {
+    ...EMPTY_SECTIONS,
+    ...(overrides?.sections ?? {})
+  };
   const meta = {
     isEmpty: true,
     partial: true,
@@ -274,6 +328,7 @@ export const createEmptyUniversalBilanViewModel = (
     ...base,
     ...overrides,
     panorama,
+    sections,
     exportPanel,
     meta
   };

@@ -1,5 +1,6 @@
 import type { JourneyBilanAdapter } from './types';
 import type { GlobalBilanViewModel } from '@/types/bilan';
+import { createEmptySections } from '@/adapters/bilan/universalBilanViewModel';
 
 // Template pour créer un nouvel adapter de bilan.
 // Règles:
@@ -29,6 +30,12 @@ export const bilanAdapterTemplate: JourneyBilanAdapter = {
         blocks: [],
         completedLabel: ''
       },
+      sections: createEmptySections({
+        reperes: { title: 'Repères', summary: 'Vue d’ensemble des axes.' },
+        risques: { title: 'Risques', summary: 'Signaux à surveiller.' },
+        recommandations: { title: 'Recommandations', summary: 'Pistes à explorer.' },
+        actions: { title: 'Actions', summary: 'Actions à court terme.' }
+      }),
       modules: {},
       exportPanel: {
         exportText: '',
