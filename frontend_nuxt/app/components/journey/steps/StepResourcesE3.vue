@@ -29,6 +29,9 @@
               <div>
                 <p class="text-sm font-semibold">{{ item.title }}</p>
                 <p class="text-xs text-[color:var(--color-text-muted)]">{{ item.summary }}</p>
+                <p class="text-[0.7rem] uppercase tracking-wide text-[color:var(--color-text-muted)]">
+                  {{ item.categoryLabel }}
+                </p>
               </div>
               <NuxtLink class="pp-cta-secondary text-xs" :to="item.link">
                 Voir
@@ -57,36 +60,33 @@ import JourneyStepHeader from '~/components/journey/JourneyStepHeader.vue';
 import PPJourneyStepShell from '~/components/journey/PPJourneyStepShell.vue';
 import PPCard from '~/components/PPCard.vue';
 import { buildResourcesDeepLink } from '~/utils/deeplinks/resourcesDeepLink';
+import { listResources } from '@/config/resources/registryV0';
+import { RESOURCE_CATEGORY_LABELS } from '@/data/resourcesData';
 
 const props = defineProps<{
   manifest: JourneyManifestV1;
   goToStep?: (stepId: string) => void;
 }>();
 
-// Helper pour generer une liste courte de ressources placeholder par parcours.
-const buildPlaceholderResources = (journeyId: string) => {
-  return [
-    {
-      id: `${journeyId}-resource-1`,
-      title: 'Kit de demarrage',
-      summary: 'Un recap simple pour lancer un premier test.',
-      link: buildResourcesDeepLink({ tags: [journeyId] })
-    },
-    {
-      id: `${journeyId}-resource-2`,
-      title: 'Guide rapide',
-      summary: 'Une lecture express pour cadrer la suite.',
-      link: buildResourcesDeepLink({ tags: [journeyId] })
-    },
-    {
-      id: `${journeyId}-resource-3`,
-      title: 'Check-list d action',
-      summary: '3 actions simples pour avancer sans friction.',
-      link: buildResourcesDeepLink({ tags: [journeyId] })
-    }
-  ];
-};
+const allResources = listResources();
 
-const resourcesLink = buildResourcesDeepLink({ tags: [props.manifest.id] });
-const resourceItems = computed(() => buildPlaceholderResources(props.manifest.id));
+const resourceItems = computed(() => {
+  const journeyId = props.manifest.id;
+  const matched = allResources.filter((resource) =>
+    resource.relatedJourneys.includes(journeyId)
+  );
+  const source = matched.length > 0 ? matched : allResources;
+  return source.slice(0, 3).map((resource) => ({
+    id: resource.id,
+    title: resource.title,
+    summary: resource.summary,
+    categoryLabel: RESOURCE_CATEGORY_LABELS[resource.category],
+    link: buildResourcesDeepLink({
+      category: resource.category,
+      q: resource.title,
+    }),
+  }));
+});
+
+const resourcesLink = buildResourcesDeepLink({});
 </script>

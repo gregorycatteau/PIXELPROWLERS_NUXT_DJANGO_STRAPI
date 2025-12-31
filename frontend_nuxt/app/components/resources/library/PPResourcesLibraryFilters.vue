@@ -2,7 +2,7 @@
   PPResourcesLibraryFilters.vue — DS CELL (V1.R2)
   
   Sidebar filtres pour la bibliothèque de ressources.
-  Inclut : recherche (avec sanitization), filtres par type/category/level/journey/tags.
+  Inclut : recherche (avec sanitization), filtre par category.
   
   @props
   - searchQuery: string — valeur actuelle de la recherche
@@ -12,11 +12,7 @@
   
   @emits
   - search(query: string) — quand l'utilisateur tape
-  - toggle-type(type: ResourceType) — toggle filtre type
-  - toggle-tag(tag: string) — toggle filtre tag
   - toggle-category(category: ResourceCategory) — toggle filtre category
-  - toggle-level(level: ResourceLevel) — toggle filtre level
-  - toggle-journey(journey: ResourceJourney) — toggle filtre journey
   - clear-all() — effacer tous les filtres
 -->
 <template>
@@ -37,23 +33,6 @@
       />
     </div>
 
-    <!-- Type Filter -->
-    <fieldset class="pp-reslib__filter-group">
-      <legend class="pp-reslib__filter-label">Type</legend>
-      <div class="pp-reslib__filter-chips">
-        <PPChip
-          v-for="rtype in filterOptions.types"
-          :key="rtype"
-          variant="action"
-          size="sm"
-          :aria-pressed="filters.type === rtype"
-          @click="$emit('toggle-type', rtype)"
-        >
-          {{ RESOURCE_TYPE_LABELS[rtype] }}
-        </PPChip>
-      </div>
-    </fieldset>
-
     <!-- Category Filter -->
     <fieldset class="pp-reslib__filter-group">
       <legend class="pp-reslib__filter-label">Categorie</legend>
@@ -71,65 +50,6 @@
       </div>
     </fieldset>
 
-    <!-- Level Filter -->
-    <fieldset class="pp-reslib__filter-group">
-      <legend class="pp-reslib__filter-label">Niveau</legend>
-      <div class="pp-reslib__filter-chips">
-        <PPChip
-          v-for="level in filterOptions.levels"
-          :key="level"
-          variant="action"
-          size="sm"
-          :aria-pressed="filters.level === level"
-          @click="$emit('toggle-level', level)"
-        >
-          {{ RESOURCE_LEVEL_LABELS[level] }}
-        </PPChip>
-      </div>
-    </fieldset>
-
-    <!-- Journey Filter -->
-    <fieldset class="pp-reslib__filter-group">
-      <legend class="pp-reslib__filter-label">Parcours</legend>
-      <div class="pp-reslib__filter-chips">
-        <PPChip
-          v-for="journey in filterOptions.journeys"
-          :key="journey"
-          variant="action"
-          size="sm"
-          :aria-pressed="filters.journey === journey"
-          @click="$emit('toggle-journey', journey)"
-        >
-          {{ RESOURCE_JOURNEY_LABELS[journey] }}
-        </PPChip>
-      </div>
-    </fieldset>
-
-    <!-- Tags Filter -->
-    <fieldset class="pp-reslib__filter-group">
-      <legend class="pp-reslib__filter-label">Tags</legend>
-      <div class="pp-reslib__filter-chips pp-reslib__filter-chips--wrap">
-        <PPChip
-          v-for="tag in displayedTags"
-          :key="tag"
-          variant="action"
-          size="sm"
-          :aria-pressed="filters.tags.includes(tag)"
-          @click="$emit('toggle-tag', tag)"
-        >
-          {{ tag }}
-        </PPChip>
-        <button
-          v-if="filterOptions.tags.length > MAX_VISIBLE_TAGS && !showAllTags"
-          type="button"
-          class="pp-reslib__show-more"
-          @click="showAllTags = true"
-        >
-          +{{ filterOptions.tags.length - MAX_VISIBLE_TAGS }} tags
-        </button>
-      </div>
-    </fieldset>
-
     <!-- Clear Filters -->
     <button
       v-if="hasActiveFilters"
@@ -143,17 +63,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
 import {
   RESOURCE_CATEGORY_LABELS,
-  RESOURCE_JOURNEY_LABELS,
-  RESOURCE_LEVEL_LABELS,
-  RESOURCE_TYPE_LABELS,
   type FilterOptions,
   type ResourceCategory,
-  type ResourceJourney,
-  type ResourceLevel,
-  type ResourceType,
 } from '@/data/resourcesData';
 import type { ResourceFilters } from '@/composables/useResourcesLibrary';
 
@@ -164,14 +77,12 @@ import type { ResourceFilters } from '@/composables/useResourcesLibrary';
 /** Max search query length (hardening) */
 const MAX_SEARCH_LENGTH = 120;
 
-/** Max visible tags before "show more" */
-const MAX_VISIBLE_TAGS = 8;
 
 // -----------------------------------------------------------------------------
 // PROPS & EMITS
 // -----------------------------------------------------------------------------
 
-const props = defineProps<{
+defineProps<{
   searchQuery: string;
   filters: ResourceFilters;
   filterOptions: FilterOptions;
@@ -180,25 +91,13 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'search', query: string): void;
-  (e: 'toggle-type', rtype: ResourceType): void;
-  (e: 'toggle-tag', tag: string): void;
   (e: 'toggle-category', category: ResourceCategory): void;
-  (e: 'toggle-level', level: ResourceLevel): void;
-  (e: 'toggle-journey', journey: ResourceJourney): void;
   (e: 'clear-all'): void;
 }>();
 
 // -----------------------------------------------------------------------------
 // LOCAL STATE
 // -----------------------------------------------------------------------------
-
-const showAllTags = ref(false);
-
-const displayedTags = computed(() =>
-  showAllTags.value
-    ? props.filterOptions.tags
-    : props.filterOptions.tags.slice(0, MAX_VISIBLE_TAGS)
-);
 
 // -----------------------------------------------------------------------------
 // INPUT SANITIZATION (hardening R2)

@@ -136,5 +136,5 @@ const resourcePreview = computed<P1Resource[]>(() => {
 const startLink = computed(() => `/parcours/${manifest.value?.slug ?? 'ma-structure-dysfonctionne'}?step=E0_intro`);
 
 /** Deep link sécurisé vers /ressources filtré P1 (SafeDeepLinkKit) */
-const p1ResourcesLink = buildResourcesDeepLink({ tags: ['p1'] });
+const p1ResourcesLink = buildResourcesDeepLink({});
 </script>

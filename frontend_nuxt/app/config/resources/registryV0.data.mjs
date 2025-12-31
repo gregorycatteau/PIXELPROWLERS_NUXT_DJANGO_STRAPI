@@ -1,0 +1,122 @@
+export const RESOURCE_REGISTRY_V0 = [
+  {
+    id: 'res_v0_001',
+    slug: 'scan-structurel-express',
+    title: 'Scan structurel express',
+    summary: 'Un diagnostic rapide pour clarifier les points de fragilite et les tensions dominantes.',
+    category: 'diagnostic',
+    level: 'intro',
+    effort: 'low',
+    updatedAt: '2025-12-31',
+    relatedJourneys: ['p1', 'p2', 'p3', 'p4', 'p5'],
+    relatedResourceSlugs: ['tableau-signaux-faibles']
+  },
+  {
+    id: 'res_v0_002',
+    slug: 'tableau-signaux-faibles',
+    title: 'Tableau des signaux faibles',
+    summary: 'Un canevas pour identifier les alertes precoces et prioriser les zones a surveiller.',
+    category: 'diagnostic',
+    level: 'intermediate',
+    effort: 'medium',
+    updatedAt: '2025-12-31',
+    relatedJourneys: ['p1', 'p2', 'p3', 'p4', 'p5'],
+    relatedResourceSlugs: ['scan-structurel-express']
+  },
+  {
+    id: 'res_v0_003',
+    slug: 'checklist-securite-psychologique',
+    title: 'Checklist securite psychologique',
+    summary: 'Une liste courte pour securiser les reunions et reduire la peur de parler.',
+    category: 'securite',
+    level: 'intro',
+    effort: 'low',
+    updatedAt: '2025-12-31',
+    relatedJourneys: ['p1', 'p2', 'p3', 'p4', 'p5'],
+    relatedResourceSlugs: ['protocole-alerte-epuisement']
+  },
+  {
+    id: 'res_v0_004',
+    slug: 'protocole-alerte-epuisement',
+    title: 'Protocole alerte epuisement',
+    summary: 'Un protocole simple pour detecter la surcharge et enclencher des protections.',
+    category: 'securite',
+    level: 'intermediate',
+    effort: 'medium',
+    updatedAt: '2025-12-31',
+    relatedJourneys: ['p1', 'p2', 'p3', 'p4', 'p5'],
+    relatedResourceSlugs: ['checklist-securite-psychologique']
+  },
+  {
+    id: 'res_v0_005',
+    slug: 'atelier-clarte-decisions',
+    title: 'Atelier clarte des decisions',
+    summary: 'Un format d atelier pour rendre les decisions visibles et prevenir les malentendus.',
+    category: 'ux',
+    level: 'intro',
+    effort: 'low',
+    updatedAt: '2025-12-31',
+    relatedJourneys: ['p2', 'p3', 'p4', 'p5'],
+    relatedResourceSlugs: ['canevas-rituel-feedback']
+  },
+  {
+    id: 'res_v0_006',
+    slug: 'canevas-rituel-feedback',
+    title: 'Canevas rituel feedback',
+    summary: 'Un support pour installer un rituel court de feedback, sans charge cognitive.',
+    category: 'ux',
+    level: 'intermediate',
+    effort: 'medium',
+    updatedAt: '2025-12-31',
+    relatedJourneys: ['p2', 'p3', 'p4', 'p5'],
+    relatedResourceSlugs: ['atelier-clarte-decisions']
+  },
+  {
+    id: 'res_v0_007',
+    slug: 'guide-roles-explicites',
+    title: 'Guide roles explicites',
+    summary: 'Un guide pour clarifier les roles et limiter les zones grises.',
+    category: 'gouvernance',
+    level: 'intro',
+    effort: 'low',
+    updatedAt: '2025-12-31',
+    relatedJourneys: ['p1', 'p2', 'p3', 'p4', 'p5'],
+    relatedResourceSlugs: ['cadre-arbitrage-mission']
+  },
+  {
+    id: 'res_v0_008',
+    slug: 'cadre-arbitrage-mission',
+    title: 'Cadre arbitrage mission',
+    summary: 'Un cadre pour arbitrer entre mission, capacite et contraintes sans se disperser.',
+    category: 'gouvernance',
+    level: 'advanced',
+    effort: 'high',
+    updatedAt: '2025-12-31',
+    relatedJourneys: ['p1', 'p2', 'p3', 'p4', 'p5'],
+    relatedResourceSlugs: ['guide-roles-explicites']
+  },
+  {
+    id: 'res_v0_009',
+    slug: 'kit-outils-coordination',
+    title: 'Kit outils de coordination',
+    summary: 'Une selection d outils minimaux pour suivre les engagements et les dependances.',
+    category: 'outillage',
+    level: 'intro',
+    effort: 'low',
+    updatedAt: '2025-12-31',
+    relatedJourneys: ['p2', 'p3', 'p4', 'p5'],
+    relatedResourceSlugs: ['modele-journal-bord']
+  },
+  {
+    id: 'res_v0_010',
+    slug: 'modele-journal-bord',
+    title: 'Modele journal de bord',
+    summary: 'Un modele pour consigner decisions, tensions et apprentissages au fil des semaines.',
+    category: 'outillage',
+    level: 'intermediate',
+    effort: 'medium',
+    updatedAt: '2025-12-31',
+    relatedJourneys: ['p2', 'p3', 'p4', 'p5'],
+    relatedResourceSlugs: ['kit-outils-coordination']
+  }
+];

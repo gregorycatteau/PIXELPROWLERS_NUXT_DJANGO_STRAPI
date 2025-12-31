@@ -1,9 +1,9 @@
 /**
- * useResourcesLibrary.ts — Composable pour la page /ressources (API-backed)
+ * useResourcesLibrary.ts — Composable pour la page /ressources (Registry V0)
  *
  * Fonctionnalites :
  * - Recherche (title/summary) avec debounce
- * - Filtres : type, tags, category, level, journey
+ * - Filtres : category
  * - Pagination : limit/offset
  * - Deep linking via SafeDeepLinkKit (secure query params)
  * - Canonicalisation soft : auto-cleanup des URL sales/hostiles
@@ -14,21 +14,18 @@
  */
 
 import { computed, onMounted, onUnmounted, ref, watch, type Ref } from 'vue';
-import { useRoute, useRouter, useRuntimeConfig } from '#imports';
+import { useRoute, useRouter } from '#imports';
 import {
   buildFilterOptions,
   type FilterOptions,
   type ResourceCategory,
   type ResourceItem,
-  type ResourceJourney,
-  type ResourceLevel,
-  type ResourceType,
-  type ResourcesResponse,
 } from '@/data/resourcesData';
 import {
   buildResourcesDeepLink,
   parseResourcesDeepLink,
 } from '@/utils/deeplinks/resourcesDeepLink';
+import { listResources } from '@/config/resources/registryV0';
 
 // =============================================================================
 // CONSTANTS
@@ -37,8 +34,6 @@ import {
 const ITEMS_PER_PAGE = 12;
 const SEARCH_DEBOUNCE_MS = 300;
 const MAX_QUERY_STRING_LENGTH = 800;
-const MAX_TAGS = 5;
-const MAX_FILTER_OPTIONS_FETCH = 200;
 
 const FORBIDDEN_PARAM_PREFIXES = [
   'utm_',
@@ -50,7 +45,6 @@ const FORBIDDEN_PARAM_PREFIXES = [
   'debug',
 ];
 
-const TAG_PATTERN = /^[a-z0-9-]+$/;
 const ZERO_WIDTH_CHARS = /[\u200B-\u200D\u2060\uFEFF\u00AD]/g;
 
 // =============================================================================
@@ -58,11 +52,7 @@ const ZERO_WIDTH_CHARS = /[\u200B-\u200D\u2060\uFEFF\u00AD]/g;
 // =============================================================================
 
 export interface ResourceFilters {
-  tags: string[];
   category: ResourceCategory | '';
-  level: ResourceLevel | '';
-  journey: ResourceJourney | '';
-  type: ResourceType | '';
 }
 
 export interface UseResourcesLibraryReturn {
@@ -76,11 +66,7 @@ export interface UseResourcesLibraryReturn {
   filterOptions: Ref<FilterOptions>;
 
   setSearchQuery: (query: string) => void;
-  toggleTag: (tag: string) => void;
   toggleCategory: (category: ResourceCategory) => void;
-  toggleLevel: (level: ResourceLevel) => void;
-  toggleJourney: (journey: ResourceJourney) => void;
-  toggleType: (rtype: ResourceType) => void;
   nextPage: () => void;
   prevPage: () => void;
   clearAll: () => void;
@@ -98,7 +84,7 @@ export interface UseResourcesLibraryReturn {
 export function useResourcesLibrary(): UseResourcesLibraryReturn {
   const route = useRoute();
   const router = useRouter();
-  const config = useRuntimeConfig();
+  const allResources = listResources();
 
   const searchQuery = ref('');
   const debouncedSearchQuery = ref('');
@@ -110,24 +96,15 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
   const resources = ref<ResourceItem[]>([]);
   const totalResults = ref(0);
   const filterOptions = ref<FilterOptions>({
-    tags: [],
     categories: [],
-    levels: [],
-    journeys: [],
-    types: [],
   });
 
   const filters = ref<ResourceFilters>({
-    tags: [],
     category: '',
-    level: '',
-    journey: '',
-    type: '',
   });
 
   let searchDebounceTimer: ReturnType<typeof setTimeout> | null = null;
   let hasCanonicalizedOnce = false;
-  let activeRequestId = 0;
 
   const totalPages = computed(() =>
     Math.max(1, Math.ceil(totalResults.value / ITEMS_PER_PAGE))
@@ -137,25 +114,16 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
 
   const hasActiveFilters = computed(
     () =>
-      filters.value.tags.length > 0 ||
       !!filters.value.category ||
-      !!filters.value.level ||
-      !!filters.value.journey ||
-      !!filters.value.type ||
       debouncedSearchQuery.value !== ''
   );
 
+  filterOptions.value = buildFilterOptions(allResources);
+  readQueryParams();
+  applyFilters();
+
   onMounted(() => {
-    try {
-      canonicalizeUrlIfNeeded();
-      readQueryParams();
-      void fetchFilterOptions();
-      void fetchResources();
-    } catch (err) {
-      hasError.value = true;
-      errorMessage.value = 'Impossible de charger les ressources.';
-      isLoading.value = false;
-    }
+    canonicalizeUrlIfNeeded();
   });
 
   onUnmounted(() => {
@@ -193,11 +161,7 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
       const parsed = parseResourcesDeepLink(query);
       const rebuilt = buildResourcesDeepLink({
         q: parsed.q,
-        tags: parsed.tags,
         category: parsed.category || undefined,
-        level: parsed.level || undefined,
-        journey: parsed.journey || undefined,
-        type: parsed.type || undefined,
         limit: parsed.limit,
         offset: parsed.offset,
       });
@@ -228,11 +192,7 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
       const parsed = parseResourcesDeepLink(route.query);
       const canonicalRoute = buildResourcesDeepLink({
         q: parsed.q,
-        tags: parsed.tags,
         category: parsed.category || undefined,
-        level: parsed.level || undefined,
-        journey: parsed.journey || undefined,
-        type: parsed.type || undefined,
         limit: parsed.limit,
         offset: parsed.offset,
       });
@@ -251,11 +211,7 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
 
     searchQuery.value = parsed.q;
     debouncedSearchQuery.value = parsed.q;
-    filters.value.tags = parsed.tags;
     filters.value.category = parsed.category;
-    filters.value.level = parsed.level;
-    filters.value.journey = parsed.journey;
-    filters.value.type = parsed.type;
 
     currentPage.value = Math.floor(parsed.offset / parsed.limit) + 1;
   }
@@ -263,11 +219,7 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
   function syncQueryParams(): void {
     const canonicalRoute = buildResourcesDeepLink({
       q: debouncedSearchQuery.value,
-      tags: filters.value.tags,
       category: filters.value.category || undefined,
-      level: filters.value.level || undefined,
-      journey: filters.value.journey || undefined,
-      type: filters.value.type || undefined,
       limit: ITEMS_PER_PAGE,
       offset: offset.value,
     });
@@ -279,79 +231,44 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
     [debouncedSearchQuery, filters, currentPage],
     () => {
       syncQueryParams();
-      void fetchResources();
+      applyFilters();
     },
     { deep: true }
   );
 
   // ---------------------------------------------------------------------------
-  // FETCHING
+  // FILTERING
   // ---------------------------------------------------------------------------
 
-  async function fetchResources(): Promise<void> {
-    const requestId = ++activeRequestId;
+  function applyFilters(): void {
     isLoading.value = true;
     hasError.value = false;
     errorMessage.value = null;
 
     try {
-      const query: Record<string, string | number> = {
-        limit: ITEMS_PER_PAGE,
-        offset: offset.value,
-      };
-
       const q = sanitizeQuery(debouncedSearchQuery.value);
-      if (q) query.q = q;
+      const filtered = allResources.filter((resource) => {
+        const matchesCategory =
+          !filters.value.category || resource.category === filters.value.category;
+        const matchesQuery = !q
+          ? true
+          : `${resource.title} ${resource.summary}`.toLowerCase().includes(q.toLowerCase());
+        return matchesCategory && matchesQuery;
+      });
 
-      if (filters.value.tags.length > 0) {
-        query.tags = filters.value.tags.slice(0, MAX_TAGS).join(',');
+      totalResults.value = filtered.length;
+      const totalPagesSafe = Math.max(1, Math.ceil(totalResults.value / ITEMS_PER_PAGE));
+      if (currentPage.value > totalPagesSafe) {
+        currentPage.value = totalPagesSafe;
       }
-      if (filters.value.category) query.category = filters.value.category;
-      if (filters.value.level) query.level = filters.value.level;
-      if (filters.value.journey) query.journey = filters.value.journey;
-      if (filters.value.type) query.type = filters.value.type;
-
-      const response = await $fetch<ResourcesResponse>(
-        `${config.public.apiBase}/api/v1/resources/`,
-        { query }
-      );
-
-      if (requestId !== activeRequestId) return;
-
-      resources.value = response.resources;
-      totalResults.value = response.total;
-    } catch (err) {
-      if (requestId !== activeRequestId) return;
+      const pageStart = (currentPage.value - 1) * ITEMS_PER_PAGE;
+      const pageEnd = pageStart + ITEMS_PER_PAGE;
+      resources.value = filtered.slice(pageStart, pageEnd);
+    } catch {
       hasError.value = true;
       errorMessage.value = 'Impossible de charger les ressources.';
     } finally {
-      if (requestId === activeRequestId) {
-        isLoading.value = false;
-      }
-    }
-  }
-
-  async function fetchFilterOptions(): Promise<void> {
-    try {
-      const allResources: ResourceItem[] = [];
-      let offsetValue = 0;
-      let total = 0;
-      const limit = 50;
-
-      do {
-        const response = await $fetch<ResourcesResponse>(
-          `${config.public.apiBase}/api/v1/resources/`,
-          { query: { limit, offset: offsetValue } }
-        );
-
-        allResources.push(...response.resources);
-        total = response.total;
-        offsetValue += limit;
-      } while (offsetValue < total && allResources.length < MAX_FILTER_OPTIONS_FETCH);
-
-      filterOptions.value = buildFilterOptions(allResources);
-    } catch {
-      filterOptions.value = buildFilterOptions(resources.value);
+      isLoading.value = false;
     }
   }
 
@@ -370,32 +287,9 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
     }, SEARCH_DEBOUNCE_MS);
   }
 
-  function toggleTag(tag: string): void {
-    const normalized = normalizeTag(tag);
-    if (!normalized) return;
-
-    if (filters.value.tags.includes(normalized)) {
-      filters.value.tags = filters.value.tags.filter((t) => t !== normalized);
-    } else {
-      filters.value.tags = [...filters.value.tags, normalized].slice(0, MAX_TAGS);
-    }
-  }
-
   function toggleCategory(category: ResourceCategory): void {
     filters.value.category =
       filters.value.category === category ? '' : category;
-  }
-
-  function toggleLevel(level: ResourceLevel): void {
-    filters.value.level = filters.value.level === level ? '' : level;
-  }
-
-  function toggleJourney(journey: ResourceJourney): void {
-    filters.value.journey = filters.value.journey === journey ? '' : journey;
-  }
-
-  function toggleType(rtype: ResourceType): void {
-    filters.value.type = filters.value.type === rtype ? '' : rtype;
   }
 
   function nextPage(): void {
@@ -414,11 +308,7 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
     searchQuery.value = '';
     debouncedSearchQuery.value = '';
     filters.value = {
-      tags: [],
       category: '',
-      level: '',
-      journey: '',
-      type: '',
     };
     currentPage.value = 1;
   }
@@ -426,14 +316,6 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
   // ---------------------------------------------------------------------------
   // SANITIZATION
   // ---------------------------------------------------------------------------
-
-  function normalizeTag(value: string): string | null {
-    const sanitized = sanitizeQuery(value).toLowerCase();
-    if (!sanitized || !TAG_PATTERN.test(sanitized)) {
-      return null;
-    }
-    return sanitized;
-  }
 
   function sanitizeQuery(raw: string): string {
     let value = raw.slice(0, 120);
@@ -457,11 +339,7 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
     filterOptions,
 
     setSearchQuery,
-    toggleTag,
     toggleCategory,
-    toggleLevel,
-    toggleJourney,
-    toggleType,
     nextPage,
     prevPage,
     clearAll,

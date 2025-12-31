@@ -19,7 +19,7 @@
       :description="resource.summary"
       :to="resourceLink(resource)"
       :meta="{
-        kind: resource.type,
+        kind: getMetaKind(resource),
       }"
       :chips="getResourceChips(resource)"
       :cta-aria-label="`Voir la ressource ${resource.title}`"
@@ -34,6 +34,7 @@
 <script setup lang="ts">
 import {
   RESOURCE_CATEGORY_LABELS,
+  RESOURCE_EFFORT_LABELS,
   RESOURCE_LEVEL_LABELS,
   type ResourceItem,
 } from '@/data/resourcesData';
@@ -61,19 +62,26 @@ function getResourceChips(resource: ResourceItem): { variant: 'tag' | 'stat'; la
 
   chips.push({
     variant: 'stat',
-    label: RESOURCE_CATEGORY_LABELS[resource.category],
+    label: RESOURCE_EFFORT_LABELS[resource.effort],
   });
 
-  for (const tag of resource.tags.slice(0, 2)) {
-    chips.push({ variant: 'tag', label: tag });
-  }
+  chips.push({
+    variant: 'tag',
+    label: RESOURCE_CATEGORY_LABELS[resource.category],
+  });
 
   return chips;
 }
 
+function getMetaKind(resource: ResourceItem): 'tool' | 'read' | 'checklist' {
+  if (resource.category === 'outillage') return 'tool';
+  if (resource.category === 'diagnostic') return 'checklist';
+  return 'read';
+}
+
 function resourceLink(resource: ResourceItem): string {
   try {
-    return safeRoutePath(resource.path);
+    return safeRoutePath(`/ressources/${resource.slug}`);
   } catch {
     return '/ressources';
   }

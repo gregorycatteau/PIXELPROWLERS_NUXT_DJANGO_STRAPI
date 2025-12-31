@@ -1,5 +1,5 @@
 <!--
-  ressources/index.vue — Page /ressources (API-backed)
+  ressources/index.vue — Page /ressources (Registry V0)
 
   Page légère : SEO + montage du composant racine PPResourcesLibraryShell.
   Toute la logique et les styles sont dans les CELLS components.
@@ -14,8 +14,8 @@
       <template #eyebrow>Bibliotheque</template>
       <template #title>Ressources</template>
       <template #lead>
-        Explorez notre catalogue d'outils, guides et checklists pour accompagner
-        votre projet.
+        Explorez notre pack de ressources sur le diagnostic, la securite, l'UX,
+        la gouvernance et l'outillage.
       </template>
     </PPPageHeader>
 
@@ -31,7 +31,7 @@ useHead({
     {
       name: 'description',
       content:
-        "Explorez notre catalogue d'outils, guides et checklists pour accompagner votre projet.",
+        "Explorez notre pack de ressources sur le diagnostic, la securite, l'UX, la gouvernance et l'outillage.",
     },
   ],
 });

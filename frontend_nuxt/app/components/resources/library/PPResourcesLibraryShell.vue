@@ -25,11 +25,7 @@
         :filter-options="filterOptions"
         :has-active-filters="hasActiveFilters"
         @search="handleSearch"
-        @toggle-tag="toggleTag"
         @toggle-category="toggleCategory"
-        @toggle-level="toggleLevel"
-        @toggle-journey="toggleJourney"
-        @toggle-type="toggleType"
         @clear-all="clearAll"
       />
 
@@ -103,11 +99,7 @@ const {
   totalPages,
   filterOptions,
   setSearchQuery,
-  toggleTag,
   toggleCategory,
-  toggleLevel,
-  toggleJourney,
-  toggleType,
   nextPage,
   prevPage,
   clearAll,
