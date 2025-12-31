@@ -1,0 +1,27 @@
+{
+  "journeys": [
+    {
+      "journeyId": "p5",
+      "slug": "parcours-p5",
+      "manifestVar": "p5Manifest",
+      "schemaVar": "p5JourneySchema",
+      "adapterVar": "p5BilanAdapter",
+      "copyPointer": "app/config/journeys/p5CopyV1_0",
+      "questionsPointer": "app/config/journeys/p5QuestionsV1_0",
+      "requiredSteps": [
+        "E0_intro",
+        "E1_panorama",
+        "E_global_bilan",
+        "E_resources",
+        "E_exit"
+      ],
+      "files": [
+        "app/config/journeys/p5CopyV1_0.ts",
+        "app/config/journeys/p5QuestionsV1_0.ts",
+        "app/config/journeys/p5JourneySchema.ts",
+        "app/config/journeys/manifests/p5.manifest.ts",
+        "app/adapters/bilan/p5.ts"
+      ]
+    }
+  ]
+}

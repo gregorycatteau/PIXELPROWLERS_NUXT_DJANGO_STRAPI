@@ -17,6 +17,8 @@ import {
   p4PanoramaQuestions,
   P4_PANORAMA_AXIS_ORDER
 } from './p4QuestionsV1_0';
+import { p5Copy } from './p5CopyV1_0';
+import { p5PanoramaAxesMeta, p5PanoramaQuestions, P5_PANORAMA_AXIS_ORDER } from './p5QuestionsV1_0';
 
 export type JourneyCopyIntro = {
   title: string;
@@ -70,7 +72,8 @@ export type PanoramaQuestionsBundle = {
 const copyRegistry: Record<string, JourneyCopyBundle> = {
   'app/config/journeys/p2CopyV1_0': p2Copy,
   'app/config/journeys/p3CopyV1_0': p3Copy,
-  'app/config/journeys/p4CopyV1_0': p4Copy
+  'app/config/journeys/p4CopyV1_0': p4Copy,
+  'app/config/journeys/p5CopyV1_0': p5Copy
 };
 
 const questionsRegistry: Record<string, PanoramaQuestionsBundle> = {
@@ -88,7 +91,8 @@ const questionsRegistry: Record<string, PanoramaQuestionsBundle> = {
     questions: p4PanoramaQuestions,
     axisOrder: P4_PANORAMA_AXIS_ORDER,
     axesMeta: p4PanoramaAxesMeta
-  }
+  },
+  'app/config/journeys/p5QuestionsV1_0': { questions: p5PanoramaQuestions, axisOrder: P5_PANORAMA_AXIS_ORDER, axesMeta: p5PanoramaAxesMeta }
 };
 
 export const getJourneyCopy = (manifest: JourneyManifestV1 | null): JourneyCopyBundle | null => {
