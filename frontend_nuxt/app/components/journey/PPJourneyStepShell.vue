@@ -82,11 +82,12 @@
  *   </template>
  * </PPJourneyStepShell>
  */
-import { computed, onMounted, useSlots } from 'vue';
+import { computed, inject, onMounted, useSlots } from 'vue';
 import { useRoute, useRouter } from '#imports';
 import PPCard from '~/components/PPCard.vue';
 import { getManifestBySlug } from '~/config/journeys/manifests/registry';
 import { getJourneySchemaById } from '~/config/journeys/schemaRegistry';
+import { journeyNavigationKey } from '~/composables/journeyNavigation';
 
 export interface PPJourneyStepShellProps {
   /** Densité d'espacement */
@@ -124,6 +125,7 @@ const props = withDefaults(defineProps<PPJourneyStepShellProps>(), {
 const slots = useSlots();
 const route = useRoute();
 const router = useRouter();
+const injectedNavigate = inject(journeyNavigationKey, null);
 
 // Classes DS
 const shellClasses = computed(() => [
@@ -191,7 +193,12 @@ const nextLabel = computed(() => {
 const prevLabel = computed(() => props.prevLabel);
 
 const goToStep = (stepId: string) => {
-  if (!stepId || !allowedSet.value.has(stepId)) return;
+  if (!stepId) return;
+  if (injectedNavigate) {
+    injectedNavigate(stepId);
+    return;
+  }
+  if (!allowedSet.value.has(stepId)) return;
   router.push({ path: route.path, query: { ...route.query, step: stepId } });
 };
 

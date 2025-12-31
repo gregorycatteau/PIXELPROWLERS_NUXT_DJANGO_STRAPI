@@ -55,6 +55,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import JourneyLayout from '~/components/journey/JourneyLayout.vue';
+import PPJourneyStepShell from '~/components/journey/PPJourneyStepShell.vue';
 import { p1Copy } from '~/config/journeys/p1QuestionsConfig';
 import { p1EngagementCopy } from '~/config/journeys/p1EngagementCopy';
 import { P1_INTRO_COPY } from '@/config/journeys/p1CopyV1_3';

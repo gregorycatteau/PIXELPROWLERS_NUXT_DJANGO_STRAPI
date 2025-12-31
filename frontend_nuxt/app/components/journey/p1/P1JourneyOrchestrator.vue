@@ -30,10 +30,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, provide, ref, watch } from 'vue';
 import { useRoute, useRouter } from '#imports';
 import { useDiagnosticStorage } from '~/composables/useDiagnosticStorage';
 import { useJourneyEngine } from '~/composables/useJourneyEngine';
+import { journeyNavigationKey } from '~/composables/journeyNavigation';
 import { p1JourneySchema } from '~/config/journeys/p1JourneySchema';
 import { hasP1GlobalBilanAccess } from '~/utils/p1GlobalBilanAccess';
 import P1Block1Bilan from '~/components/journey/p1/P1Block1Bilan.vue';
@@ -123,6 +124,8 @@ const safeGoToStep = (stepId: string) => {
   }
   goToStep(stepId);
 };
+
+provide(journeyNavigationKey, safeGoToStep);
 
 const goToGlobalBilan = () => {
   safeGoToStep('E_global_bilan');

@@ -31,12 +31,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, provide, ref, watch } from 'vue';
 import { useRoute, useRouter } from '#imports';
 import type { JourneyManifestV1 } from '~/config/journeys/manifests/types';
 import { useJourneyEngine } from '~/composables/useJourneyEngine';
 import { useCoreJourneyStorage } from '~/composables/useCoreJourneyStorage';
 import { getJourneySchemaById } from '~/config/journeys/schemaRegistry';
+import { journeyNavigationKey } from '~/composables/journeyNavigation';
 import JourneyStepRenderer from '~/components/journey/JourneyStepRenderer.vue';
 
 const props = defineProps<{
@@ -86,6 +87,8 @@ const safeGoToStep = (stepId: string) => {
   }
   goToStep(stepId);
 };
+
+provide(journeyNavigationKey, safeGoToStep);
 
 const applyInitialStep = () => {
   const requested = normalizeStep(props.initialStepId ?? (typeof route.query.step === 'string' ? route.query.step : null));

@@ -39,6 +39,7 @@
 
 <script setup lang="ts">
 import JourneyLayout from '~/components/journey/JourneyLayout.vue';
+import PPJourneyStepShell from '~/components/journey/PPJourneyStepShell.vue';
 import JourneyStepHeader from '~/components/journey/JourneyStepHeader.vue';
 import ResourcesList, { type ResourceCardProps } from '~/components/journey/ResourcesList.vue';
 import { useAnalytics } from '~/composables/useAnalytics';

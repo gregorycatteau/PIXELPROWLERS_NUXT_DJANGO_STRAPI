@@ -67,6 +67,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import JourneyLayout from '~/components/journey/JourneyLayout.vue';
+import PPJourneyStepShell from '~/components/journey/PPJourneyStepShell.vue';
 import JourneyStepHeader from '~/components/journey/JourneyStepHeader.vue';
 import type { VucaProfile } from '~/composables/useJourneyDiagnostics';
 
