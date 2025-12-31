@@ -410,6 +410,27 @@
         "status": "active",
         "hasFrontmatter": true,
         "domain": "tech_specs"
+      },
+      {
+        "id": "PX_V1_3_JOURNEY_SCHEMA_RFC_V1",
+        "path": "docs/30-tech_specs/frontend/PX_V1_3_JOURNEY_SCHEMA_RFC_V1.md",
+        "status": "active",
+        "hasFrontmatter": true,
+        "domain": "tech_specs"
+      },
+      {
+        "id": "PX_V1_3_JOURNEY_SCAFFOLDER_CLI_SPEC_V1",
+        "path": "docs/30-tech_specs/frontend/PX_V1_3_JOURNEY_SCAFFOLDER_CLI_SPEC_V1.md",
+        "status": "active",
+        "hasFrontmatter": true,
+        "domain": "tech_specs"
+      },
+      {
+        "id": "PX_V1_3_JOURNEY_GENERATION_MODE_DECISION_R1",
+        "path": "docs/30-tech_specs/frontend/PX_V1_3_JOURNEY_GENERATION_MODE_DECISION_R1.md",
+        "status": "active",
+        "hasFrontmatter": true,
+        "domain": "tech_specs"
       }
     ],
     "needsFrontmatter": [],
