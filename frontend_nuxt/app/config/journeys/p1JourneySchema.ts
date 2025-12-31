@@ -1,5 +1,20 @@
 export type JourneyStepType = 'intro' | 'questionnaire' | 'bilan' | 'resources' | 'carrefour';
 
+export type JourneySchemaModules = {
+  panorama?: boolean;
+  bilan?: boolean;
+  resources?: boolean;
+  exit?: boolean;
+};
+
+export type JourneyGatingRule = {
+  id: string;
+  when: string;
+  allow: boolean;
+  redirectTo: string;
+  reason?: string;
+};
+
 export interface JourneyStepMeta {
   stepId: string;
   type: JourneyStepType;
@@ -12,6 +27,11 @@ export interface JourneyStepMeta {
 export interface JourneySchema {
   id: string; // 'p1'
   slug: string; // 'ma-structure-dysfonctionne'
+  label?: string;
+  entrypoint?: string;
+  modules?: JourneySchemaModules;
+  copyPack?: string;
+  gatingRules?: JourneyGatingRule[];
   steps: JourneyStepMeta[];
 }
 
