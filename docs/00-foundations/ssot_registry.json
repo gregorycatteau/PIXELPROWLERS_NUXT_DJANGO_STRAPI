@@ -24,61 +24,100 @@
     "00-foundations": {
       "role": "Règles, conventions, environnements, charte SSOT",
       "index": "README.md",
-      "owners": ["Marty"]
+      "owners": [
+        "Marty"
+      ]
     },
     "10-vision_roadmap": {
       "role": "Vision, objectifs, backlog/epics, phases",
       "index": "README.md",
-      "owners": ["Marty"]
+      "owners": [
+        "Marty"
+      ]
     },
     "20-product_specs": {
       "role": "Specs fonctionnelles, user stories, UX content, audits UX/UI",
       "index": "README.md",
-      "subdirs": ["functional", "schemas", "user_stories", "ux_content", "ux_ui"]
+      "subdirs": [
+        "functional",
+        "schemas",
+        "user_stories",
+        "ux_content",
+        "ux_ui"
+      ]
     },
     "30-tech_specs": {
       "role": "Architecture, frontend/backend, CI/quality",
       "index": "README.md",
-      "subdirs": ["architecture", "backend", "cms", "frontend", "quality"]
+      "subdirs": [
+        "architecture",
+        "backend",
+        "cms",
+        "frontend",
+        "quality"
+      ]
     },
     "40-security": {
       "role": "Doctrine sécu, modèles de menaces, contracts, guards",
       "index": "README.md",
-      "subdirs": ["contracts"],
-      "owners": ["Eva", "Dan"]
+      "subdirs": [
+        "contracts"
+      ],
+      "owners": [
+        "Eva",
+        "Dan"
+      ]
     },
     "55-qa": {
       "role": "Checklists, smoke tests",
       "index": "QA_INDEX.md",
-      "owners": ["Dan", "Eva"]
+      "owners": [
+        "Dan",
+        "Eva"
+      ]
     },
     "50-measurement": {
       "role": "Plan de mesure, KPIs",
       "index": "README.md",
-      "owners": ["Claire", "Marty"]
+      "owners": [
+        "Claire",
+        "Marty"
+      ]
     },
     "60-legal": {
       "role": "RGPD, CGU, juridique",
       "index": "README.md",
-      "owners": ["Marty"]
+      "owners": [
+        "Marty"
+      ]
     },
     "70-seo": {
       "role": "Stratégie SEO",
       "index": "README.md",
-      "owners": ["Rand", "Julien"]
+      "owners": [
+        "Rand",
+        "Julien"
+      ]
     },
     "90-placeholders_archive": {
       "role": "Brouillons/archives non-canon incluant legacy V1.0 et V1.2",
       "index": "README.md",
       "defaultStatus": "archived",
-      "subdirs": ["legacy_v1_0", "legacy_v1_2"],
-      "owners": ["Marty"]
+      "subdirs": [
+        "legacy_v1_0",
+        "legacy_v1_2"
+      ],
+      "owners": [
+        "Marty"
+      ]
     },
     "99_handoff": {
       "role": "Handoffs ponctuels",
       "index": "README.md",
       "defaultStatus": "archived",
-      "owners": ["Heider"]
+      "owners": [
+        "Heider"
+      ]
     }
   },
   "archivedDocs": {
@@ -199,7 +238,9 @@
         "status": "active",
         "hasFrontmatter": true,
         "domain": "governance",
-        "owners": ["Marty"]
+        "owners": [
+          "Marty"
+        ]
       },
       {
         "id": "INCIDENT_RESPONSE_V1",
@@ -207,7 +248,10 @@
         "status": "active",
         "hasFrontmatter": true,
         "domain": "security",
-        "owners": ["Eva", "Dan"],
+        "owners": [
+          "Eva",
+          "Dan"
+        ],
         "priority": "P0"
       },
       {
@@ -216,7 +260,9 @@
         "status": "active",
         "hasFrontmatter": true,
         "domain": "backend",
-        "owners": ["Tom"],
+        "owners": [
+          "Tom"
+        ],
         "priority": "P1"
       },
       {
@@ -225,7 +271,9 @@
         "status": "active",
         "hasFrontmatter": true,
         "domain": "legal",
-        "owners": ["Marty"],
+        "owners": [
+          "Marty"
+        ],
         "priority": "P1"
       },
       {
@@ -234,7 +282,9 @@
         "status": "active",
         "hasFrontmatter": true,
         "domain": "product_specs",
-        "owners": ["Marty"],
+        "owners": [
+          "Marty"
+        ],
         "priority": "P1"
       },
       {
@@ -243,9 +293,15 @@
         "status": "active",
         "hasFrontmatter": false,
         "domain": "backend",
-        "owners": ["Tom"],
+        "owners": [
+          "Tom"
+        ],
         "priority": "P1",
-        "tags": ["backend", "openapi", "contracts"],
+        "tags": [
+          "backend",
+          "openapi",
+          "contracts"
+        ],
         "note": "Fichier YAML OpenAPI 3.0.3 - pas de frontmatter MD"
       },
       {
@@ -254,9 +310,16 @@
         "status": "active",
         "hasFrontmatter": true,
         "domain": "governance",
-        "owners": ["Marty"],
+        "owners": [
+          "Marty"
+        ],
         "priority": "P1",
-        "tags": ["ssot", "tasks", "automation", "tooling"]
+        "tags": [
+          "ssot",
+          "tasks",
+          "automation",
+          "tooling"
+        ]
       },
       {
         "id": "SSOT_BACKLOG_PROTOCOL_V1",
@@ -264,9 +327,16 @@
         "status": "active",
         "hasFrontmatter": true,
         "domain": "governance",
-        "owners": ["Marty"],
+        "owners": [
+          "Marty"
+        ],
         "priority": "P1",
-        "tags": ["ssot", "backlog", "delivery", "agents"]
+        "tags": [
+          "ssot",
+          "backlog",
+          "delivery",
+          "agents"
+        ]
       },
       {
         "id": "AGENTS_REGISTRY_V1",
@@ -274,9 +344,17 @@
         "status": "active",
         "hasFrontmatter": true,
         "domain": "governance",
-        "owners": ["Jared", "Marty"],
+        "owners": [
+          "Jared",
+          "Marty"
+        ],
         "priority": "P1",
-        "tags": ["agents", "ssot", "ownership", "registry"]
+        "tags": [
+          "agents",
+          "ssot",
+          "ownership",
+          "registry"
+        ]
       },
       {
         "id": "AGENTS_RUNTIME_V1",
@@ -284,9 +362,33 @@
         "status": "active",
         "hasFrontmatter": true,
         "domain": "governance",
-        "owners": ["Marty", "Dan", "Eva"],
+        "owners": [
+          "Marty",
+          "Dan",
+          "Eva"
+        ],
         "priority": "P1",
-        "tags": ["agents", "runtime", "worktrees", "sandbox", "security"]
+        "tags": [
+          "agents",
+          "runtime",
+          "worktrees",
+          "sandbox",
+          "security"
+        ]
+      },
+      {
+        "id": "PX_V1_3_JOURNEY_NAVIGATION_SHELL_DECISION_R1",
+        "path": "docs/30-tech_specs/frontend/PX_V1_3_JOURNEY_NAVIGATION_SHELL_DECISION_R1.md",
+        "status": "active",
+        "hasFrontmatter": true,
+        "domain": "tech_specs"
+      },
+      {
+        "id": "PX_V1_3_PP_JOURNEY_STEP_SHELL_SPEC_V1",
+        "path": "docs/30-tech_specs/frontend/PX_V1_3_PP_JOURNEY_STEP_SHELL_SPEC_V1.md",
+        "status": "active",
+        "hasFrontmatter": true,
+        "domain": "tech_specs"
       }
     ],
     "needsFrontmatter": [],
@@ -306,7 +408,10 @@
     ],
     "duplicates": [
       {
-        "files": ["docs/ui_texts_schema.json", "docs/00-foundations/ui_texts_schema.json"],
+        "files": [
+          "docs/ui_texts_schema.json",
+          "docs/00-foundations/ui_texts_schema.json"
+        ],
         "action": "Supprimer le doublon à la racine de docs/",
         "status": "RESOLVED",
         "resolvedAt": "2025-12-24",
@@ -324,41 +429,122 @@
     ]
   },
   "ownershipMatrix": {
-    "docs/00-foundations": ["Jared", "Marty"],
-    "docs/10-vision_roadmap": ["Marty", "Jared"],
-    "docs/20-product_specs/functional": ["Marty"],
-    "docs/20-product_specs/user_stories": ["Marty", "Claire"],
-    "docs/20-product_specs/ux_content": ["Talia"],
-    "docs/20-product_specs/ux_ui": ["Heider", "Dan"],
-    "docs/20-product_specs/schemas": ["Dan", "Tom"],
-    "docs/30-tech_specs/frontend": ["Dan", "Heider"],
-    "docs/30-tech_specs/backend": ["Tom"],
-    "docs/30-tech_specs/architecture": ["Shay", "Dan"],
-    "docs/30-tech_specs/quality": ["Dan", "Eva"],
-    "docs/30-tech_specs/cms": ["Shay"],
-    "docs/40-security": ["Eva", "Dan"],
-    "docs/40-security/contracts": ["Eva", "Dan"],
-    "docs/50-measurement": ["Claire", "Marty"],
-    "docs/55-qa": ["Dan", "Eva"],
-    "docs/60-legal": ["Eva", "Marty"],
-    "docs/70-seo": ["Rand", "Julien"],
-    "docs/90-placeholders_archive": ["Jared"],
-    "docs/99_handoff": ["Heider", "Dan"]
+    "docs/00-foundations": [
+      "Jared",
+      "Marty"
+    ],
+    "docs/10-vision_roadmap": [
+      "Marty",
+      "Jared"
+    ],
+    "docs/20-product_specs/functional": [
+      "Marty"
+    ],
+    "docs/20-product_specs/user_stories": [
+      "Marty",
+      "Claire"
+    ],
+    "docs/20-product_specs/ux_content": [
+      "Talia"
+    ],
+    "docs/20-product_specs/ux_ui": [
+      "Heider",
+      "Dan"
+    ],
+    "docs/20-product_specs/schemas": [
+      "Dan",
+      "Tom"
+    ],
+    "docs/30-tech_specs/frontend": [
+      "Dan",
+      "Heider"
+    ],
+    "docs/30-tech_specs/backend": [
+      "Tom"
+    ],
+    "docs/30-tech_specs/architecture": [
+      "Shay",
+      "Dan"
+    ],
+    "docs/30-tech_specs/quality": [
+      "Dan",
+      "Eva"
+    ],
+    "docs/30-tech_specs/cms": [
+      "Shay"
+    ],
+    "docs/40-security": [
+      "Eva",
+      "Dan"
+    ],
+    "docs/40-security/contracts": [
+      "Eva",
+      "Dan"
+    ],
+    "docs/50-measurement": [
+      "Claire",
+      "Marty"
+    ],
+    "docs/55-qa": [
+      "Dan",
+      "Eva"
+    ],
+    "docs/60-legal": [
+      "Eva",
+      "Marty"
+    ],
+    "docs/70-seo": [
+      "Rand",
+      "Julien"
+    ],
+    "docs/90-placeholders_archive": [
+      "Jared"
+    ],
+    "docs/99_handoff": [
+      "Heider",
+      "Dan"
+    ]
   },
   "ownershipExceptions": {
-    "docs/40-security/LOGS_BACKUPS_ACCES.md": ["Eva", "Shafi"],
-    "docs/60-legal/PRIVACY_POLICY_V1.md": ["Eva", "Shafi"],
-    "docs/00-foundations/DB_SETUP.md": ["Tom", "Shay"]
+    "docs/40-security/LOGS_BACKUPS_ACCES.md": [
+      "Eva",
+      "Shafi"
+    ],
+    "docs/60-legal/PRIVACY_POLICY_V1.md": [
+      "Eva",
+      "Shafi"
+    ],
+    "docs/00-foundations/DB_SETUP.md": [
+      "Tom",
+      "Shay"
+    ]
   },
   "versioningPolicy": {
     "activeRelease": "V1.3",
-    "archivedReleases": ["V1.2", "V1.0"],
+    "archivedReleases": [
+      "V1.2",
+      "V1.0"
+    ],
     "rules": {
       "V1.3": "active or stable or deprecated",
       "V1.2": "archived only",
       "V1.0": "archived only"
     }
   },
-  "validStatuses": ["draft", "active", "stable", "deprecated", "archived"],
-  "requiredFrontmatterFields": ["id", "version", "status", "date", "owners", "scope", "tags"]
+  "validStatuses": [
+    "draft",
+    "active",
+    "stable",
+    "deprecated",
+    "archived"
+  ],
+  "requiredFrontmatterFields": [
+    "id",
+    "version",
+    "status",
+    "date",
+    "owners",
+    "scope",
+    "tags"
+  ]
 }

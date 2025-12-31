@@ -3,7 +3,7 @@
 > **Périmètre** : Plan de mesure, KPIs
 
 <!-- GENERATED:START -->
-<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2025-12-27 -->
+<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2025-12-31 -->
 
 ## Documents
 
