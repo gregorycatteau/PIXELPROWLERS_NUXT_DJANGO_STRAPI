@@ -11,7 +11,7 @@
       "requiredSteps": [
         "E0_intro",
         "E_panorama",
-        "E_global_bilan",
+        "E_bilan",
         "E_resources",
         "E_exit"
       ],
@@ -33,8 +33,8 @@
       "questionsPointer": "app/config/journeys/p2_stubQuestionsV1_0",
       "requiredSteps": [
         "E0_intro",
-        "E1_panorama",
-        "E_global_bilan",
+        "E_panorama",
+        "E_bilan",
         "E_resources",
         "E_exit"
       ],
@@ -56,8 +56,8 @@
       "questionsPointer": "app/config/journeys/p3_stubQuestionsV1_0",
       "requiredSteps": [
         "E0_intro",
-        "E1_panorama",
-        "E_global_bilan",
+        "E_panorama",
+        "E_bilan",
         "E_resources",
         "E_exit"
       ],
@@ -79,8 +79,8 @@
       "questionsPointer": "app/config/journeys/p4_stubQuestionsV1_0",
       "requiredSteps": [
         "E0_intro",
-        "E1_panorama",
-        "E_global_bilan",
+        "E_panorama",
+        "E_bilan",
         "E_resources",
         "E_exit"
       ],
@@ -103,7 +103,7 @@
       "requiredSteps": [
         "E0_intro",
         "E_panorama",
-        "E_global_bilan",
+        "E_bilan",
         "E_resources",
         "E_exit"
       ],
@@ -126,7 +126,7 @@
       "requiredSteps": [
         "E0_intro",
         "E_panorama",
-        "E_global_bilan",
+        "E_bilan",
         "E_resources",
         "E_exit"
       ],
@@ -149,7 +149,7 @@
       "requiredSteps": [
         "E0_intro",
         "E_panorama",
-        "E_global_bilan",
+        "E_bilan",
         "E_resources",
         "E_exit"
       ],

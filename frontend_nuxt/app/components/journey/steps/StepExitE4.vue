@@ -23,7 +23,10 @@
 
       <template #footer>
         <div class="flex flex-wrap gap-3 justify-center">
-          <NuxtLink class="pp-cta-primary" to="/">
+          <NuxtLink class="pp-cta-primary" to="/contact">
+            Parler avec nous
+          </NuxtLink>
+          <NuxtLink class="pp-cta-secondary" to="/">
             Retour a l'accueil
           </NuxtLink>
         </div>

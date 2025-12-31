@@ -9,6 +9,7 @@ import GlobalBilanEngine from '~/components/journey/bilan/GlobalBilanEngine.vue'
 import StepIntroE0 from '~/components/journey/steps/StepIntroE0.vue';
 import StepPanoramaE1 from '~/components/journey/steps/StepPanoramaE1.vue';
 import StepPanoramaBilanE2 from '~/components/journey/steps/StepPanoramaBilanE2.vue';
+import StepBilanE2 from '~/components/journey/steps/StepBilanE2.vue';
 import StepResourcesE3 from '~/components/journey/steps/StepResourcesE3.vue';
 import StepExitE4 from '~/components/journey/steps/StepExitE4.vue';
 
@@ -22,11 +23,13 @@ const currentComponent = computed(() => {
   switch (props.stepId) {
     case 'E0_intro':
       return StepIntroE0;
-    case 'E1_panorama':
     case 'E_panorama':
+    case 'E1_panorama':
       return StepPanoramaE1;
     case 'E2_panorama_bilan':
       return StepPanoramaBilanE2;
+    case 'E_bilan':
+      return StepBilanE2;
     case 'E_resources':
       return StepResourcesE3;
     case 'E_exit':

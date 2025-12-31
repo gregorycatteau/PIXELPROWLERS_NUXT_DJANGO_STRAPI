@@ -4,13 +4,13 @@
       density="default"
       align="center"
       role="region"
-      aria-labelledby="journey-step-heading-E1_panorama"
+      :aria-labelledby="headingId"
     >
       <template #header>
         <JourneyStepHeader
           :title="copy.title"
           :subtitle="copy.subtitle"
-          heading-id="journey-step-heading-E1_panorama"
+          :heading-id="headingId"
         />
       </template>
 
@@ -46,7 +46,7 @@
         <PPQuestionNav
           :prev-label="copy.back"
           :next-label="copy.validate"
-          @prev="goToStep('E0_intro')"
+          @prev="goToPrev"
           @next="handleValidate"
         />
         <p v-if="validationError" class="pp-journey-body text-sm text-[color:var(--color-accent-strong)]">
@@ -66,6 +66,7 @@ import JourneyQuestionBlock from '~/components/journey/JourneyQuestionBlock.vue'
 import type { LikertValue } from '~/composables/useJourneyDiagnostics';
 import { useCoreJourneyStorage, type CorePanoramaScores } from '~/composables/useCoreJourneyStorage';
 import { getJourneyCopy, getJourneyPanoramaQuestions, type PanoramaQuestion } from '~/config/journeys/journeyDataRegistry';
+import { getJourneySchemaById } from '~/config/journeys/schemaRegistry';
 
 const props = defineProps<{
   manifest: JourneyManifestV1;
@@ -87,6 +88,21 @@ const copy = computed(() => {
 
 const feelHint = 'Reponds au ressenti : il n y a pas de bonne ou de mauvaise reponse.';
 const skipNoticeId = `journey-${props.manifest.id}-skip-notice-panorama`;
+
+const journeySchema = computed(() => getJourneySchemaById(props.manifest.id));
+
+// Helper pour identifier le step courant et ses voisins dans le schema.
+const resolveStepIds = () => {
+  const steps = journeySchema.value?.steps ?? [];
+  const stepIds = steps.map((step) => step.stepId);
+  const current = stepIds.includes('E_panorama') ? 'E_panorama' : 'E1_panorama';
+  const currentIndex = stepIds.indexOf(current);
+  const prev = stepIds[currentIndex - 1] ?? 'E0_intro';
+  const next = stepIds[currentIndex + 1] ?? 'E_bilan';
+  return { current, prev, next };
+};
+
+const headingId = computed(() => `journey-step-heading-${resolveStepIds().current}`);
 
 const storage = useCoreJourneyStorage({ journeyId: props.manifest.id });
 const validationError = ref<string | null>(null);
@@ -171,6 +187,10 @@ const buildScores = (): CorePanoramaScores => {
   };
 };
 
+const goToPrev = () => {
+  props.goToStep(resolveStepIds().prev);
+};
+
 const handleValidate = () => {
   const hasAnswered = Object.values(answers.value).some((v) => typeof v === 'number');
   if (!hasAnswered) {
@@ -178,8 +198,9 @@ const handleValidate = () => {
     return;
   }
   const scores = buildScores();
+  const { next } = resolveStepIds();
   storage.saveScores({ panorama: scores });
-  storage.saveMeta({ panoramaCompleted: true, lastStepId: 'E2_panorama_bilan' });
-  props.goToStep('E2_panorama_bilan');
+  storage.saveMeta({ panoramaCompleted: true, lastStepId: next });
+  props.goToStep(next);
 };
 </script>

@@ -60,6 +60,14 @@ const resumePromptStep = ref<string | null>(null);
 
 const hasPanoramaScores = computed(() => Boolean(scores.value?.panorama) || Boolean(meta.value?.panoramaCompleted));
 
+// Helper pour resoudre les steps standards selon le schema.
+const resolveCanonicalSteps = () => {
+  const stepIds = allowedSteps.value;
+  const panorama = stepIds.includes('E_panorama') ? 'E_panorama' : 'E1_panorama';
+  const bilan = stepIds.includes('E_bilan') ? 'E_bilan' : stepIds.includes('E_global_bilan') ? 'E_global_bilan' : 'E2_panorama_bilan';
+  return { panorama, bilan };
+};
+
 const normalizeStep = (value?: unknown) => {
   const parsed = parseStepParam(value);
   if (!parsed) return null;
@@ -74,12 +82,9 @@ const recommendedStep = computed(() => {
 
 const safeGoToStep = (stepId: string) => {
   if (!stepId) return;
-  if (stepId === 'E2_panorama_bilan' && !hasPanoramaScores.value) {
-    goToStep('E1_panorama');
-    return;
-  }
-  if (stepId === 'E_global_bilan' && !hasPanoramaScores.value) {
-    goToStep('E2_panorama_bilan');
+  const { panorama, bilan } = resolveCanonicalSteps();
+  if (stepId === bilan && !hasPanoramaScores.value) {
+    goToStep(panorama);
     return;
   }
   if (!allowedSet.value.has(stepId)) {
