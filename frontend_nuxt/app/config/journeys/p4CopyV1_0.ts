@@ -1,19 +1,19 @@
 export const p4Copy = {
   intro: {
-    title: 'Parcours P4 (core)',
-    subtitle: 'Parcours court pour poser un panorama en 60 minutes.',
+    title: 'Parcours P4 (stub)',
+    subtitle: 'Panorama rapide, reponses locales uniquement.',
     cta: 'Commencer le panorama'
   },
   panorama: {
     title: 'Panorama P4',
-    subtitle: '9 questions, reponses locales uniquement.',
-    meta: 'Reponds selon ton ressenti actuel. Tu peux ignorer des questions.',
+    subtitle: 'Questions de base pour poser le contexte.',
+    meta: 'Tu peux ignorer des questions.',
     validate: 'Voir le bilan',
     back: 'Retour'
   },
   panoramaBilan: {
     title: 'Bilan P4',
-    subtitle: 'Synthese par axe et prochain pas.',
+    subtitle: 'Synthese par axe.',
     summaryTitle: 'Ce que tu viens de poser',
     summarySubtitle: 'Panorama rapide, base sur tes reponses.',
     nextStepsTitle: 'Prochaine etape',
@@ -24,7 +24,7 @@ export const p4Copy = {
   },
   global: {
     title: 'Bilan global P4',
-    subtitle: 'Panorama + blocs (core).',
+    subtitle: 'Synthese publique, basee sur des agregats.',
     panoramaHeading: 'Panorama',
     blocksHeading: 'Blocs exploratoires',
     exportHeading: 'Export (client-side)',
@@ -36,7 +36,7 @@ export const p4Copy = {
     sovereigntyNote: 'Ce bilan reste sur cet appareil.'
   },
   export: {
-    title: '=== Bilan P4 (panorama + bloc) ===',
+    title: '=== Bilan P4 (panorama) ===',
     panoramaHeading: '--- Panorama ---',
     blocksHeading: '--- Bloc exploratoire ---',
     globalHeading: '--- Bilan global (agrege) ---',

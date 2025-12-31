@@ -16,6 +16,7 @@ const registry: JourneyManifestV1[] = [
   p2Manifest,
   p3Manifest,
   p4Manifest,
+  p5Manifest,
   p2_stubManifest,
   p3_stubManifest,
   p4_stubManifest

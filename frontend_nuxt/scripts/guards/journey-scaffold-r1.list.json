@@ -10,7 +10,7 @@
       "questionsPointer": "app/config/journeys/p5QuestionsV1_0",
       "requiredSteps": [
         "E0_intro",
-        "E1_panorama",
+        "E_panorama",
         "E_global_bilan",
         "E_resources",
         "E_exit"
@@ -90,6 +90,75 @@
         "app/config/journeys/p4_stubJourneySchema.ts",
         "app/config/journeys/manifests/p4_stub.manifest.ts",
         "app/adapters/bilan/p4_stub.ts"
+      ]
+    },
+    {
+      "journeyId": "p2",
+      "slug": "parcours-p2",
+      "manifestVar": "p2Manifest",
+      "schemaVar": "p2JourneySchema",
+      "adapterVar": "p2BilanAdapter",
+      "copyPointer": "app/config/journeys/p2CopyV1_0",
+      "questionsPointer": "app/config/journeys/p2QuestionsV1_0",
+      "requiredSteps": [
+        "E0_intro",
+        "E_panorama",
+        "E_global_bilan",
+        "E_resources",
+        "E_exit"
+      ],
+      "files": [
+        "app/config/journeys/p2CopyV1_0.ts",
+        "app/config/journeys/p2QuestionsV1_0.ts",
+        "app/config/journeys/p2JourneySchema.ts",
+        "app/config/journeys/manifests/p2.manifest.ts",
+        "app/adapters/bilan/p2.ts"
+      ]
+    },
+    {
+      "journeyId": "p3",
+      "slug": "parcours-p3",
+      "manifestVar": "p3Manifest",
+      "schemaVar": "p3JourneySchema",
+      "adapterVar": "p3BilanAdapter",
+      "copyPointer": "app/config/journeys/p3CopyV1_0",
+      "questionsPointer": "app/config/journeys/p3QuestionsV1_0",
+      "requiredSteps": [
+        "E0_intro",
+        "E_panorama",
+        "E_global_bilan",
+        "E_resources",
+        "E_exit"
+      ],
+      "files": [
+        "app/config/journeys/p3CopyV1_0.ts",
+        "app/config/journeys/p3QuestionsV1_0.ts",
+        "app/config/journeys/p3JourneySchema.ts",
+        "app/config/journeys/manifests/p3.manifest.ts",
+        "app/adapters/bilan/p3.ts"
+      ]
+    },
+    {
+      "journeyId": "p4",
+      "slug": "parcours-p4",
+      "manifestVar": "p4Manifest",
+      "schemaVar": "p4JourneySchema",
+      "adapterVar": "p4BilanAdapter",
+      "copyPointer": "app/config/journeys/p4CopyV1_0",
+      "questionsPointer": "app/config/journeys/p4QuestionsV1_0",
+      "requiredSteps": [
+        "E0_intro",
+        "E_panorama",
+        "E_global_bilan",
+        "E_resources",
+        "E_exit"
+      ],
+      "files": [
+        "app/config/journeys/p4CopyV1_0.ts",
+        "app/config/journeys/p4QuestionsV1_0.ts",
+        "app/config/journeys/p4JourneySchema.ts",
+        "app/config/journeys/manifests/p4.manifest.ts",
+        "app/adapters/bilan/p4.ts"
       ]
     }
   ]

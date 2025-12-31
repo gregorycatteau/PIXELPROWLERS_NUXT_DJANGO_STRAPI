@@ -2,20 +2,24 @@ import type { JourneyManifestV1 } from './types';
 
 export const p3Manifest: JourneyManifestV1 = {
   id: 'p3',
-  slug: 'je-suis-en-transition',
+  slug: 'parcours-p3',
   engine: 'universal',
-  maturity: 'core',
+  maturity: 'stub',
   axes: [
     { axisId: 'clarity', label: 'Clarte' },
-    { axisId: 'alignment', label: 'Alignement' },
-    { axisId: 'momentum', label: 'Mouvement' }
+    { axisId: 'capacity', label: 'Capacite' }
   ],
   modules: {
     panorama: true,
-    blocks: true,
+    blocks: false,
+    issues: false,
+    hypotheses: false,
+    landing: false,
+    actions: false,
+    resources: true,
+    engagement: false,
     export: true,
-    engagement: true,
-    recommendations: true
+    recommendations: false
   },
   pointers: {
     questions: 'app/config/journeys/p3QuestionsV1_0',

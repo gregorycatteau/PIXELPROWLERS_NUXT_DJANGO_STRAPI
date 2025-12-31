@@ -2,20 +2,24 @@ import type { JourneyManifestV1 } from './types';
 
 export const p2Manifest: JourneyManifestV1 = {
   id: 'p2',
-  slug: 'nos-outils-numeriques-nous-epuisent',
+  slug: 'parcours-p2',
   engine: 'universal',
-  maturity: 'core',
+  maturity: 'stub',
   axes: [
-    { axisId: 'overload', label: 'Charge numerique' },
-    { axisId: 'fragmentation', label: 'Fragmentation des outils' },
-    { axisId: 'sovereignty', label: 'Souverainete et maitrise' }
+    { axisId: 'clarity', label: 'Clarte' },
+    { axisId: 'capacity', label: 'Capacite' }
   ],
   modules: {
     panorama: true,
-    blocks: true,
+    blocks: false,
+    issues: false,
+    hypotheses: false,
+    landing: false,
+    actions: false,
+    resources: true,
+    engagement: false,
     export: true,
-    engagement: true,
-    recommendations: true
+    recommendations: false
   },
   pointers: {
     questions: 'app/config/journeys/p2QuestionsV1_0',

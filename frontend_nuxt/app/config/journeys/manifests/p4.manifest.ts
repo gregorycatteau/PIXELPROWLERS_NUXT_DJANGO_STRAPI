@@ -2,20 +2,24 @@ import type { JourneyManifestV1 } from './types';
 
 export const p4Manifest: JourneyManifestV1 = {
   id: 'p4',
-  slug: 'parcours-60-minutes',
+  slug: 'parcours-p4',
   engine: 'universal',
-  maturity: 'core',
+  maturity: 'stub',
   axes: [
-    { axisId: 'clarity', label: 'Clarte de la direction' },
-    { axisId: 'capacity', label: 'Capacite a executer' },
-    { axisId: 'support', label: 'Appuis et ressources' }
+    { axisId: 'clarity', label: 'Clarte' },
+    { axisId: 'capacity', label: 'Capacite' }
   ],
   modules: {
     panorama: true,
-    blocks: true,
+    blocks: false,
+    issues: false,
+    hypotheses: false,
+    landing: false,
+    actions: false,
+    resources: true,
+    engagement: false,
     export: true,
-    engagement: true,
-    recommendations: true
+    recommendations: false
   },
   pointers: {
     questions: 'app/config/journeys/p4QuestionsV1_0',
