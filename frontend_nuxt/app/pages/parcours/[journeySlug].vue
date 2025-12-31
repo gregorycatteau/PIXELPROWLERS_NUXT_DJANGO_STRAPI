@@ -75,14 +75,34 @@ import { p2JourneySchema } from '~/config/journeys/p2JourneySchema';
 import { p3JourneySchema } from '~/config/journeys/p3JourneySchema';
 import { getManifestBySlug } from '~/config/journeys/manifests/registry';
 
+const normalizeJourneySlug = (raw: unknown) => (typeof raw === 'string' ? raw.trim() : '');
+const isValidJourneySlug = (slug: string) => {
+  if (slug.length < 1 || slug.length > 80) {
+    return false;
+  }
+  return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug);
+};
+
 definePageMeta({
-  layout: 'journey'
+  layout: 'journey',
+  validate: (route) => {
+    const slug = normalizeJourneySlug(route.params.journeySlug);
+    if (!isValidJourneySlug(slug)) {
+      return false;
+    }
+    return Boolean(getManifestBySlug(slug));
+  }
 });
 
 const route = useRoute();
 
-const journeySlug = computed(() => route.params.journeySlug as string);
+const journeySlug = computed(() => normalizeJourneySlug(route.params.journeySlug));
 const manifest = computed(() => getManifestBySlug(journeySlug.value));
+
+if (!isValidJourneySlug(journeySlug.value) || !manifest.value) {
+  throw createError({ statusCode: 404, statusMessage: 'Not Found' });
+}
+
 const journeyId = computed(() => manifest.value?.id ?? null);
 
 const journeySchemas: Record<string, { steps: { stepId: string }[] }> = {
