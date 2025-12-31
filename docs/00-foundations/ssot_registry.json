@@ -40,6 +40,7 @@
       "index": "README.md",
       "subdirs": [
         "functional",
+        "resources",
         "schemas",
         "user_stories",
         "ux_content",
@@ -480,6 +481,9 @@
       "Jared"
     ],
     "docs/20-product_specs/functional": [
+      "Marty"
+    ],
+    "docs/20-product_specs/resources": [
       "Marty"
     ],
     "docs/20-product_specs/user_stories": [

@@ -8,6 +8,7 @@
 ## Sous-dossiers
 
 - [functional/](./functional/)
+- [resources/](./resources/)
 - [schemas/](./schemas/)
 - [user_stories/](./user_stories/)
 - [ux_content/](./ux_content/)
