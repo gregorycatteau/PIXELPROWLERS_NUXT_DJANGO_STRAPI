@@ -82,20 +82,22 @@ const isValidJourneySlug = (slug: string) => {
   return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug);
 };
 
+const validateJourneyRoute = (ctx: { params: Record<string, unknown> }) => {
+  const slug = normalizeJourneySlug(ctx.params.journeySlug);
+  if (!isValidJourneySlug(slug)) {
+    return false;
+  }
+  return Boolean(getManifestBySlug(slug));
+};
+
 definePageMeta({
   layout: 'journey',
-  validate: (route) => {
-    const slug = normalizeJourneySlug(route.params.journeySlug);
-    if (!isValidJourneySlug(slug)) {
-      return false;
-    }
-    return Boolean(getManifestBySlug(slug));
-  }
+  validate: validateJourneyRoute
 });
 
-const route = useRoute();
+const nuxtRoute = useRoute();
 
-const journeySlug = computed(() => normalizeJourneySlug(route.params.journeySlug));
+const journeySlug = computed(() => normalizeJourneySlug(nuxtRoute.params.journeySlug));
 const manifest = computed(() => getManifestBySlug(journeySlug.value));
 
 if (!isValidJourneySlug(journeySlug.value) || !manifest.value) {
@@ -107,8 +109,8 @@ const journeyId = computed(() => manifest.value?.id ?? null);
 const journeySchema = computed(() => (journeyId.value ? getJourneySchemaById(journeyId.value) : null));
 const allowedSteps = computed(() => journeySchema.value?.steps.map((s) => s.stepId) ?? []);
 const allowedSet = computed(() => new Set(allowedSteps.value));
-const stepParam = computed(() => parseStepParam(route.query.step));
-const landingRequested = computed(() => journeyId.value === 'p1' && route.query.landing === '1');
+const stepParam = computed(() => parseStepParam(nuxtRoute.query.step));
+const landingRequested = computed(() => journeyId.value === 'p1' && nuxtRoute.query.landing === '1');
 const entrypointStepId = computed(() => allowedSteps.value[0] ?? null);
 const initialStepId = computed(() => {
   const candidate = stepParam.value;
