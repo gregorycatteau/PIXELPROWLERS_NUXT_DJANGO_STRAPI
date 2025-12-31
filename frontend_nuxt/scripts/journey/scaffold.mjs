@@ -237,14 +237,32 @@ const updateFile = (filePath, updater) => {
 };
 
 const insertImport = (content, statement) => {
+  // Idempotent: don't add duplicates
   if (content.includes(statement)) return content;
-  const lines = content.split('\n');
-  let lastImport = -1;
-  lines.forEach((line, idx) => {
-    if (line.startsWith('import ')) lastImport = idx;
-  });
-  lines.splice(lastImport + 1, 0, statement);
-  return lines.join('\n');
+
+  const lines = content.split('
+');
+
+  // Preferred anchor: insert before the first exported type block
+  const anchorIdx = lines.findIndex((l) => l.startsWith('export type JourneyCopyIntro'));
+  if (anchorIdx !== -1) {
+    lines.splice(anchorIdx, 0, statement, '');
+    return lines.join('
+');
+  }
+
+  // Fallback: insert after the last top-level import line
+  let lastImportIdx = -1;
+  for (let i = 0; i < lines.length; i += 1) {
+    if (lines[i].startsWith('import ')) lastImportIdx = i;
+    // Stop scanning imports when we hit first non-import and non-empty line
+    if (lastImportIdx !== -1 && !lines[i].startsWith('import ') && lines[i].trim() !== '') break;
+  }
+
+  const insertAt = lastImportIdx === -1 ? 0 : lastImportIdx + 1;
+  lines.splice(insertAt, 0, statement, '');
+  return lines.join('
+');
 };
 
 const appendToArrayLiteral = (content, marker, item) => {
