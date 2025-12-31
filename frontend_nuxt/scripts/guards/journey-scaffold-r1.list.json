@@ -22,6 +22,75 @@
         "app/config/journeys/manifests/p5.manifest.ts",
         "app/adapters/bilan/p5.ts"
       ]
+    },
+    {
+      "journeyId": "p2_stub",
+      "slug": "parcours-p2-stub",
+      "manifestVar": "p2_stubManifest",
+      "schemaVar": "p2_stubJourneySchema",
+      "adapterVar": "p2_stubBilanAdapter",
+      "copyPointer": "app/config/journeys/p2_stubCopyV1_0",
+      "questionsPointer": "app/config/journeys/p2_stubQuestionsV1_0",
+      "requiredSteps": [
+        "E0_intro",
+        "E1_panorama",
+        "E_global_bilan",
+        "E_resources",
+        "E_exit"
+      ],
+      "files": [
+        "app/config/journeys/p2_stubCopyV1_0.ts",
+        "app/config/journeys/p2_stubQuestionsV1_0.ts",
+        "app/config/journeys/p2_stubJourneySchema.ts",
+        "app/config/journeys/manifests/p2_stub.manifest.ts",
+        "app/adapters/bilan/p2_stub.ts"
+      ]
+    },
+    {
+      "journeyId": "p3_stub",
+      "slug": "parcours-p3-stub",
+      "manifestVar": "p3_stubManifest",
+      "schemaVar": "p3_stubJourneySchema",
+      "adapterVar": "p3_stubBilanAdapter",
+      "copyPointer": "app/config/journeys/p3_stubCopyV1_0",
+      "questionsPointer": "app/config/journeys/p3_stubQuestionsV1_0",
+      "requiredSteps": [
+        "E0_intro",
+        "E1_panorama",
+        "E_global_bilan",
+        "E_resources",
+        "E_exit"
+      ],
+      "files": [
+        "app/config/journeys/p3_stubCopyV1_0.ts",
+        "app/config/journeys/p3_stubQuestionsV1_0.ts",
+        "app/config/journeys/p3_stubJourneySchema.ts",
+        "app/config/journeys/manifests/p3_stub.manifest.ts",
+        "app/adapters/bilan/p3_stub.ts"
+      ]
+    },
+    {
+      "journeyId": "p4_stub",
+      "slug": "parcours-p4-stub",
+      "manifestVar": "p4_stubManifest",
+      "schemaVar": "p4_stubJourneySchema",
+      "adapterVar": "p4_stubBilanAdapter",
+      "copyPointer": "app/config/journeys/p4_stubCopyV1_0",
+      "questionsPointer": "app/config/journeys/p4_stubQuestionsV1_0",
+      "requiredSteps": [
+        "E0_intro",
+        "E1_panorama",
+        "E_global_bilan",
+        "E_resources",
+        "E_exit"
+      ],
+      "files": [
+        "app/config/journeys/p4_stubCopyV1_0.ts",
+        "app/config/journeys/p4_stubQuestionsV1_0.ts",
+        "app/config/journeys/p4_stubJourneySchema.ts",
+        "app/config/journeys/manifests/p4_stub.manifest.ts",
+        "app/adapters/bilan/p4_stub.ts"
+      ]
     }
   ]
 }
