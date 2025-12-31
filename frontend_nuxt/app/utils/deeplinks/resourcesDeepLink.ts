@@ -18,7 +18,7 @@ import type { ResourceCategory } from '@/data/resourcesData';
 
 const MAX_QUERY_LENGTH = 120;
 const MAX_LIMIT = 50;
-const MAX_OFFSET = 1000;
+const MAX_OFFSET = 5000;
 
 const VALID_CATEGORIES = new Set<string>([
   'diagnostic',
@@ -36,8 +36,8 @@ const CONTROL_CHARS = /[\u0000-\u001F\u007F]/g;
 // =============================================================================
 
 export interface FiltersNormalized {
-  q: string;
-  category: ResourceCategory | '';
+  q?: string;
+  category?: ResourceCategory;
   limit: number;
   offset: number;
 }
@@ -70,39 +70,40 @@ function sanitizeString(value: unknown, maxLength: number = MAX_QUERY_LENGTH): s
   }
 }
 
-function parseAllowlistValue<T extends string>(
-  value: unknown,
-  validSet: Set<string>
-): T | '' {
-  if (typeof value !== 'string') return '';
-  const sanitized = sanitizeString(value, 50).toLowerCase();
-  if (sanitized && validSet.has(sanitized)) {
-    return sanitized as T;
-  }
-  return '';
+function normalizeQuery(value: unknown): string | undefined {
+  const sanitized = sanitizeString(value, MAX_QUERY_LENGTH);
+  return sanitized.length > 0 ? sanitized : undefined;
 }
 
-function parseLimit(value: unknown, fallback: number): number {
+function normalizeCategory(value: unknown): ResourceCategory | undefined {
+  if (typeof value !== 'string') return undefined;
+  const sanitized = sanitizeString(value, 50).toLowerCase();
+  return VALID_CATEGORIES.has(sanitized)
+    ? (sanitized as ResourceCategory)
+    : undefined;
+}
+
+function normalizeLimit(value: unknown, fallback: number): number {
   if (typeof value === 'string') {
     const parsed = parseInt(value, 10);
     if (!isNaN(parsed)) {
       return Math.max(1, Math.min(parsed, MAX_LIMIT));
     }
   }
-  if (typeof value === 'number') {
+  if (typeof value === 'number' && Number.isFinite(value)) {
     return Math.max(1, Math.min(Math.floor(value), MAX_LIMIT));
   }
   return fallback;
 }
 
-function parseOffset(value: unknown): number {
+function normalizeOffset(value: unknown): number {
   if (typeof value === 'string') {
     const parsed = parseInt(value, 10);
     if (!isNaN(parsed)) {
       return Math.max(0, Math.min(parsed, MAX_OFFSET));
     }
   }
-  if (typeof value === 'number') {
+  if (typeof value === 'number' && Number.isFinite(value)) {
     return Math.max(0, Math.min(Math.floor(value), MAX_OFFSET));
   }
   return 0;
@@ -113,8 +114,8 @@ function parseOffset(value: unknown): number {
 // =============================================================================
 
 export const DEFAULT_FILTERS: FiltersNormalized = {
-  q: '',
-  category: '',
+  q: undefined,
+  category: undefined,
   limit: 12,
   offset: 0,
 };
@@ -129,21 +130,16 @@ export function parseResourcesDeepLink(
   }
 
   try {
-    if ('q' in query) {
-      result.q = sanitizeString(query['q'], MAX_QUERY_LENGTH);
-    }
-    if ('category' in query) {
-      result.category = parseAllowlistValue<ResourceCategory>(
-        query['category'],
-        VALID_CATEGORIES
-      );
-    }
-    if ('limit' in query) {
-      result.limit = parseLimit(query['limit'], result.limit);
-    }
-    if ('offset' in query) {
-      result.offset = parseOffset(query['offset']);
-    }
+    result.q = 'q' in query ? normalizeQuery(query['q']) : result.q;
+    result.category = 'category' in query
+      ? normalizeCategory(query['category'])
+      : result.category;
+    result.limit = 'limit' in query
+      ? normalizeLimit(query['limit'], result.limit)
+      : result.limit;
+    result.offset = 'offset' in query
+      ? normalizeOffset(query['offset'])
+      : result.offset;
   } catch {
     if (import.meta.dev) {
       console.debug('[resourcesDeepLink] dropped invalid query param');
@@ -163,24 +159,25 @@ export function buildResourcesDeepLink(
   }
 
   try {
-    const q = sanitizeString(input.q, MAX_QUERY_LENGTH);
+    const q = normalizeQuery(input.q);
     if (q) {
       query.q = q;
     }
 
-    if (input.category && VALID_CATEGORIES.has(input.category)) {
-      query.category = input.category;
+    const category = normalizeCategory(input.category);
+    if (category) {
+      query.category = category;
     }
 
-    if (typeof input.limit === 'number') {
-      const limit = Math.max(1, Math.min(Math.floor(input.limit), MAX_LIMIT));
+    if ('limit' in input) {
+      const limit = normalizeLimit(input.limit, DEFAULT_FILTERS.limit);
       if (limit !== DEFAULT_FILTERS.limit) {
         query.limit = String(limit);
       }
     }
 
-    if (typeof input.offset === 'number') {
-      const offset = Math.max(0, Math.min(Math.floor(input.offset), MAX_OFFSET));
+    if ('offset' in input) {
+      const offset = normalizeOffset(input.offset);
       if (offset > 0) {
         query.offset = String(offset);
       }

@@ -209,9 +209,9 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
   function readQueryParams(): void {
     const parsed = parseResourcesDeepLink(route.query);
 
-    searchQuery.value = parsed.q;
-    debouncedSearchQuery.value = parsed.q;
-    filters.value.category = parsed.category;
+    searchQuery.value = parsed.q ?? '';
+    debouncedSearchQuery.value = parsed.q ?? '';
+    filters.value.category = parsed.category ?? '';
 
     currentPage.value = Math.floor(parsed.offset / parsed.limit) + 1;
   }
