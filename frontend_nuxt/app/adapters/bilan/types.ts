@@ -1,6 +1,6 @@
-import type { GlobalBilanViewModel } from '@/types/bilan';
+import type { UniversalBilanViewModel } from '@/types/bilan';
 
 export interface JourneyBilanAdapter {
   journeyId: string;
-  buildViewModel: () => GlobalBilanViewModel;
+  buildViewModel: () => UniversalBilanViewModel;
 }

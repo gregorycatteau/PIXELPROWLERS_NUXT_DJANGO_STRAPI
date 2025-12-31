@@ -575,7 +575,8 @@ import { getBilanAdapter } from "@/adapters/bilan/registry";
 import { useP1SystemicFollowups } from "@/composables/useP1SystemicFollowups";
 import { useP1SystemicLanding } from "@/composables/useP1SystemicLanding";
 import { P1_SYSTEMIC_FOLLOWUPS } from "@/config/journeys/p1SystemicFollowupsV1_3";
-import type { GlobalBilanViewModel } from "@/types/bilan";
+import type { UniversalBilanViewModel } from "@/types/bilan";
+import { createEmptyUniversalBilanViewModel, withUniversalBilanDefaults } from "@/types/bilan";
 import { BILAN_ENGINE_COPY } from "@/config/bilan/bilanEngineCopy";
 import { BILAN_SKIP_SIGNAL_COPY } from "@/config/bilan/bilanSkipSignalCopy";
 import { getManifestById } from "@/config/journeys/manifests/registry";
@@ -590,41 +591,10 @@ const props = defineProps<{
 
 const adapter = getBilanAdapter(props.journeyId);
 const manifest = computed(() => getManifestById(props.journeyId));
-const emptyVm: GlobalBilanViewModel = {
-  copy: { title: "", subtitle: "" },
-  axisSummaryLabel: "",
-  completedBlocksLabel: "",
-  panoramaAnsweredLabel: "",
-  summaryNav: [],
-  blocksSummaryHeading: "",
-  completedBlocks: "",
-  panorama: {
-    answeredCount: 0,
-    skippedCount: 0,
-    completenessLabel: "",
-    axes: [],
-    blocks: [],
-    completedLabel: "",
-  },
-  exportPanel: {
-    exportText: "",
-    clearMessage: "",
-    copied: false,
-    missingInfo: {},
-    eraseCopyLabel: "",
-    focusDetails: false,
-    hasGlobalMissing: false,
-    globalSkipText: "",
-    globalMissing: 0,
-  },
-  meta: {
-    isEmpty: true,
-    partial: true,
-  },
-};
+const emptyVm = createEmptyUniversalBilanViewModel();
 
-const vm = computed<GlobalBilanViewModel>(
-  () => adapter?.buildViewModel() ?? emptyVm
+const vm = computed<UniversalBilanViewModel>(() =>
+  withUniversalBilanDefaults(adapter?.buildViewModel() ?? emptyVm)
 );
 const engineState = computed<
   "missing_adapter" | "empty_vm" | "partial_vm" | "ready"

@@ -216,3 +216,72 @@ type GlobalBilanViewModelBase = {
 };
 
 export type GlobalBilanViewModel = NoForbiddenKeys<GlobalBilanViewModelBase>;
+
+export type UniversalBilanViewModel = GlobalBilanViewModel;
+
+const EMPTY_PANORAMA: GlobalBilanViewModelBase['panorama'] = {
+  answeredCount: 0,
+  skippedCount: 0,
+  completenessLabel: '',
+  axes: [],
+  blocks: [],
+  completedLabel: ''
+};
+
+const EMPTY_EXPORT_PANEL: GlobalBilanViewModelBase['exportPanel'] = {
+  exportText: '',
+  clearMessage: '',
+  copied: false,
+  missingInfo: {},
+  eraseCopyLabel: '',
+  focusDetails: false,
+  hasGlobalMissing: false,
+  globalSkipText: '',
+  globalMissing: 0
+};
+
+export const createEmptyUniversalBilanViewModel = (
+  overrides?: Partial<UniversalBilanViewModel>
+): UniversalBilanViewModel => {
+  const base: UniversalBilanViewModel = {
+    copy: { title: '', subtitle: '' },
+    axisSummaryLabel: '',
+    completedBlocksLabel: '',
+    panoramaAnsweredLabel: '',
+    summaryNav: [],
+    blocksSummaryHeading: '',
+    completedBlocks: '',
+    panorama: { ...EMPTY_PANORAMA },
+    exportPanel: { ...EMPTY_EXPORT_PANEL },
+    meta: { isEmpty: true, partial: true }
+  };
+
+  const panorama = {
+    ...EMPTY_PANORAMA,
+    ...(overrides?.panorama ?? {})
+  };
+  const exportPanel = {
+    ...EMPTY_EXPORT_PANEL,
+    ...(overrides?.exportPanel ?? {})
+  };
+  const meta = {
+    isEmpty: true,
+    partial: true,
+    ...(overrides?.meta ?? {})
+  };
+
+  return {
+    ...base,
+    ...overrides,
+    panorama,
+    exportPanel,
+    meta
+  };
+};
+
+export const withUniversalBilanDefaults = (
+  input?: Partial<UniversalBilanViewModel> | null
+): UniversalBilanViewModel => {
+  if (!input) return createEmptyUniversalBilanViewModel();
+  return createEmptyUniversalBilanViewModel(input);
+};
