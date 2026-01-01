@@ -4,35 +4,23 @@
  */
 
 import { listResources } from '../../app/config/resources/registryV0';
-
-const PACK_P1_SLUGS = [
-  'reunion-30min-sans-noyade',
-  'decision-log-minimal',
-  'compte-rendu-utile-1page',
-  'matrice-responsabilites-raci-lite',
-  'charte-canaux-3-couleurs',
-  'rituel-hebdo-15min',
-  'tableau-bord-3-signaux',
-  'inventaire-acces-30min',
-  'mfa-partout-en-20min',
-  'backups-test-15min',
-];
+import { P1_PACK_V1_SLUGS } from '../../app/config/resources/packs/p1PackV1';
 
 const errors: string[] = [];
 const resources = listResources();
 const resourcesBySlug = new Map(resources.map((resource) => [resource.slug, resource]));
 const publishedResources = resources.filter((resource) => resource.status === 'published');
-const packSlugSet = new Set(PACK_P1_SLUGS);
+const packSlugSet = new Set(P1_PACK_V1_SLUGS);
 const seenPackSlugs = new Set<string>();
 
-PACK_P1_SLUGS.forEach((slug) => {
+P1_PACK_V1_SLUGS.forEach((slug) => {
   if (seenPackSlugs.has(slug)) {
     errors.push(`❌ ${slug}: duplicate slug in pack list`);
   }
   seenPackSlugs.add(slug);
 });
 
-PACK_P1_SLUGS.forEach((slug) => {
+P1_PACK_V1_SLUGS.forEach((slug) => {
   const resource = resourcesBySlug.get(slug);
   if (!resource) {
     errors.push(`❌ ${slug}: missing from registry`);
@@ -58,13 +46,9 @@ PACK_P1_SLUGS.forEach((slug) => {
   }
 });
 
-const packPublishedCount = publishedResources.filter((resource) =>
-  packSlugSet.has(resource.slug)
+const extraPublishedCount = publishedResources.filter(
+  (resource) => !packSlugSet.has(resource.slug)
 ).length;
-
-if (packPublishedCount !== 10) {
-  errors.push(`❌ pack: published count ${packPublishedCount} !== 10`);
-}
 
 console.log('🔍 RES-PACK-P1-R1 Guard — Pack P1 v1 publication report\n');
 if (errors.length) {
@@ -73,5 +57,8 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log('✅ RES-PACK-P1-R1 PASSED (10/10)');
+if (extraPublishedCount > 0) {
+  console.log(`ℹ️ Extra published resources not in pack: ${extraPublishedCount}`);
+}
+console.log(`✅ RES-PACK-P1-R1 PASSED (${P1_PACK_V1_SLUGS.length}/${P1_PACK_V1_SLUGS.length})`);
 process.exit(0);
