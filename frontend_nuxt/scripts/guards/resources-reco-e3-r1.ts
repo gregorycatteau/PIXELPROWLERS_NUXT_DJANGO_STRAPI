@@ -20,7 +20,11 @@ const FORBIDDEN_IMPORTS = [
   'useLazyAsyncData',
   'useFetch',
   'Math.random',
-  'Date('
+  'Date(',
+  'Date.now',
+  'new Date',
+  'performance.now',
+  'crypto'
 ];
 
 const FORBIDDEN_KEYS = [
@@ -71,6 +75,39 @@ recommendations.forEach((item) => {
     errors.push(`❌ Missing reason for slug: ${item.slug}`);
   }
 });
+
+const deterministicVm = createEmptyUniversalBilanViewModel({
+  panorama: {
+    axes: [
+      { id: 'b_xxx', label: 'communication', score: 5 },
+      { id: 'a_xxx', label: 'SEO', score: 5 }
+    ]
+  }
+});
+
+const deterministicRecommendations = recommendResourcesFromBilan({
+  panorama: deterministicVm.panorama,
+  sections: deterministicVm.sections,
+  modules: deterministicVm.modules,
+});
+
+const expectedDeterministicOrder = [
+  'mini-plan-seo-local',
+  'audit-communication-flux'
+];
+
+const deterministicOrder = deterministicRecommendations.map((item) => item.slug);
+const deterministicMatches = expectedDeterministicOrder.every(
+  (slug, index) => deterministicOrder[index] === slug
+);
+
+if (!deterministicMatches) {
+  errors.push(
+    `❌ Deterministic ordering failed: expected ${expectedDeterministicOrder.join(
+      ', '
+    )}, got ${deterministicOrder.join(', ')}`
+  );
+}
 
 console.log('🔍 RES-RECO-E3-R1 Guard — StepResourcesE3 recommendations\n');
 if (errors.length) {

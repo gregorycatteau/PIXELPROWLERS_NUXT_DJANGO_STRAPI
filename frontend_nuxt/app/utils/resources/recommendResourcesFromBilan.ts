@@ -47,7 +47,9 @@ export const recommendResourcesFromBilan = (
   const recommendations: ResourceRecommendation[] = [];
 
   const axes = input?.panorama?.axes ?? [];
-  const axesSorted = axes.slice().sort((a, b) => b.score - a.score);
+  const axesSorted = axes
+    .slice()
+    .sort((a, b) => (b.score - a.score) || a.id.localeCompare(b.id));
 
   const risquesCount = input?.sections?.risques?.itemsCount ?? 0;
   const issuesCount = input?.modules?.issues?.list?.length ?? 0;
