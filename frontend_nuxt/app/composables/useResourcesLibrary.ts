@@ -85,6 +85,9 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
   const route = useRoute();
   const router = useRouter();
   const allResources = listResources();
+  const visibleResources = import.meta.dev
+    ? allResources
+    : allResources.filter((resource) => resource.status === 'published');
 
   const searchQuery = ref('');
   const debouncedSearchQuery = ref('');
@@ -118,7 +121,7 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
       debouncedSearchQuery.value !== ''
   );
 
-  filterOptions.value = buildFilterOptions(allResources);
+  filterOptions.value = buildFilterOptions(visibleResources);
   readQueryParams();
   applyFilters();
 
@@ -247,7 +250,7 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
 
     try {
       const q = sanitizeQuery(debouncedSearchQuery.value);
-      const filtered = allResources.filter((resource) => {
+      const filtered = visibleResources.filter((resource) => {
         const matchesCategory =
           !filters.value.category || resource.category === filters.value.category;
         const matchesQuery = !q

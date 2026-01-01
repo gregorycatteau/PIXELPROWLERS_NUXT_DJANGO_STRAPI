@@ -84,7 +84,10 @@ definePageMeta({
   validate: (route) => {
     const slug = normalizeResourceSlug(getRouteSlugInput(route.params.slug));
     if (!slug) return false;
-    return resourcesBySlug.has(slug);
+    const found = resourcesBySlug.get(slug);
+    if (!found) return false;
+    if (!import.meta.dev && found.status !== 'published') return false;
+    return true;
   }
 });
 
@@ -95,6 +98,9 @@ const resource = computed<ResourceV0>(() => {
   }
   const found = resourcesBySlug.get(slug) ?? null;
   if (!found) {
+    throw createError({ statusCode: 404, statusMessage: 'Not Found' });
+  }
+  if (!import.meta.dev && found.status !== 'published') {
     throw createError({ statusCode: 404, statusMessage: 'Not Found' });
   }
   return found;
