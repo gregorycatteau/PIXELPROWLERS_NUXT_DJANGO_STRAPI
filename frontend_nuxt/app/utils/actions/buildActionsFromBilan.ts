@@ -47,8 +47,7 @@ export function buildActionsFromBilan(
       kind: 'resource_filters',
       ctaLabel: 'Explorer',
       to: buildResourcesDeepLink({
-        limit: clampLimit(DEFAULT_LIMIT),
-        offset: clampOffset(0),
+        page: 1,
       }),
     });
   }
@@ -64,8 +63,7 @@ export function buildActionsFromBilan(
       kind: 'resource_filters',
       ctaLabel: 'Voir tout',
       to: buildResourcesDeepLink({
-        limit: clampLimit(DEFAULT_LIMIT),
-        offset: clampOffset(0),
+        page: 1,
       }),
     });
   }

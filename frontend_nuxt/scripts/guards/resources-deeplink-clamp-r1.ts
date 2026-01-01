@@ -35,13 +35,11 @@ const assert = (condition: boolean, message: string) => {
 const longQuery = 'a'.repeat(500);
 
 const clampRoute = buildResourcesDeepLink({
-  limit: 999999,
-  offset: 999999999,
+  page: 999999,
   q: longQuery,
 });
 const clampQuery = toQuery(clampRoute);
-assert(Number(clampQuery.limit) <= 50, 'limit should clamp to <= 50 (build)');
-assert(Number(clampQuery.offset) <= 5000, 'offset should clamp to <= 5000 (build)');
+assert(Number(clampQuery.page) <= 999, 'page should clamp to <= 999 (build)');
 assert((clampQuery.q ?? '').length <= 120, 'q should clamp to <= 120 chars (build)');
 
 const invalidCategoryRoute = buildResourcesDeepLink({
@@ -51,19 +49,16 @@ const invalidCategoryQuery = toQuery(invalidCategoryRoute);
 assert(!('category' in invalidCategoryQuery), 'invalid category should be ignored (build)');
 
 const defaultsParsed = parseResourcesDeepLink({});
-assert(defaultsParsed.limit === DEFAULT_FILTERS.limit, 'default limit should be preserved');
-assert(defaultsParsed.offset === DEFAULT_FILTERS.offset, 'default offset should be preserved');
+assert(defaultsParsed.page === DEFAULT_FILTERS.page, 'default page should be preserved');
 assert(defaultsParsed.q === undefined, 'default q should be undefined');
 assert(defaultsParsed.category === undefined, 'default category should be undefined');
 
 const parsed = parseResourcesDeepLink({
-  limit: '999999',
-  offset: '999999999',
+  page: '999999',
   q: longQuery,
   category: 'lolnope',
 });
-assert(parsed.limit <= 50, 'limit should clamp to <= 50 (parse)');
-assert(parsed.offset <= 5000, 'offset should clamp to <= 5000 (parse)');
+assert(parsed.page <= 999, 'page should clamp to <= 999 (parse)');
 assert((parsed.q ?? '').length <= 120, 'q should clamp to <= 120 chars (parse)');
 assert(parsed.category === undefined, 'invalid category should be undefined (parse)');
 

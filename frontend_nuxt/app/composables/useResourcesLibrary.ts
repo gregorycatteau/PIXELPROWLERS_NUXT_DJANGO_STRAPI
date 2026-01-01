@@ -4,7 +4,7 @@
  * Fonctionnalites :
  * - Recherche (title/summary) avec debounce
  * - Filtres : category
- * - Pagination : limit/offset
+ * - Pagination : page
  * - Deep linking via SafeDeepLinkKit (secure query params)
  * - Canonicalisation soft : auto-cleanup des URL sales/hostiles
  *
@@ -19,7 +19,9 @@ import {
   buildFilterOptions,
   type FilterOptions,
   type ResourceCategory,
+  type ResourceEffort,
   type ResourceItem,
+  type ResourceLevel,
 } from '@/data/resourcesData';
 import {
   buildResourcesDeepLink,
@@ -94,9 +96,12 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
   const filters = ref<ResourceFilters>({
     category: '',
   });
+  const sort = ref<string | undefined>(undefined);
+  const effort = ref<ResourceEffort | undefined>(undefined);
+  const level = ref<ResourceLevel | undefined>(undefined);
 
   let searchDebounceTimer: ReturnType<typeof setTimeout> | null = null;
-  let hasCanonicalizedOnce = false;
+  let stopRouteWatch: (() => void) | null = null;
 
   const totalPages = computed(() =>
     Math.max(1, Math.ceil(totalResults.value / ITEMS_PER_PAGE))
@@ -116,11 +121,21 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
 
   onMounted(() => {
     canonicalizeUrlIfNeeded();
+    stopRouteWatch = watch(
+      () => route.fullPath,
+      () => {
+        canonicalizeUrlIfNeeded();
+      }
+    );
   });
 
   onUnmounted(() => {
     if (searchDebounceTimer) {
       clearTimeout(searchDebounceTimer);
+    }
+    if (stopRouteWatch) {
+      stopRouteWatch();
+      stopRouteWatch = null;
     }
   });
 
@@ -129,11 +144,8 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
   // ---------------------------------------------------------------------------
 
   function canonicalizeUrlIfNeeded(): void {
-    if (hasCanonicalizedOnce) return;
     const canonical = parseResourcesDeepLinkWithMeta(route.query, route.fullPath);
     if (!canonical.shouldReplace) return;
-
-    hasCanonicalizedOnce = true;
 
     try {
       router.replace(canonical.canonicalRoute);
@@ -152,16 +164,21 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
     searchQuery.value = parsed.q ?? '';
     debouncedSearchQuery.value = parsed.q ?? '';
     filters.value.category = parsed.category ?? '';
+    sort.value = parsed.sort;
+    effort.value = parsed.effort;
+    level.value = parsed.level;
 
-    currentPage.value = Math.floor(parsed.offset / parsed.limit) + 1;
+    currentPage.value = parsed.page;
   }
 
   function syncQueryParams(): void {
     const canonicalRoute = buildResourcesDeepLink({
       q: debouncedSearchQuery.value,
       category: filters.value.category || undefined,
-      limit: ITEMS_PER_PAGE,
-      offset: offset.value,
+      sort: sort.value,
+      effort: effort.value,
+      level: level.value,
+      page: currentPage.value,
     });
 
     router.replace(canonicalRoute);
@@ -250,6 +267,9 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
     filters.value = {
       category: '',
     };
+    sort.value = undefined;
+    effort.value = undefined;
+    level.value = undefined;
     currentPage.value = 1;
   }
 

@@ -10,16 +10,18 @@
  */
 
 import type { RouteLocationRaw } from '#vue-router';
-import type { ResourceCategory } from '@/data/resourcesData';
+import type { ResourceCategory, ResourceEffort, ResourceLevel } from '@/data/resourcesData';
 
 // =============================================================================
 // CONSTANTS
 // =============================================================================
 
 const MAX_QUERY_LENGTH = 120;
-const MAX_LIMIT = 50;
-const MAX_OFFSET = 5000;
-const MAX_QUERYSTRING_LENGTH = 800;
+const MAX_QUERY_RAW_LENGTH = 512;
+const MAX_PAGE = 999;
+const MAX_LIMIT_COMPAT = 50;
+const MAX_OFFSET_COMPAT = 5000;
+const MAX_QUERYSTRING_LENGTH = 1024;
 
 const VALID_CATEGORIES = new Set<string>([
   'diagnostic',
@@ -29,7 +31,11 @@ const VALID_CATEGORIES = new Set<string>([
   'outillage',
 ]);
 
-const ALLOWLIST_KEYS = new Set(['q', 'category', 'limit', 'offset']);
+const VALID_EFFORTS = new Set<ResourceEffort>(['low', 'medium', 'high']);
+const VALID_LEVELS = new Set<ResourceLevel>(['intro', 'intermediate', 'advanced']);
+const VALID_SORTS = new Set<string>([]);
+
+const ALLOWLIST_KEYS = new Set(['q', 'category', 'sort', 'effort', 'level', 'page']);
 const FORBIDDEN_PARAM_PREFIXES = ['utm_'];
 const FORBIDDEN_PARAM_KEYS = [
   'gclid',
@@ -50,15 +56,19 @@ const CONTROL_CHARS = /[\u0000-\u001F\u007F]/g;
 export interface FiltersNormalized {
   q?: string;
   category?: ResourceCategory;
-  limit: number;
-  offset: number;
+  sort?: string;
+  effort?: ResourceEffort;
+  level?: ResourceLevel;
+  page: number;
 }
 
 export interface DeepLinkInput {
   q?: string;
   category?: ResourceCategory;
-  limit?: number;
-  offset?: number;
+  sort?: string;
+  effort?: ResourceEffort;
+  level?: ResourceLevel;
+  page?: number;
 }
 
 export type DeepLinkCanonicalizationReason =
@@ -79,11 +89,16 @@ export interface DeepLinkCanonicalizationResult {
 // SANITIZATION HELPERS
 // =============================================================================
 
-function sanitizeString(value: unknown, maxLength: number = MAX_QUERY_LENGTH): string {
+function sanitizeString(
+  value: unknown,
+  maxLength: number = MAX_QUERY_LENGTH,
+  rawLimit: number = MAX_QUERY_RAW_LENGTH
+): string {
   if (typeof value !== 'string') return '';
 
   try {
-    let result = value.normalize('NFKC');
+    let result = value.slice(0, rawLimit);
+    result = result.normalize('NFKC');
     result = result.replace(CONTROL_CHARS, '');
     result = result.replace(ZERO_WIDTH_CHARS, '');
     result = result.trim();
@@ -97,7 +112,7 @@ function sanitizeString(value: unknown, maxLength: number = MAX_QUERY_LENGTH): s
 }
 
 function normalizeQuery(value: unknown): string | undefined {
-  const sanitized = sanitizeString(value, MAX_QUERY_LENGTH);
+  const sanitized = sanitizeString(value, MAX_QUERY_LENGTH, MAX_QUERY_RAW_LENGTH);
   return sanitized.length > 0 ? sanitized : undefined;
 }
 
@@ -109,28 +124,63 @@ function normalizeCategory(value: unknown): ResourceCategory | undefined {
     : undefined;
 }
 
-function normalizeLimit(value: unknown, fallback: number): number {
+function normalizeSort(value: unknown): string | undefined {
+  if (typeof value !== 'string') return undefined;
+  const sanitized = sanitizeString(value, 40).toLowerCase();
+  return VALID_SORTS.has(sanitized) ? sanitized : undefined;
+}
+
+function normalizeEffort(value: unknown): ResourceEffort | undefined {
+  if (typeof value !== 'string') return undefined;
+  const sanitized = sanitizeString(value, 20).toLowerCase();
+  return VALID_EFFORTS.has(sanitized as ResourceEffort)
+    ? (sanitized as ResourceEffort)
+    : undefined;
+}
+
+function normalizeLevel(value: unknown): ResourceLevel | undefined {
+  if (typeof value !== 'string') return undefined;
+  const sanitized = sanitizeString(value, 20).toLowerCase();
+  return VALID_LEVELS.has(sanitized as ResourceLevel)
+    ? (sanitized as ResourceLevel)
+    : undefined;
+}
+
+function normalizePage(value: unknown, fallback: number): number {
   if (typeof value === 'string') {
     const parsed = parseInt(value, 10);
     if (!isNaN(parsed)) {
-      return Math.max(1, Math.min(parsed, MAX_LIMIT));
+      return Math.max(1, Math.min(parsed, MAX_PAGE));
     }
   }
   if (typeof value === 'number' && Number.isFinite(value)) {
-    return Math.max(1, Math.min(Math.floor(value), MAX_LIMIT));
+    return Math.max(1, Math.min(Math.floor(value), MAX_PAGE));
   }
   return fallback;
 }
 
-function normalizeOffset(value: unknown): number {
+function normalizeLimitCompat(value: unknown, fallback: number): number {
   if (typeof value === 'string') {
     const parsed = parseInt(value, 10);
     if (!isNaN(parsed)) {
-      return Math.max(0, Math.min(parsed, MAX_OFFSET));
+      return Math.max(1, Math.min(parsed, MAX_LIMIT_COMPAT));
     }
   }
   if (typeof value === 'number' && Number.isFinite(value)) {
-    return Math.max(0, Math.min(Math.floor(value), MAX_OFFSET));
+    return Math.max(1, Math.min(Math.floor(value), MAX_LIMIT_COMPAT));
+  }
+  return fallback;
+}
+
+function normalizeOffsetCompat(value: unknown): number {
+  if (typeof value === 'string') {
+    const parsed = parseInt(value, 10);
+    if (!isNaN(parsed)) {
+      return Math.max(0, Math.min(parsed, MAX_OFFSET_COMPAT));
+    }
+  }
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return Math.max(0, Math.min(Math.floor(value), MAX_OFFSET_COMPAT));
   }
   return 0;
 }
@@ -141,9 +191,6 @@ function normalizeQueryValue(value: unknown): string | null {
   }
   if (typeof value === 'number' && Number.isFinite(value)) {
     return String(value);
-  }
-  if (Array.isArray(value) && value.length === 1 && typeof value[0] === 'string') {
-    return value[0];
   }
   return null;
 }
@@ -175,8 +222,10 @@ function shallowEqualQuery(
 export const DEFAULT_FILTERS: FiltersNormalized = {
   q: undefined,
   category: undefined,
-  limit: 12,
-  offset: 0,
+  sort: undefined,
+  effort: undefined,
+  level: undefined,
+  page: 1,
 };
 
 export function parseResourcesDeepLink(
@@ -193,12 +242,23 @@ export function parseResourcesDeepLink(
     result.category = 'category' in query
       ? normalizeCategory(query['category'])
       : result.category;
-    result.limit = 'limit' in query
-      ? normalizeLimit(query['limit'], result.limit)
-      : result.limit;
-    result.offset = 'offset' in query
-      ? normalizeOffset(query['offset'])
-      : result.offset;
+    result.sort = 'sort' in query ? normalizeSort(query['sort']) : result.sort;
+    result.effort = 'effort' in query ? normalizeEffort(query['effort']) : result.effort;
+    result.level = 'level' in query ? normalizeLevel(query['level']) : result.level;
+    const pageValue = 'page' in query
+      ? normalizePage(query['page'], result.page)
+      : undefined;
+    if (pageValue) {
+      result.page = pageValue;
+    } else if ('offset' in query || 'limit' in query) {
+      const limit = 'limit' in query
+        ? normalizeLimitCompat(query['limit'], 12)
+        : 12;
+      const offset = 'offset' in query
+        ? normalizeOffsetCompat(query['offset'])
+        : 0;
+      result.page = normalizePage(Math.floor(offset / limit) + 1, result.page);
+    }
   } catch {
     if (import.meta.dev) {
       console.debug('[resourcesDeepLink] dropped invalid query param');
@@ -228,17 +288,25 @@ export function buildResourcesDeepLink(
       query.category = category;
     }
 
-    if ('limit' in input) {
-      const limit = normalizeLimit(input.limit, DEFAULT_FILTERS.limit);
-      if (limit !== DEFAULT_FILTERS.limit) {
-        query.limit = String(limit);
-      }
+    const sort = normalizeSort(input.sort);
+    if (sort) {
+      query.sort = sort;
     }
 
-    if ('offset' in input) {
-      const offset = normalizeOffset(input.offset);
-      if (offset > 0) {
-        query.offset = String(offset);
+    const effort = normalizeEffort(input.effort);
+    if (effort) {
+      query.effort = effort;
+    }
+
+    const level = normalizeLevel(input.level);
+    if (level) {
+      query.level = level;
+    }
+
+    if ('page' in input) {
+      const page = normalizePage(input.page, DEFAULT_FILTERS.page);
+      if (page !== DEFAULT_FILTERS.page) {
+        query.page = String(page);
       }
     }
   } catch {
@@ -259,8 +327,10 @@ export function parseResourcesDeepLinkWithMeta(
   const canonicalRoute = buildResourcesDeepLink({
     q: filters.q,
     category: filters.category || undefined,
-    limit: filters.limit,
-    offset: filters.offset,
+    sort: filters.sort,
+    effort: filters.effort,
+    level: filters.level,
+    page: filters.page,
   });
   const canonicalQuery = typeof canonicalRoute === 'string'
     ? {}
