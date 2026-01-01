@@ -19,7 +19,7 @@
         <p class="pp-journey-body">
           Cette section regroupe des ressources publiques pour continuer a ton rythme.
         </p>
-        <p class="text-sm text-[color:var(--color-text-muted)]">
+        <p class="pp-stepresources__disclaimer">
           Aucun contenu n'est partage. Tout reste local.
         </p>
 
@@ -28,11 +28,11 @@
             <div class="flex items-center justify-between gap-3">
               <div>
                 <p class="text-sm font-semibold">{{ item.title }}</p>
-                <p class="text-xs text-[color:var(--color-text-muted)]">{{ item.summary }}</p>
-                <p class="text-[0.7rem] uppercase tracking-wide text-[color:var(--color-text-muted)]">
+                <p class="pp-stepresources__summary">{{ item.summary }}</p>
+                <p class="pp-stepresources__meta">
                   {{ item.categoryLabel }}
                 </p>
-                <p class="text-xs text-[color:var(--color-text-muted)]">{{ item.reason }}</p>
+                <p class="pp-stepresources__reason">{{ item.reason }}</p>
               </div>
               <NuxtLink class="pp-cta-secondary text-xs" :to="item.link">
                 Voir
@@ -103,3 +103,28 @@ const resourceItems = computed(() => {
 
 const resourcesLink = buildResourcesDeepLink({});
 </script>
+
+<style scoped>
+@reference "@/assets/css/main.css";
+
+.pp-stepresources__disclaimer {
+  @apply text-sm;
+  color: var(--color-text-muted);
+}
+
+.pp-stepresources__summary {
+  @apply text-xs;
+  color: var(--color-text-muted);
+}
+
+.pp-stepresources__meta {
+  @apply uppercase tracking-wide;
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+}
+
+.pp-stepresources__reason {
+  @apply text-xs;
+  color: var(--color-text-muted);
+}
+</style>
