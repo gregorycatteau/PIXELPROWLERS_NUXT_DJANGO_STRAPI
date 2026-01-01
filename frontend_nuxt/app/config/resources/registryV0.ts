@@ -11,20 +11,25 @@ export type ResourceLevel = 'intro' | 'intermediate' | 'advanced';
 
 export type ResourceEffort = 'low' | 'medium' | 'high';
 
+export type ResourceStatus = 'draft' | 'published';
+
 export type ResourceV0 = {
   id: string;
   slug: string;
   title: string;
   summary: string;
+  outcome?: string;
   category: ResourceCategory;
   level: ResourceLevel;
   effort: ResourceEffort;
+  status: ResourceStatus;
   updatedAt: string;
   relatedJourneys: string[];
   relatedResourceSlugs: string[];
   contentBlocks?: Array<{
     title: string;
     bullets: string[];
+    kind?: 'action' | 'guide' | 'checklist';
   }>;
 };
 
