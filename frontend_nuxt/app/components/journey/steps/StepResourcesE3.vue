@@ -32,6 +32,7 @@
                 <p class="text-[0.7rem] uppercase tracking-wide text-[color:var(--color-text-muted)]">
                   {{ item.categoryLabel }}
                 </p>
+                <p class="text-xs text-[color:var(--color-text-muted)]">{{ item.reason }}</p>
               </div>
               <NuxtLink class="pp-cta-secondary text-xs" :to="item.link">
                 Voir
@@ -62,6 +63,10 @@ import PPCard from '~/components/PPCard.vue';
 import { buildResourcesDeepLink } from '~/utils/deeplinks/resourcesDeepLink';
 import { listResources } from '@/config/resources/registryV0';
 import { RESOURCE_CATEGORY_LABELS } from '@/data/resourcesData';
+import { getBilanAdapter } from '~/adapters/bilan/registry';
+import { createEmptyUniversalBilanViewModel, withUniversalBilanDefaults } from '~/types/bilan';
+import { recommendResourcesFromBilan } from '@/utils/resources/recommendResourcesFromBilan';
+import { safeRoutePath } from '@/utils/cta/safeCta';
 
 const props = defineProps<{
   manifest: JourneyManifestV1;
@@ -69,23 +74,31 @@ const props = defineProps<{
 }>();
 
 const allResources = listResources();
+const resourcesBySlug = new Map(allResources.map((resource) => [resource.slug, resource]));
+
+const emptyVm = createEmptyUniversalBilanViewModel();
+const adapter = computed(() => getBilanAdapter(props.manifest.id));
+const vm = computed(() => withUniversalBilanDefaults(adapter.value?.buildViewModel() ?? emptyVm));
 
 const resourceItems = computed(() => {
-  const journeyId = props.manifest.id;
-  const matched = allResources.filter((resource) =>
-    resource.relatedJourneys.includes(journeyId)
-  );
-  const source = matched.length > 0 ? matched : allResources;
-  return source.slice(0, 3).map((resource) => ({
-    id: resource.id,
-    title: resource.title,
-    summary: resource.summary,
-    categoryLabel: RESOURCE_CATEGORY_LABELS[resource.category],
-    link: buildResourcesDeepLink({
-      category: resource.category,
-      q: resource.title,
-    }),
-  }));
+  const recommendations = recommendResourcesFromBilan({
+    panorama: vm.value.panorama,
+    sections: vm.value.sections,
+    modules: vm.value.modules,
+  });
+
+  return recommendations.flatMap((reco) => {
+    const resource = resourcesBySlug.get(reco.slug);
+    if (!resource) return [];
+    return [{
+      id: resource.id,
+      title: resource.title,
+      summary: resource.summary,
+      categoryLabel: RESOURCE_CATEGORY_LABELS[resource.category],
+      reason: reco.reason,
+      link: safeRoutePath(`/ressources/${resource.slug}`),
+    }];
+  });
 });
 
 const resourcesLink = buildResourcesDeepLink({});
