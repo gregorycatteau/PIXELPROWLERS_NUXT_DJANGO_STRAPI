@@ -118,5 +118,65 @@ export const RESOURCE_REGISTRY_V0 = [
     updatedAt: '2025-12-31',
     relatedJourneys: ['p2', 'p3', 'p4', 'p5'],
     relatedResourceSlugs: ['kit-outils-coordination']
+  },
+  {
+    id: 'res_v0_011',
+    slug: 'audit-communication-flux',
+    title: 'Audit communication & flux',
+    summary: 'Un diagnostic rapide pour repérer les ruptures de communication et les goulets de coordination.',
+    category: 'diagnostic',
+    level: 'intro',
+    effort: 'low',
+    updatedAt: '2025-12-31',
+    relatedJourneys: ['p1', 'p2', 'p3', 'p4', 'p5'],
+    relatedResourceSlugs: ['atelier-clarte-decisions']
+  },
+  {
+    id: 'res_v0_012',
+    slug: 'checklist-securite-baseline',
+    title: 'Checklist securite baseline',
+    summary: 'Les gestes essentiels pour petits collectifs : mots de passe, 2FA, phishing, sauvegardes.',
+    category: 'securite',
+    level: 'intro',
+    effort: 'low',
+    updatedAt: '2025-12-31',
+    relatedJourneys: ['p1', 'p2', 'p3', 'p4', 'p5'],
+    relatedResourceSlugs: ['protocole-alerte-epuisement']
+  },
+  {
+    id: 'res_v0_013',
+    slug: 'landing-structure-claire',
+    title: 'Landing structure claire',
+    summary: 'Un plan simple pour structurer une page d accueil ou une landing sans dispersion.',
+    category: 'ux',
+    level: 'intro',
+    effort: 'medium',
+    updatedAt: '2025-12-31',
+    relatedJourneys: ['p2', 'p3', 'p4', 'p5'],
+    relatedResourceSlugs: ['atelier-clarte-decisions']
+  },
+  {
+    id: 'res_v0_014',
+    slug: 'mini-plan-seo-local',
+    title: 'Mini plan SEO local',
+    summary: 'Un plan d action court pour rendre le site trouvable sans dependance a la pub.',
+    category: 'outillage',
+    level: 'intermediate',
+    effort: 'medium',
+    updatedAt: '2025-12-31',
+    relatedJourneys: ['p2', 'p3', 'p4', 'p5'],
+    relatedResourceSlugs: ['landing-structure-claire']
+  },
+  {
+    id: 'res_v0_015',
+    slug: 'rgpd-accessibilite-starter',
+    title: 'RGPD + accessibilite starter',
+    summary: 'Les bases pour etre propre et lisible : mentions, consentement sobre, contrastes, titres.',
+    category: 'gouvernance',
+    level: 'intro',
+    effort: 'low',
+    updatedAt: '2025-12-31',
+    relatedJourneys: ['p2', 'p3', 'p4', 'p5'],
+    relatedResourceSlugs: ['guide-roles-explicites']
   }
 ];
