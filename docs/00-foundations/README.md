@@ -3,7 +3,7 @@
 > **Périmètre** : Règles, conventions, environnements, charte SSOT
 
 <!-- GENERATED:START -->
-<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2025-12-31 -->
+<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2026-01-01 -->
 
 ## Documents
 

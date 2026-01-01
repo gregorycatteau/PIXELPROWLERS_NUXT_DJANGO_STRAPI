@@ -3,7 +3,7 @@
 > **Périmètre** : Brouillons/archives non-canon incluant legacy V1.0 et V1.2
 
 <!-- GENERATED:START -->
-<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2025-12-31 -->
+<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2026-01-01 -->
 
 ## Documents
 
