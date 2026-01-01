@@ -10,7 +10,13 @@
       <template #eyebrow>Ressource</template>
       <template #title>{{ resource.title }}</template>
       <template #lead>
-        {{ resource.summary }}
+        <div class="pp-resource-detail__lead">
+          <p class="pp-resource-detail__summary">{{ resource.summary }}</p>
+          <div v-if="resource.outcome" class="pp-resource-detail__outcome">
+            <span class="pp-resource-detail__outcome-label">Resultat / Promesse</span>
+            <span class="pp-resource-detail__outcome-text">{{ resource.outcome }}</span>
+          </div>
+        </div>
       </template>
     </PPPageHeader>
 
@@ -145,6 +151,39 @@ function getRouteSlugInput(value: unknown): string | null {
   display: flex;
   flex-wrap: wrap;
   gap: var(--pp-spacing-2, 0.5rem);
+}
+
+.pp-resource-detail__lead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pp-spacing-2, 0.5rem);
+}
+
+.pp-resource-detail__summary {
+  margin: 0;
+}
+
+.pp-resource-detail__outcome {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pp-spacing-1, 0.25rem);
+}
+
+.pp-resource-detail__outcome-label {
+  font-size: var(--pp-font-size-xs, 0.75rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.pp-resource-detail__outcome-text {
+  font-size: var(--pp-font-size-sm, 0.875rem);
+  color: var(--color-text);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .pp-resource-detail__cta {

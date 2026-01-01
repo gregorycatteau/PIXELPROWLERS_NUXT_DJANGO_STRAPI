@@ -18,6 +18,11 @@
       {{ description }}
     </p>
 
+    <!-- Outcome -->
+    <p v-if="outcome" class="pp-resource-card__outcome">
+      {{ outcome }}
+    </p>
+
     <!-- Meta row: chips (kind, effort, impact) -->
     <div v-if="hasMetaOrChips" class="pp-resource-card__meta">
       <PPChip v-if="meta?.kind" variant="tag" size="sm">
@@ -98,6 +103,8 @@ export interface PPResourceCardProps {
   title: string;
   /** Optional description */
   description?: string;
+  /** Optional outcome/promise */
+  outcome?: string;
   /** External URL (mutually exclusive with `to`) */
   href?: string;
   /** Internal route (mutually exclusive with `href`) */
@@ -114,6 +121,7 @@ export interface PPResourceCardProps {
 
 const props = withDefaults(defineProps<PPResourceCardProps>(), {
   description: undefined,
+  outcome: undefined,
   href: undefined,
   to: undefined,
   meta: undefined,
@@ -199,6 +207,16 @@ const sanitizedHref = computed(() => {
   font-size: var(--pp-font-size-sm, 0.875rem);
   color: var(--color-text-muted);
   line-height: 1.5;
+}
+
+.pp-resource-card__outcome {
+  font-size: var(--pp-font-size-xs, 0.75rem);
+  color: var(--color-text);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .pp-resource-card__meta {

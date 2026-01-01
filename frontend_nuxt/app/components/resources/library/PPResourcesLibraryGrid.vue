@@ -17,6 +17,7 @@
       :key="resource.id"
       :title="resource.title"
       :description="resource.summary"
+      :outcome="resource.outcome"
       :to="resourceLink(resource)"
       :meta="{
         kind: getMetaKind(resource),
