@@ -24,6 +24,7 @@ import {
 import {
   buildResourcesDeepLink,
   parseResourcesDeepLink,
+  parseResourcesDeepLinkWithMeta,
 } from '@/utils/deeplinks/resourcesDeepLink';
 import { listResources } from '@/config/resources/registryV0';
 
@@ -33,18 +34,6 @@ import { listResources } from '@/config/resources/registryV0';
 
 const ITEMS_PER_PAGE = 12;
 const SEARCH_DEBOUNCE_MS = 300;
-const MAX_QUERY_STRING_LENGTH = 800;
-
-const FORBIDDEN_PARAM_PREFIXES = [
-  'utm_',
-  'gclid',
-  'fbclid',
-  'ref',
-  'source',
-  'campaign',
-  'debug',
-];
-
 const ZERO_WIDTH_CHARS = /[\u200B-\u200D\u2060\uFEFF\u00AD]/g;
 
 // =============================================================================
@@ -139,67 +128,15 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
   // URL CANONICALIZATION (soft)
   // ---------------------------------------------------------------------------
 
-  function isDirtyUrl(): boolean {
-    try {
-      const query = route.query;
-      const fullPath = route.fullPath;
-      const queryStart = fullPath.indexOf('?');
-      if (queryStart !== -1) {
-        const queryString = fullPath.slice(queryStart);
-        if (queryString.length > MAX_QUERY_STRING_LENGTH) {
-          return true;
-        }
-      }
-
-      const queryKeys = Object.keys(query);
-      for (const key of queryKeys) {
-        const keyLower = key.toLowerCase();
-        for (const prefix of FORBIDDEN_PARAM_PREFIXES) {
-          if (keyLower.startsWith(prefix)) {
-            return true;
-          }
-        }
-      }
-
-      const parsed = parseResourcesDeepLink(query);
-      const rebuilt = buildResourcesDeepLink({
-        q: parsed.q,
-        category: parsed.category || undefined,
-        limit: parsed.limit,
-        offset: parsed.offset,
-      });
-
-      const rebuiltQuery = typeof rebuilt === 'string'
-        ? {}
-        : (rebuilt.query ?? {});
-
-      for (const key of queryKeys) {
-        if (!(key in rebuiltQuery)) {
-          return true;
-        }
-      }
-
-      return false;
-    } catch {
-      return true;
-    }
-  }
-
   function canonicalizeUrlIfNeeded(): void {
     if (hasCanonicalizedOnce) return;
-    if (!isDirtyUrl()) return;
+    const canonical = parseResourcesDeepLinkWithMeta(route.query, route.fullPath);
+    if (!canonical.shouldReplace) return;
 
     hasCanonicalizedOnce = true;
 
     try {
-      const parsed = parseResourcesDeepLink(route.query);
-      const canonicalRoute = buildResourcesDeepLink({
-        q: parsed.q,
-        category: parsed.category || undefined,
-        limit: parsed.limit,
-        offset: parsed.offset,
-      });
-      router.replace(canonicalRoute);
+      router.replace(canonical.canonicalRoute);
     } catch {
       // Silent failure
     }
