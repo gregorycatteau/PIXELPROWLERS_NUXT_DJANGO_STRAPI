@@ -22,6 +22,10 @@ export type ResourceV0 = {
   updatedAt: string;
   relatedJourneys: string[];
   relatedResourceSlugs: string[];
+  contentBlocks?: Array<{
+    title: string;
+    bullets: string[];
+  }>;
 };
 
 const RESOURCES_V0: ResourceV0[] = RESOURCE_REGISTRY_V0 as ResourceV0[];

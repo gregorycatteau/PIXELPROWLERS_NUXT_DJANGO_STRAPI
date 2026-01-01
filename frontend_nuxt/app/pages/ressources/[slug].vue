@@ -21,6 +21,33 @@
         <PPChip variant="stat" size="sm">{{ effortLabel }}</PPChip>
       </div>
 
+      <div class="pp-resource-detail__content">
+        <template v-if="hasContentBlocks">
+          <section
+            v-for="(block, index) in resource.contentBlocks"
+            :key="`${block.title}-${index}`"
+            class="pp-resource-detail__block"
+          >
+            <PPSectionHeader
+              as="h2"
+              density="compact"
+              :title="block.title"
+            />
+            <ul class="pp-resource-detail__list">
+              <li v-for="(item, itemIndex) in block.bullets" :key="itemIndex">
+                {{ item }}
+              </li>
+            </ul>
+          </section>
+        </template>
+        <PPEmptyState
+          v-else
+          icon="folder"
+          title="Contenu en preparation"
+          description="Cette ressource arrive bientot."
+        />
+      </div>
+
       <div class="pp-resource-detail__cta">
         <PPButton variant="primary" disabled>Telecharger (bientot)</PPButton>
         <NuxtLink class="pp-journey-cta-secondary text-xs" to="/ressources">
@@ -39,18 +66,28 @@ import {
   RESOURCE_EFFORT_LABELS,
   RESOURCE_LEVEL_LABELS,
 } from '@/data/resourcesData';
-import { getResourceBySlug, type ResourceV0 } from '@/config/resources/registryV0';
+import { listResources, type ResourceV0 } from '@/config/resources/registryV0';
+import { normalizeResourceSlug } from '@/utils/resources/normalizeResourceSlug';
 
 const route = useRoute();
+const resourcesBySlug = new Map(
+  listResources().map((resource) => [resource.slug, resource])
+);
 
-const slugParam = computed(() => String(route.params.slug ?? ''));
+definePageMeta({
+  validate: (route) => {
+    const slug = normalizeResourceSlug(getRouteSlugInput(route.params.slug));
+    if (!slug) return false;
+    return resourcesBySlug.has(slug);
+  }
+});
 
 const resource = computed<ResourceV0>(() => {
-  const slug = sanitizeSlug(slugParam.value);
+  const slug = normalizeResourceSlug(getRouteSlugInput(route.params.slug));
   if (!slug) {
     throw createError({ statusCode: 404, statusMessage: 'Not Found' });
   }
-  const found = getResourceBySlug(slug);
+  const found = resourcesBySlug.get(slug) ?? null;
   if (!found) {
     throw createError({ statusCode: 404, statusMessage: 'Not Found' });
   }
@@ -65,6 +102,9 @@ const effortLabel = computed(() =>
 );
 const categoryLabel = computed(() =>
   RESOURCE_CATEGORY_LABELS[resource.value.category]
+);
+const hasContentBlocks = computed(
+  () => (resource.value.contentBlocks?.length ?? 0) > 0
 );
 
 useHead(() => ({
@@ -81,11 +121,13 @@ useHead(() => ({
   ],
 }));
 
-function sanitizeSlug(value: string): string | null {
-  const normalized = value.normalize('NFKC').trim().toLowerCase();
-  if (!normalized) return null;
-  if (!/^[a-z0-9-]{3,64}$/.test(normalized)) return null;
-  return normalized;
+function getRouteSlugInput(value: unknown): string | null {
+  if (typeof value === 'string') return value;
+  if (Array.isArray(value)) {
+    if (value.length !== 1) return null;
+    return value[0] ?? null;
+  }
+  return null;
 }
 
 </script>
@@ -110,5 +152,19 @@ function sanitizeSlug(value: string): string | null {
   flex-wrap: wrap;
   gap: var(--pp-spacing-3, 0.75rem);
   align-items: center;
+}
+
+.pp-resource-detail__content {
+  @apply flex flex-col gap-4;
+}
+
+.pp-resource-detail__block {
+  @apply flex flex-col gap-2;
+}
+
+.pp-resource-detail__list {
+  @apply grid gap-2 pl-5 text-sm;
+  list-style: disc;
+  color: var(--color-text-muted);
 }
 </style>

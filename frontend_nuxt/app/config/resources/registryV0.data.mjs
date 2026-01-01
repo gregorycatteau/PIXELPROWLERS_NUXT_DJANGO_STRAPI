@@ -129,7 +129,33 @@ export const RESOURCE_REGISTRY_V0 = [
     effort: 'low',
     updatedAt: '2025-12-31',
     relatedJourneys: ['p1', 'p2', 'p3', 'p4', 'p5'],
-    relatedResourceSlugs: ['atelier-clarte-decisions']
+    relatedResourceSlugs: ['atelier-clarte-decisions'],
+    contentBlocks: [
+      {
+        title: 'Ce que tu observes',
+        bullets: [
+          'Liste les moments ou une decision a ete mal comprise.',
+          'Note les canaux utilises (reunion, chat, mail) pour chaque info critique.',
+          'Repere les messages qui ont du etre repetes plusieurs fois.'
+        ]
+      },
+      {
+        title: 'Signaux de rupture',
+        bullets: [
+          'Informations importantes non partagees a temps.',
+          'Deux personnes font la meme action en double.',
+          'Les urgences arrivent toujours par la meme personne.'
+        ]
+      },
+      {
+        title: 'Premiers ajustements',
+        bullets: [
+          'Decide un canal unique pour chaque type d info.',
+          'Clarifie qui confirme la reception.',
+          'Ajoute un recap simple en fin de semaine.'
+        ]
+      }
+    ]
   },
   {
     id: 'res_v0_012',
@@ -141,7 +167,33 @@ export const RESOURCE_REGISTRY_V0 = [
     effort: 'low',
     updatedAt: '2025-12-31',
     relatedJourneys: ['p1', 'p2', 'p3', 'p4', 'p5'],
-    relatedResourceSlugs: ['protocole-alerte-epuisement']
+    relatedResourceSlugs: ['protocole-alerte-epuisement'],
+    contentBlocks: [
+      {
+        title: 'Comptes et acces',
+        bullets: [
+          'Active la double authentification partout ou c est possible.',
+          'Supprime les comptes qui ne sont plus utilises.',
+          'Utilise un gestionnaire de mots de passe pour l equipe.'
+        ]
+      },
+      {
+        title: 'Protection phishing',
+        bullets: [
+          'Ne clique pas sur une piece jointe si l email est ambigu.',
+          'Verifie l adresse exacte de l expediteur.',
+          'Partage un exemple d arnaque recent au collectif.'
+        ]
+      },
+      {
+        title: 'Sauvegardes minimales',
+        bullets: [
+          'Identifie les trois dossiers critiques a sauvegarder.',
+          'Teste une restauration simple une fois par trimestre.',
+          'Range les sauvegardes hors du poste principal.'
+        ]
+      }
+    ]
   },
   {
     id: 'res_v0_013',
@@ -153,7 +205,33 @@ export const RESOURCE_REGISTRY_V0 = [
     effort: 'medium',
     updatedAt: '2025-12-31',
     relatedJourneys: ['p2', 'p3', 'p4', 'p5'],
-    relatedResourceSlugs: ['atelier-clarte-decisions']
+    relatedResourceSlugs: ['atelier-clarte-decisions'],
+    contentBlocks: [
+      {
+        title: 'Message principal',
+        bullets: [
+          'Ecris une phrase qui dit qui tu aides et avec quoi.',
+          'Ajoute une promesse concrete en une phrase.',
+          'Supprime tout ce qui ne sert pas cette phrase.'
+        ]
+      },
+      {
+        title: 'Structure minimale',
+        bullets: [
+          'Un hero clair avec un appel a action.',
+          'Trois preuves ou exemples concrets.',
+          'Une section reponse aux questions frequentes.'
+        ]
+      },
+      {
+        title: 'Verification rapide',
+        bullets: [
+          'Demande a quelqu un de reformuler en 10 secondes.',
+          'Verifie la lisibilite sur mobile.',
+          'Supprime une section si elle n est pas comprise.'
+        ]
+      }
+    ]
   },
   {
     id: 'res_v0_014',
@@ -165,7 +243,33 @@ export const RESOURCE_REGISTRY_V0 = [
     effort: 'medium',
     updatedAt: '2025-12-31',
     relatedJourneys: ['p2', 'p3', 'p4', 'p5'],
-    relatedResourceSlugs: ['landing-structure-claire']
+    relatedResourceSlugs: ['landing-structure-claire'],
+    contentBlocks: [
+      {
+        title: 'Priorites immediates',
+        bullets: [
+          'Choisis trois mots cles naturels lies a ton activite.',
+          'Utilise ces mots dans les titres de page.',
+          'Verifie que chaque page a un titre unique.'
+        ]
+      },
+      {
+        title: 'Contenus utiles',
+        bullets: [
+          'Publie une page par question frequente.',
+          'Ajoute un exemple concret par page.',
+          'Mets a jour les infos obsoletes.'
+        ]
+      },
+      {
+        title: 'Signal local',
+        bullets: [
+          'Indique clairement la zone geographique servie.',
+          'Ajoute un contact simple et stable.',
+          'Demande un retour client pour affiner le vocabulaire.'
+        ]
+      }
+    ]
   },
   {
     id: 'res_v0_015',
@@ -177,6 +281,32 @@ export const RESOURCE_REGISTRY_V0 = [
     effort: 'low',
     updatedAt: '2025-12-31',
     relatedJourneys: ['p2', 'p3', 'p4', 'p5'],
-    relatedResourceSlugs: ['guide-roles-explicites']
+    relatedResourceSlugs: ['guide-roles-explicites'],
+    contentBlocks: [
+      {
+        title: 'RGPD minimum viable',
+        bullets: [
+          'Liste les donnees collectees et pourquoi.',
+          'Limite la collecte au strict necessaire.',
+          'Ajoute un point de contact pour suppression.'
+        ]
+      },
+      {
+        title: 'Accessibilite simple',
+        bullets: [
+          'Verifie le contraste texte et fond.',
+          'Utilise des titres clairs et ordonnes.',
+          'Evite les textes trop petits sur mobile.'
+        ]
+      },
+      {
+        title: 'Verification express',
+        bullets: [
+          'Fais relire par une personne externe.',
+          'Teste la navigation au clavier.',
+          'Note les blocages et corrige en priorite.'
+        ]
+      }
+    ]
   }
 ];
