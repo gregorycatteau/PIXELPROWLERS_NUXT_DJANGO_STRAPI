@@ -4,12 +4,13 @@
     "app/composables/useResourcesLibrary.ts"
   ],
   "r2": [
-    "app/pages/ressources.vue",
+    "app/layouts/default.vue",
+    "app/pages/ressources/[slug].vue",
     "app/composables/useResourcesLibrary.ts",
-    "app/components/resources/library/PPResourcesLibraryShell.vue",
-    "app/components/resources/library/PPResourcesLibraryFilters.vue",
-    "app/components/resources/library/PPResourcesLibraryGrid.vue",
-    "app/components/resources/library/PPResourcesLibraryPagination.vue"
+    "app/utils/deeplinks/resourcesDeepLink.ts",
+    "app/components/journey/bilan/ResourcesActionsPanel.vue",
+    "app/components/journey/bilan/EngagementLevelsPanel.vue",
+    "app/components/resources/library/PPResourcesLibraryGrid.vue"
   ],
   "r3": [
     "app/pages/ressources.vue",

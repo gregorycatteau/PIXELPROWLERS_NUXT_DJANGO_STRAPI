@@ -56,7 +56,7 @@
 
       <div class="pp-resource-detail__cta">
         <PPButton variant="primary" disabled>Telecharger (bientot)</PPButton>
-        <NuxtLink class="pp-journey-cta-secondary text-xs" to="/ressources">
+        <NuxtLink class="pp-journey-cta-secondary text-xs" :to="resourcesLibraryLink">
           Retour au catalogue
         </NuxtLink>
       </div>
@@ -73,6 +73,7 @@ import {
   RESOURCE_LEVEL_LABELS,
 } from '@/data/resourcesData';
 import { listResources, type ResourceV0 } from '@/config/resources/registryV0';
+import { buildResourcesDeepLink } from '@/utils/deeplinks/resourcesDeepLink';
 import { normalizeResourceSlug } from '@/utils/resources/normalizeResourceSlug';
 
 const route = useRoute();
@@ -115,6 +116,7 @@ const effortLabel = computed(() =>
 const categoryLabel = computed(() =>
   RESOURCE_CATEGORY_LABELS[resource.value.category]
 );
+const resourcesLibraryLink = buildResourcesDeepLink({});
 const hasContentBlocks = computed(
   () => (resource.value.contentBlocks?.length ?? 0) > 0
 );

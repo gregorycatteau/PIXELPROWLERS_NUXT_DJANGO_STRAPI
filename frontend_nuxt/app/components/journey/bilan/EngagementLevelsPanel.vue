@@ -38,6 +38,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import type { CtaTarget, EngagementLevelId } from '~/config/engagement/types';
+import { buildResourcesDeepLink } from '~/utils/deeplinks/resourcesDeepLink';
 import { safeRoutePath } from '~/utils/cta/safeCta';
 
 type EngagementLevel = {
@@ -63,7 +64,7 @@ const emit = defineEmits<{
 const introParagraphs = computed(() => (props.intro ?? '').split(/\n\n+/).filter(Boolean));
 
 const CONTACT_ROUTE = safeRoutePath('/contact');
-const RESOURCES_ROUTE = safeRoutePath('/ressources');
+const RESOURCES_ROUTE = buildResourcesDeepLink({});
 
 const safeRouteTarget = (target?: string | null) => {
   if (!target) return null;

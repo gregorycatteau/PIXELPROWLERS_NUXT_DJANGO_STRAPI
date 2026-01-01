@@ -22,7 +22,7 @@
         <nav class="SiteNav">
           <NuxtLink
             v-for="item in navItems"
-            :key="item.to"
+            :key="item.key"
             :to="item.to"
             class="nav-link"
           >
@@ -70,7 +70,7 @@
             <div class="MobileMenuLinks" ref="menuLinks">
               <NuxtLink
                 v-for="item in navItems"
-                :key="item.to"
+                :key="item.key"
                 :to="item.to"
                 class="MobileNavLink MobileNavLinkIcon"
                 @click="closeMenu"
@@ -102,15 +102,18 @@
 
 <script setup lang="ts">
 import { nextTick, onBeforeUnmount, ref, watch } from 'vue';
+import { buildResourcesDeepLink } from '@/utils/deeplinks/resourcesDeepLink';
+
+const resourcesLink = buildResourcesDeepLink({});
 
 const navItems = [
-  { to: '/', label: 'Accueil', icon: '🏠' },
-  { to: '/a-propos', label: 'À propos', icon: 'ℹ️' },
-  { to: '/relinium', label: 'Relinium', icon: '🧪' },
-  { to: '/accompagnement-formation', label: 'Accompagnement & formation', icon: '🛠️' },
-  { to: '/blog', label: 'Blog', icon: '📰' },
-  { to: '/ressources', label: 'Ressources', icon: '📚' },
-  { to: '/contact', label: 'Contact', icon: '✉️' }
+  { key: 'home', to: '/', label: 'Accueil', icon: '🏠' },
+  { key: 'about', to: '/a-propos', label: 'À propos', icon: 'ℹ️' },
+  { key: 'relinium', to: '/relinium', label: 'Relinium', icon: '🧪' },
+  { key: 'accompagnement', to: '/accompagnement-formation', label: 'Accompagnement & formation', icon: '🛠️' },
+  { key: 'blog', to: '/blog', label: 'Blog', icon: '📰' },
+  { key: 'resources', to: resourcesLink, label: 'Ressources', icon: '📚' },
+  { key: 'contact', to: '/contact', label: 'Contact', icon: '✉️' }
 ];
 
 const isMenuOpen = ref(false);

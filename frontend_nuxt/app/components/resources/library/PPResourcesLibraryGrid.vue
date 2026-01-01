@@ -33,12 +33,14 @@
 </template>
 
 <script setup lang="ts">
+import type { RouteLocationRaw } from '#vue-router';
 import {
   RESOURCE_CATEGORY_LABELS,
   RESOURCE_EFFORT_LABELS,
   RESOURCE_LEVEL_LABELS,
   type ResourceItem,
 } from '@/data/resourcesData';
+import { buildResourcesDeepLink } from '@/utils/deeplinks/resourcesDeepLink';
 import { safeRoutePath } from '@/utils/cta/safeCta';
 
 // -----------------------------------------------------------------------------
@@ -80,11 +82,11 @@ function getMetaKind(resource: ResourceItem): 'tool' | 'read' | 'checklist' {
   return 'read';
 }
 
-function resourceLink(resource: ResourceItem): string {
+function resourceLink(resource: ResourceItem): RouteLocationRaw {
   try {
     return safeRoutePath(`/ressources/${resource.slug}`);
   } catch {
-    return '/ressources';
+    return buildResourcesDeepLink({});
   }
 }
 </script>

@@ -117,6 +117,7 @@
 import { computed, ref } from 'vue';
 import type { ResourcesActionsItemVM } from '~/types/bilan';
 import { safeFilePath, safeRoutePath } from '~/utils/cta/safeCta';
+import type { RouteLocationRaw } from '#vue-router';
 import { buildResourcesDeepLink } from '~/utils/deeplinks/resourcesDeepLink';
 import type { ResourceMeta, ResourceBadge } from '~/components/PPResourceCard.vue';
 
@@ -151,7 +152,7 @@ const filteredLibrary = computed(() => {
 });
 
 const CONTACT_ROUTE = safeRoutePath('/contact');
-const RESOURCES_ROUTE = safeRoutePath('/ressources');
+const RESOURCES_ROUTE = buildResourcesDeepLink({});
 
 /**
  * Deep link vers /ressources filtre P1 (SafeDeepLinkKit)
@@ -192,7 +193,7 @@ const getExternalHref = (item: ResourcesActionsItemVM): string | undefined => {
 /**
  * Get internal route if applicable
  */
-const getInternalRoute = (item: ResourcesActionsItemVM): string | undefined => {
+const getInternalRoute = (item: ResourcesActionsItemVM): RouteLocationRaw | undefined => {
   if (item.cta.type === 'contact') return CONTACT_ROUTE;
   if (item.cta.type === 'resources') return RESOURCES_ROUTE;
   if (item.cta.type === 'route') {
