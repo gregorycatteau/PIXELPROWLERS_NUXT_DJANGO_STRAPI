@@ -2,11 +2,13 @@ import ABOUT_PAGE_V1 from '../../../docs/60-legal/ABOUT_PAGE_V1.md?raw';
 
 export type AboutStatus = 'draft' | 'active' | 'stable' | 'deprecated' | 'archived';
 
+// Élément de liste structuré (label + description courte).
 export type AboutListItem = {
   label: string;
   value: string;
 };
 
+// Section éditoriale avec texte et listes associées.
 export type AboutSection = {
   title: string;
   paragraphs: string[];
@@ -19,6 +21,12 @@ export type AboutData = {
   valeurs: AboutSection;
   approche: AboutSection;
   histoire: AboutSection;
+  methodologie: AboutSection;
+  reglesDuJeu: AboutSection;
+  deroulement: AboutSection;
+  pourquoiConfiance: AboutSection;
+  garanties: AboutSection;
+  valeursIncarnees: AboutSection;
   pourquoiChoisir: AboutSection;
   nextSteps: AboutSection;
   noteAuthenticite: AboutSection;
@@ -147,6 +155,12 @@ export const useAbout = (): AboutData => {
     valeurs: extractSection(sections, 'Nos valeurs et engagements'),
     approche: extractSection(sections, 'Notre approche'),
     histoire: extractSection(sections, 'Notre histoire et notre vision'),
+    methodologie: extractSection(sections, "Notre méthodologie et nos niveaux d'engagement"),
+    reglesDuJeu: extractSection(sections, 'Nos règles du jeu'),
+    deroulement: extractSection(sections, "Déroulement d'un projet"),
+    pourquoiConfiance: extractSection(sections, 'Pourquoi nous faire confiance'),
+    garanties: extractSection(sections, 'Nos garanties de sécurité et de confidentialité'),
+    valeursIncarnees: extractSection(sections, 'Nos valeurs incarnées'),
     pourquoiChoisir: extractSection(sections, 'Pourquoi choisir PixelProwlers'),
     nextSteps: extractSection(sections, "Rejoindre l'aventure / Prochaines étapes"),
     noteAuthenticite: extractSection(sections, 'Authenticité et preuves')

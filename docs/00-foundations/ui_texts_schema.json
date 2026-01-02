@@ -53,6 +53,7 @@
   "pages/a-propos.vue:text_3": "Découvre qui nous sommes, nos valeurs et comment nous pouvons t’accompagner.",
   "pages/a-propos.vue:title": "À propos · PixelProwlers",
   "pages/a-propos.vue:lead": "Découvre qui nous sommes, nos valeurs et comment nous pouvons t’accompagner.",
+  "pages/a-propos.vue:cta_label": "Discutons de ton projet",
   "pages/confidentialite.vue:text_1": "Redirection vers la politique de confidentialité…",
   "pages/politique-confidentialite.vue:lead": "Cette page décrit les traitements de données personnelles, leurs finalités et vos droits.",
   "pages/accompagnement-formation.vue:text_1": "Accompagnement & formation",

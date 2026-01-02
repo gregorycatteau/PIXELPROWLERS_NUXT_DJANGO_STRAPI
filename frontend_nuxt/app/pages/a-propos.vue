@@ -36,12 +36,25 @@
           </div>
         </PPCard>
         <PPCard as="section" variant="default" class="AboutSection">
+          <h2 class="AboutTitle">Comment ça se passe ?</h2>
+          <p v-for="(paragraph, index) in deroulement.paragraphs" :key="`deroulement-p-${index}`" class="AboutText">
+            {{ paragraph }}
+          </p>
+          <ol v-if="deroulement.items.length" class="AboutSteps">
+            <li v-for="(item, index) in deroulement.items" :key="`deroulement-${index}`" class="AboutStepItem">
+              <span class="AboutStepIndex">Étape {{ index + 1 }}</span>
+              <span class="AboutStepLabel">{{ item.label }}</span>
+              <span v-if="item.value">: {{ item.value }}</span>
+            </li>
+          </ol>
+        </PPCard>
+        <PPCard as="section" variant="default" class="AboutSection">
           <h2 class="AboutTitle">Envie d’en parler ?</h2>
           <p class="AboutText">
             Tu peux nous partager ton contexte, tes contraintes et tes priorités. On prendra le temps de clarifier
             ensemble la suite.
           </p>
-          <PPButton to="/contact" variant="primary" class="AboutCta">Contacter PixelProwlers</PPButton>
+          <PPButton to="/contact" variant="primary" class="AboutCta">Discutons de ton projet</PPButton>
         </PPCard>
       </div>
     </section>
@@ -52,18 +65,35 @@
 import { useHead } from '#imports';
 import { useAbout } from '~/composables/useAbout';
 
-const { quiNousSommes, valeurs, approche, histoire, pourquoiChoisir, nextSteps, noteAuthenticite } = useAbout();
+const {
+  quiNousSommes,
+  valeurs,
+  approche,
+  histoire,
+  methodologie,
+  reglesDuJeu,
+  deroulement,
+  pourquoiConfiance,
+  garanties,
+  valeursIncarnees,
+  pourquoiChoisir,
+  nextSteps,
+  noteAuthenticite
+} = useAbout();
 
 const canonicalUrl = 'https://pixelprowlers.io/a-propos';
-const metaDescription =
-  quiNousSommes.paragraphs[0] ??
-  'Studio pluriactif pour collectifs engagés : clarté éditoriale, sobriété numérique et transmission.';
+const metaDescription = 'Découvre nos méthodes d’accompagnement, nos valeurs et nos garanties de sécurité.';
 
 const aboutSections = [
   quiNousSommes,
   valeurs,
   approche,
   histoire,
+  methodologie,
+  reglesDuJeu,
+  pourquoiConfiance,
+  garanties,
+  valeursIncarnees,
   pourquoiChoisir,
   nextSteps,
   noteAuthenticite
@@ -160,5 +190,21 @@ useHead({
 
 .AboutCta {
   @apply mt-4 inline-flex w-fit;
+}
+
+.AboutSteps {
+  @apply mt-3 list-decimal space-y-2 pl-5 text-sm text-slate-300;
+}
+
+.AboutStepItem {
+  @apply space-x-2;
+}
+
+.AboutStepIndex {
+  @apply font-semibold text-slate-100;
+}
+
+.AboutStepLabel {
+  @apply font-semibold text-slate-100;
 }
 </style>
