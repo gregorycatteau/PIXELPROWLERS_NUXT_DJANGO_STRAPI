@@ -10,29 +10,29 @@
             Mentions légales
           </template>
           <template #lead>
-            Ce projet est en phase de préfiguration. Les informations légales et coordonnées seront complétées
-            lors du déploiement public. Merci de ne pas considérer ces pages comme définitives.
+            Cette page présente les informations légales essentielles liées au site PixelProwlers.
           </template>
         </PPPageHeader>
         <div class="LegalSections">
-          <section class="LegalSection">
-            <h2 class="LegalTitle">Éditeur du site</h2>
-            <p class="LegalText">
-              Les informations d’édition sont en cours de finalisation. Pour toute question immédiate, merci de passer
-              par la page Contact.
-            </p>
-          </section>
-          <section class="LegalSection">
-            <h2 class="LegalTitle">Hébergement</h2>
-            <p class="LegalText">
-              Les détails d’hébergement seront communiqués dès stabilisation de la publication publique.
-            </p>
-          </section>
-          <section class="LegalSection">
-            <h2 class="LegalTitle">Contact</h2>
-            <p class="LegalText">
-              Pour un échange rapide, utilisez la page Contact et précisez le sujet de votre demande.
-            </p>
+          <section v-for="section in legalSections" :key="section.title" class="LegalSection">
+            <h2 class="LegalTitle">{{ section.title }}</h2>
+            <div class="LegalTextGroup">
+              <p v-for="(paragraph, index) in section.paragraphs" :key="`${section.title}-p-${index}`" class="LegalText">
+                <span v-if="paragraph.linkText && paragraph.linkTo">
+                  {{ paragraph.textBefore }}
+                  <NuxtLink :to="paragraph.linkTo" class="LegalLink">{{ paragraph.linkText }}</NuxtLink>
+                  {{ paragraph.textAfter }}
+                </span>
+                <span v-else>
+                  {{ paragraph.text }}
+                </span>
+              </p>
+              <ul v-if="section.bullets.length" class="LegalList">
+                <li v-for="(item, index) in section.bullets" :key="`${section.title}-b-${index}`" class="LegalListItem">
+                  {{ item }}
+                </li>
+              </ul>
+            </div>
           </section>
         </div>
       </PPCard>
@@ -42,8 +42,10 @@
 
 <script setup lang="ts">
 import { useHead } from '#imports';
+import { useLegalMentions } from '~/composables/useLegalMentions';
 
 const canonicalUrl = 'https://pixelprowlers.io/mentions-legales';
+const { status, sections: legalSections } = useLegalMentions();
 
 useHead({
   title: 'Mentions légales · PixelProwlers',
@@ -53,7 +55,8 @@ useHead({
       content:
         'Mentions légales PixelProwlers. Ce projet est en phase de préfiguration, informations complètes à venir avant déploiement public.'
     },
-    { name: 'robots', content: 'noindex,follow' },
+    // TODO: retirer noindex quand le document passe en status=active.
+    { name: 'robots', content: status === 'draft' ? 'noindex,follow' : 'index,follow' },
     { property: 'og:type', content: 'article' },
     { property: 'og:title', content: 'Mentions légales · PixelProwlers' },
     {
@@ -97,5 +100,21 @@ useHead({
 
 .LegalText {
   @apply mt-2 text-sm text-slate-300;
+}
+
+.LegalTextGroup {
+  @apply mt-2 space-y-3;
+}
+
+.LegalList {
+  @apply list-disc pl-5 text-sm text-slate-300;
+}
+
+.LegalListItem {
+  @apply mt-1;
+}
+
+.LegalLink {
+  @apply text-orange-200 underline underline-offset-4 hover:text-orange-100;
 }
 </style>
