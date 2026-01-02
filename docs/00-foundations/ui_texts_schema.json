@@ -51,9 +51,8 @@
   "pages/a-propos.vue:text_1": "À propos",
   "pages/a-propos.vue:text_2": "PixelProwlers, studio pluriactif",
   "pages/a-propos.vue:text_3": "Nous aidons les collectifs et organisations à clarifier leur posture, à rendre leurs offres lisibles et\n          à mettre en place des expériences numériques sobres qui filtrent les bonnes demandes.",
-  "pages/confidentialite.vue:text_1": "Confidentialité",
-  "pages/confidentialite.vue:text_2": "Politique de confidentialité",
-  "pages/confidentialite.vue:text_3": "Les données collectées via le formulaire de contact servent uniquement à répondre à ta demande.\n          Nous ne partageons rien avec des tiers. Cette page sera enrichie avec les mentions RGPD détaillées\n          avant mise en production.",
+  "pages/confidentialite.vue:text_1": "Redirection vers la politique de confidentialité…",
+  "pages/politique-confidentialite.vue:lead": "Cette page décrit les traitements de données personnelles, leurs finalités et vos droits.",
   "pages/accompagnement-formation.vue:text_1": "Accompagnement & formation",
   "pages/accompagnement-formation.vue:text_2": "Formats courts pour avancer vite",
   "pages/accompagnement-formation.vue:text_3": "Choisis un format adapté à ta maturité : diagnostic express, sprint d’alignement ou\n          accompagnement sur 6 semaines pour livrer et documenter.",
@@ -61,5 +60,5 @@
   "layouts/default.vue:text_2": "Studio pluriactif",
   "layouts/default.vue:text_3": "PixelProwlers — studio pluriactif.",
   "layouts/default.vue:text_4": "Mentions légales",
-  "layouts/default.vue:text_5": "Confidentialité"
+  "layouts/default.vue:text_5": "Politique de confidentialité"
 }

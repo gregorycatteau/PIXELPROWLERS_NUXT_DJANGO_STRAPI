@@ -4,42 +4,133 @@
       <PPCard as="section" variant="default">
         <PPPageHeader as="h1" density="comfort" align="left">
           <template #eyebrow>
-            Confidentialite
+            Confidentialité
           </template>
           <template #title>
-            Politique de confidentialite
+            Politique de confidentialité
           </template>
           <template #lead>
-            Contenu en cours de finalisation. Besoin d'une version immediate : contactez-nous via la page Contact.
+            Cette page décrit les traitements de données personnelles, leurs finalités et vos droits.
           </template>
         </PPPageHeader>
         <div class="PolicySections">
-          <section class="PolicySection">
-            <h2 class="PolicyTitle">Donnees traitees</h2>
-            <p class="PolicyText">
-              Les informations transmises via le formulaire de contact sont utilisees uniquement pour repondre a votre
-              demande et assurer le suivi des echanges.
-            </p>
-          </section>
-          <section class="PolicySection">
-            <h2 class="PolicyTitle">Finalites</h2>
-            <p class="PolicyText">
-              Les donnees servent a organiser la prise de contact, clarifier votre besoin et convenir d'une suite
-              si cela est pertinent.
-            </p>
-          </section>
-          <section class="PolicySection">
-            <h2 class="PolicyTitle">Vos droits</h2>
-            <p class="PolicyText">
-              Vous pouvez demander l'acces, la rectification ou la suppression de vos informations a tout moment,
-              via la page Contact.
-            </p>
+          <section v-for="section in policySections" :key="section.title" class="PolicySection">
+            <h2 class="PolicyTitle">{{ section.title }}</h2>
+            <div class="PolicyTextGroup">
+              <p v-for="(paragraph, index) in section.paragraphs" :key="`${section.title}-p-${index}`" class="PolicyText">
+                {{ paragraph }}
+              </p>
+              <ul v-if="section.listItems.length" class="PolicyList">
+                <li v-for="(item, index) in section.listItems" :key="`${section.title}-l-${index}`" class="PolicyListItem">
+                  <span v-if="item.label && item.value">
+                    <span class="PolicyListLabel">{{ item.label }}</span>
+                    <span v-if="item.linkTo">
+                      :
+                      <a
+                        :href="item.linkTo"
+                        class="PolicyLink"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >{{ item.linkText ?? item.value }}</a>
+                    </span>
+                    <span v-else>
+                      : {{ item.value }}
+                    </span>
+                  </span>
+                  <span v-else>
+                    {{ item.text }}
+                  </span>
+                </li>
+              </ul>
+              <div v-if="section.table" class="PolicyTableWrapper">
+                <table class="PolicyTable">
+                  <thead>
+                    <tr>
+                      <th v-for="(header, index) in section.table.headers" :key="`${section.title}-h-${index}`">
+                        {{ header }}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(row, rowIndex) in section.table.rows" :key="`${section.title}-r-${rowIndex}`">
+                      <td v-for="(cell, cellIndex) in row" :key="`${section.title}-c-${rowIndex}-${cellIndex}`">
+                        {{ cell }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </section>
         </div>
       </PPCard>
     </section>
   </div>
 </template>
+
+<script setup lang="ts">
+import { useHead } from '#imports';
+import { usePrivacyPolicy } from '~/composables/usePrivacyPolicy';
+
+const canonicalUrl = 'https://pixelprowlers.io/politique-confidentialite';
+const {
+  status,
+  identite,
+  finalites,
+  donnees,
+  destinataires,
+  durees,
+  droits,
+  cookies,
+  securite,
+  misesAJour,
+  contact
+} = usePrivacyPolicy();
+
+const policySections = [
+  identite,
+  finalites,
+  donnees,
+  destinataires,
+  durees,
+  droits,
+  cookies,
+  securite,
+  misesAJour,
+  contact
+];
+
+useHead({
+  title: 'Politique de confidentialité · PixelProwlers',
+  meta: [
+    {
+      name: 'description',
+      content:
+        'Politique de confidentialité PixelProwlers : finalités, bases légales, données traitées, durées de conservation et droits.'
+    },
+    // TODO: retirer noindex quand le document passe en status=active.
+    { name: 'robots', content: status === 'draft' ? 'noindex,follow' : 'index,follow' },
+    { property: 'og:type', content: 'article' },
+    { property: 'og:title', content: 'Politique de confidentialité · PixelProwlers' },
+    {
+      property: 'og:description',
+      content:
+        'Politique de confidentialité PixelProwlers : finalités, bases légales, données traitées, durées de conservation et droits.'
+    },
+    { property: 'og:url', content: canonicalUrl },
+    { property: 'og:image', content: '/mainhero.webp' },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:title', content: 'Politique de confidentialité · PixelProwlers' },
+    {
+      name: 'twitter:description',
+      content:
+        'Politique de confidentialité PixelProwlers : finalités, bases légales, données traitées, durées de conservation et droits.'
+    },
+    { name: 'twitter:image', content: '/mainhero.webp' }
+  ],
+  link: [{ rel: 'canonical', href: canonicalUrl }]
+});
+</script>
 
 <style scoped>
 @reference "@/assets/css/main.css";
@@ -62,5 +153,41 @@
 
 .PolicyText {
   @apply mt-2 text-sm text-slate-300;
+}
+
+.PolicyTextGroup {
+  @apply mt-2 space-y-3;
+}
+
+.PolicyList {
+  @apply list-disc pl-5 text-sm text-slate-300;
+}
+
+.PolicyListItem {
+  @apply mt-1;
+}
+
+.PolicyListLabel {
+  @apply font-medium text-slate-100;
+}
+
+.PolicyLink {
+  @apply text-orange-200 underline underline-offset-4 hover:text-orange-100;
+}
+
+.PolicyTableWrapper {
+  @apply overflow-x-auto rounded-xl border border-slate-800/60;
+}
+
+.PolicyTable {
+  @apply w-full text-left text-sm text-slate-300;
+}
+
+.PolicyTable thead th {
+  @apply bg-slate-950/60 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-slate-200;
+}
+
+.PolicyTable tbody td {
+  @apply px-3 py-2 align-top;
 }
 </style>
