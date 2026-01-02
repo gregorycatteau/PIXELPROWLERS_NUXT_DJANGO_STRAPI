@@ -420,6 +420,13 @@
         "domain": "qa"
       },
       {
+        "id": "PX_V1_MAINTENANCE_BACKLOG_RESOURCES_P1",
+        "path": "docs/55-qa/PX_V1_MAINTENANCE_BACKLOG_RESOURCES_P1.md",
+        "status": "active",
+        "hasFrontmatter": true,
+        "domain": "qa"
+      },
+      {
         "id": "PX_V1_3_PP_JOURNEY_STEP_SHELL_SPEC_V1",
         "path": "docs/30-tech_specs/frontend/PX_V1_3_PP_JOURNEY_STEP_SHELL_SPEC_V1.md",
         "status": "active",
