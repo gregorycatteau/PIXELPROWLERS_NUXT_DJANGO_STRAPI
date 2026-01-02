@@ -1,64 +1,101 @@
 <template>
-  <div class="PageContainer">
-    <section class="PageSection">
-      <PPCard as="section" variant="default">
-        <PPPageHeader as="h1" density="comfort" align="left">
-          <template #eyebrow>
-            À propos
-          </template>
-          <template #title>
-            À propos · PixelProwlers
-          </template>
-          <template #lead>
-            Découvre qui nous sommes, nos valeurs et comment nous pouvons t’accompagner.
-          </template>
-        </PPPageHeader>
-      </PPCard>
-      <div class="AboutSections">
+  <PPStaticPageShell header-id="about-title">
+    <PPCard as="section" variant="default" class="pp-static-page__header-card">
+      <PPPageHeader as="h1" density="comfort" align="left" title-id="about-title">
+        <template #eyebrow>
+          À propos
+        </template>
+        <template #title>
+          À propos · PixelProwlers
+        </template>
+        <template #lead>
+          Découvre qui nous sommes, nos valeurs et comment nous pouvons t’accompagner.
+        </template>
+      </PPPageHeader>
+    </PPCard>
+
+    <div class="pp-static-page__stack">
+      <div class="pp-static-page__grid pp-static-page__grid--pillars">
         <PPCard
-          v-for="section in aboutSections"
+          v-for="section in pillarSections"
           :key="section.title"
           as="section"
           variant="default"
-          class="AboutSection"
+          class="pp-static-page__card"
         >
-          <h2 class="AboutTitle">{{ section.title }}</h2>
-          <div class="AboutTextGroup">
-            <p v-for="(paragraph, index) in section.paragraphs" :key="`${section.title}-p-${index}`" class="AboutText">
+          <PPSectionHeader as="h2" density="comfort" :lead="section.lead">
+            <template #title>
+              {{ section.title }}
+            </template>
+          </PPSectionHeader>
+          <div class="pp-static-page__section-body">
+            <p v-for="(paragraph, index) in section.body" :key="`${section.title}-p-${index}`" class="pp-static-page__text">
               {{ paragraph }}
             </p>
-            <ul v-if="section.items.length" class="AboutList">
-              <li v-for="(item, index) in section.items" :key="`${section.title}-l-${index}`" class="AboutListItem">
-                <span class="AboutListLabel">{{ item.label }}</span>
+            <ul v-if="section.items.length" class="pp-static-page__list">
+              <li v-for="(item, index) in section.items" :key="`${section.title}-l-${index}`">
+                <span class="pp-static-page__list-label">{{ item.label }}</span>
                 <span v-if="item.value">: {{ item.value }}</span>
               </li>
             </ul>
           </div>
         </PPCard>
-        <PPCard as="section" variant="default" class="AboutSection">
-          <h2 class="AboutTitle">Comment ça se passe ?</h2>
-          <p v-for="(paragraph, index) in deroulement.paragraphs" :key="`deroulement-p-${index}`" class="AboutText">
-            {{ paragraph }}
-          </p>
-          <ol v-if="deroulement.items.length" class="AboutSteps">
-            <li v-for="(item, index) in deroulement.items" :key="`deroulement-${index}`" class="AboutStepItem">
-              <span class="AboutStepIndex">Étape {{ index + 1 }}</span>
-              <span class="AboutStepLabel">{{ item.label }}</span>
-              <span v-if="item.value">: {{ item.value }}</span>
-            </li>
-          </ol>
+      </div>
+
+      <div class="pp-static-page__stack">
+        <PPCard
+          v-for="section in detailSections"
+          :key="section.title"
+          as="section"
+          variant="default"
+          class="pp-static-page__card"
+        >
+          <PPSectionHeader as="h2" density="comfort" :lead="section.lead">
+            <template #title>
+              {{ section.title }}
+            </template>
+          </PPSectionHeader>
+          <div class="pp-static-page__section-body">
+            <p v-for="(paragraph, index) in section.body" :key="`${section.title}-p-${index}`" class="pp-static-page__text">
+              {{ paragraph }}
+            </p>
+            <ol v-if="section.ordered && section.items.length" class="pp-static-page__list pp-static-page__list--ordered">
+              <li v-for="(item, index) in section.items" :key="`${section.title}-o-${index}`">
+                <span class="pp-static-page__list-label">{{ item.label }}</span>
+                <span v-if="item.value">: {{ item.value }}</span>
+              </li>
+            </ol>
+            <ul v-else-if="section.items.length" class="pp-static-page__list">
+              <li v-for="(item, index) in section.items" :key="`${section.title}-l-${index}`">
+                <span class="pp-static-page__list-label">{{ item.label }}</span>
+                <span v-if="item.value">: {{ item.value }}</span>
+              </li>
+            </ul>
+          </div>
         </PPCard>
-        <PPCard as="section" variant="default" class="AboutSection">
-          <h2 class="AboutTitle">Envie d’en parler ?</h2>
-          <p class="AboutText">
-            Tu peux nous partager ton contexte, tes contraintes et tes priorités. On prendra le temps de clarifier
-            ensemble la suite.
-          </p>
-          <PPButton to="/contact" variant="primary" class="AboutCta">Discutons de ton projet</PPButton>
+
+        <PPCard as="section" variant="default" class="pp-static-page__card">
+          <PPSectionHeader
+            as="h2"
+            density="comfort"
+            lead="Tu peux nous partager ton contexte, tes contraintes et tes priorités. On prendra le temps de clarifier ensemble la suite."
+          >
+            <template #title>
+              Envie d’en parler ?
+            </template>
+          </PPSectionHeader>
+          <PPButton to="/contact" variant="primary" class="pp-static-page__cta">Discutons de ton projet</PPButton>
         </PPCard>
       </div>
-    </section>
-  </div>
+    </div>
+
+    <div class="pp-static-page__cta-row">
+      <PPButton to="/" variant="primary" class="pp-static-page__cta">Retour à l’accueil</PPButton>
+      <PPButton to="/parcours/ma-structure-dysfonctionne?step=E0_intro" variant="secondary" class="pp-static-page__cta">
+        Commencer le parcours
+      </PPButton>
+    </div>
+  </PPStaticPageShell>
 </template>
 
 <script setup lang="ts">
@@ -84,38 +121,41 @@ const {
 const canonicalUrl = 'https://pixelprowlers.io/a-propos';
 const metaDescription = 'Découvre nos méthodes d’accompagnement, nos valeurs et nos garanties de sécurité.';
 
-const aboutSections = [
-  quiNousSommes,
-  valeurs,
-  approche,
-  histoire,
-  methodologie,
-  reglesDuJeu,
-  pourquoiConfiance,
-  garanties,
-  valeursIncarnees,
-  pourquoiChoisir,
-  nextSteps,
-  noteAuthenticite
+type AboutSectionView = {
+  title: string;
+  lead: string;
+  body: string[];
+  items: { label: string; value: string }[];
+  ordered?: boolean;
+};
+
+// Transforme une section éditoriale en structure affichable (lead + body).
+const toSectionView = (section: { title: string; paragraphs: string[]; items: { label: string; value: string }[] }, ordered = false): AboutSectionView => ({
+  title: section.title,
+  lead: section.paragraphs[0] ?? '',
+  body: section.paragraphs.slice(1),
+  items: section.items,
+  ordered
+});
+
+const pillarSections = [
+  toSectionView(quiNousSommes),
+  toSectionView(valeurs),
+  toSectionView(approche)
 ];
 
-const organizationJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: 'PixelProwlers',
-  url: 'https://pixelprowlers.io/',
-  logo: 'https://pixelprowlers.io/logo.png',
-  sameAs: [],
-  description: metaDescription
-};
-
-const webPageJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebPage',
-  url: canonicalUrl,
-  name: 'À propos · PixelProwlers',
-  description: metaDescription
-};
+const detailSections = [
+  toSectionView(histoire),
+  toSectionView(methodologie),
+  toSectionView(reglesDuJeu),
+  toSectionView(deroulement, true),
+  toSectionView(pourquoiConfiance),
+  toSectionView(garanties),
+  toSectionView(valeursIncarnees),
+  toSectionView(pourquoiChoisir),
+  toSectionView(nextSteps),
+  toSectionView(noteAuthenticite)
+];
 
 useHead({
   title: 'À propos · PixelProwlers',
@@ -141,70 +181,6 @@ useHead({
     },
     { name: 'twitter:image', content: '/mainhero.webp' }
   ],
-  link: [{ rel: 'canonical', href: canonicalUrl }],
-  script: [
-    { type: 'application/ld+json', innerHTML: JSON.stringify(organizationJsonLd) },
-    { type: 'application/ld+json', innerHTML: JSON.stringify(webPageJsonLd) }
-  ]
+  link: [{ rel: 'canonical', href: canonicalUrl }]
 });
 </script>
-
-<style scoped>
-@reference "@/assets/css/main.css";
-
-.PageContainer {
-  @apply w-full max-w-6xl mx-auto px-6 space-y-12 pb-16;
-}
-
-.AboutSections {
-  @apply mt-6 space-y-6;
-}
-
-.AboutSection {
-  @apply space-y-3;
-}
-
-.AboutTitle {
-  @apply text-base font-semibold text-slate-100;
-}
-
-.AboutTextGroup {
-  @apply space-y-3;
-}
-
-.AboutText {
-  @apply text-sm text-slate-300;
-}
-
-.AboutList {
-  @apply list-disc pl-5 text-sm text-slate-300;
-}
-
-.AboutListItem {
-  @apply mt-1;
-}
-
-.AboutListLabel {
-  @apply font-semibold text-slate-100;
-}
-
-.AboutCta {
-  @apply mt-4 inline-flex w-fit;
-}
-
-.AboutSteps {
-  @apply mt-3 list-decimal space-y-2 pl-5 text-sm text-slate-300;
-}
-
-.AboutStepItem {
-  @apply space-x-2;
-}
-
-.AboutStepIndex {
-  @apply font-semibold text-slate-100;
-}
-
-.AboutStepLabel {
-  @apply font-semibold text-slate-100;
-}
-</style>

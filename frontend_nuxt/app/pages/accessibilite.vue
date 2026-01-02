@@ -1,93 +1,95 @@
 <template>
-  <div class="PageContainer">
-    <section class="PageSection">
-      <PPCard as="section" variant="default">
-        <PPPageHeader as="h1" density="comfort" align="left">
-          <template #eyebrow>
-            Accessibilité
-          </template>
+  <PPStaticPageShell header-id="accessibility-title">
+    <PPCard as="section" variant="default" class="pp-static-page__header-card">
+      <PPPageHeader as="h1" density="comfort" align="left" title-id="accessibility-title">
+        <template #eyebrow>
+          Accessibilité
+        </template>
+        <template #title>
+          Accessibilité
+        </template>
+        <template #lead>
+          PixelProwlers s’engage à proposer une expérience inclusive, lisible et utilisable par tous les publics.
+        </template>
+      </PPPageHeader>
+    </PPCard>
+
+    <div class="pp-static-page__stack">
+      <PPCard
+        v-for="section in accessibilitySections"
+        :key="section.title"
+        as="section"
+        variant="default"
+        class="pp-static-page__card"
+      >
+        <PPSectionHeader as="h2" density="comfort" :lead="section.lead">
           <template #title>
-            Accessibilité
+            {{ section.title }}
           </template>
-          <template #lead>
-            Cette page présente notre engagement en matière d’accessibilité et l’état de conformité du site.
-          </template>
-        </PPPageHeader>
-        <div class="A11ySections">
-          <section v-for="section in a11ySections" :key="section.title" class="A11ySection">
-            <h2 class="A11yTitle">{{ section.title }}</h2>
-            <div class="A11yTextGroup">
-              <p v-for="(paragraph, index) in section.paragraphs" :key="`${section.title}-p-${index}`" class="A11yText">
-                {{ paragraph }}
-              </p>
-              <ul v-if="section.items.length" class="A11yList">
-                <li v-for="(item, index) in section.items" :key="`${section.title}-l-${index}`" class="A11yListItem">
-                  <span class="A11yListLabel">{{ item.label }}</span>
-                  <span v-if="item.value">: {{ item.value }}</span>
-                </li>
-              </ul>
-              <div v-if="section.table" class="A11yTableWrapper">
-                <div class="A11yTableStack md:hidden">
-                  <div v-for="(row, rowIndex) in section.table.rows" :key="`${section.title}-stack-${rowIndex}`" class="A11yTableStackRow">
-                    <div v-for="(cell, cellIndex) in row" :key="`${section.title}-stack-${rowIndex}-${cellIndex}`" class="A11yTableStackItem">
-                      <span class="A11yTableStackLabel">{{ cell.label }}</span>
-                      <span class="A11yTableStackValue">{{ cell.value }}</span>
-                    </div>
-                  </div>
-                </div>
-                <table class="A11yTable hidden md:table">
-                  <thead>
-                    <tr>
-                      <th v-for="(header, index) in section.table.headers" :key="`${section.title}-h-${index}`">
-                        {{ header }}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(row, rowIndex) in section.table.rows" :key="`${section.title}-r-${rowIndex}`">
-                      <td v-for="(cell, cellIndex) in row" :key="`${section.title}-c-${rowIndex}-${cellIndex}`">
-                        {{ cell.value }}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </section>
+        </PPSectionHeader>
+        <div class="pp-static-page__section-body">
+          <p v-for="(paragraph, index) in section.paragraphs" :key="`${section.title}-p-${index}`" class="pp-static-page__text">
+            {{ paragraph }}
+          </p>
         </div>
       </PPCard>
-    </section>
-  </div>
+    </div>
+
+    <div class="pp-static-page__cta-row">
+      <PPButton to="/" variant="primary" class="pp-static-page__cta">Retour à l’accueil</PPButton>
+      <PPButton to="/parcours/ma-structure-dysfonctionne?step=E0_intro" variant="secondary" class="pp-static-page__cta">
+        Commencer le parcours
+      </PPButton>
+    </div>
+  </PPStaticPageShell>
 </template>
 
 <script setup lang="ts">
 import { useHead } from '#imports';
-import { useAccessibility } from '~/composables/useAccessibility';
 
 const canonicalUrl = 'https://pixelprowlers.io/accessibilite';
-const {
-  status,
-  engagement,
-  etatConformite,
-  resultats,
-  contenusNonAccessibles,
-  environnements,
-  schema,
-  retourContact,
-  voiesRecours,
-  misesAJour
-} = useAccessibility();
 
-const a11ySections = [
-  engagement,
-  etatConformite,
-  resultats,
-  contenusNonAccessibles,
-  environnements,
-  schema,
-  retourContact,
-  voiesRecours,
-  misesAJour
+const accessibilitySections = [
+  {
+    title: 'Navigation clavier',
+    lead: 'Tous les parcours et contenus sont conçus pour être utilisables au clavier.',
+    paragraphs: [
+      'Les éléments interactifs sont accessibles via la touche Tab et disposent d’un ordre de navigation clair.',
+      'Les actions principales restent atteignables sans souris ni geste complexe.'
+    ]
+  },
+  {
+    title: 'Focus visible',
+    lead: 'Chaque élément actif affiche un focus net et contrasté.',
+    paragraphs: [
+      'Les indicateurs de focus sont maintenus sur tous les boutons, liens et contrôles essentiels.',
+      'Nous évitons les styles qui masquent ou affaiblissent la visibilité du focus.'
+    ]
+  },
+  {
+    title: 'Contrastes conformes',
+    lead: 'Les couleurs respectent des niveaux de contraste suffisants pour la lecture.',
+    paragraphs: [
+      'Les textes, icônes et éléments d’interface sont vérifiés pour rester lisibles en conditions standards.',
+      'Les zones critiques utilisent des contrastes renforcés pour limiter la fatigue visuelle.'
+    ]
+  },
+  {
+    title: 'Animations maîtrisées',
+    lead: 'Les transitions sont discrètes et respectent les préférences utilisateur.',
+    paragraphs: [
+      'Le site limite les animations inutiles et privilégie des mouvements courts et non intrusifs.',
+      'La préférence système prefers-reduced-motion est respectée pour réduire les effets si besoin.'
+    ]
+  },
+  {
+    title: 'Amélioration continue',
+    lead: 'Nous suivons les retours pour corriger rapidement les points bloquants.',
+    paragraphs: [
+      'Si tu rencontres un obstacle, contacte-nous afin que nous puissions ajuster le site.',
+      'Les évolutions d’accessibilité sont documentées et intégrées dans nos cycles de mise à jour.'
+    ]
+  }
 ];
 
 useHead({
@@ -95,15 +97,14 @@ useHead({
   meta: [
     {
       name: 'description',
-      content: "Déclaration d’accessibilité PixelProwlers et informations RGAA."
+      content: 'Engagement PixelProwlers pour l’accessibilité : navigation clavier, focus visible et contrastes maîtrisés.'
     },
-    // TODO: retirer noindex quand le document passe en status=active.
-    { name: 'robots', content: status === 'draft' ? 'noindex,follow' : 'index,follow' },
+    { name: 'robots', content: 'index,follow' },
     { property: 'og:type', content: 'article' },
     { property: 'og:title', content: 'Accessibilité · PixelProwlers' },
     {
       property: 'og:description',
-      content: "Déclaration d’accessibilité PixelProwlers et informations RGAA."
+      content: 'Engagement PixelProwlers pour l’accessibilité : navigation clavier, focus visible et contrastes maîtrisés.'
     },
     { property: 'og:url', content: canonicalUrl },
     { property: 'og:image', content: '/mainhero.webp' },
@@ -111,86 +112,10 @@ useHead({
     { name: 'twitter:title', content: 'Accessibilité · PixelProwlers' },
     {
       name: 'twitter:description',
-      content: "Déclaration d’accessibilité PixelProwlers et informations RGAA."
+      content: 'Engagement PixelProwlers pour l’accessibilité : navigation clavier, focus visible et contrastes maîtrisés.'
     },
     { name: 'twitter:image', content: '/mainhero.webp' }
   ],
   link: [{ rel: 'canonical', href: canonicalUrl }]
 });
 </script>
-
-<style scoped>
-@reference "@/assets/css/main.css";
-
-.PageContainer {
-  @apply w-full max-w-6xl mx-auto px-6 space-y-12 pb-16;
-}
-
-.A11ySections {
-  @apply mt-6 space-y-6;
-}
-
-.A11ySection {
-  @apply rounded-2xl border border-slate-800/60 bg-slate-950/40 p-6;
-}
-
-.A11yTitle {
-  @apply text-base font-semibold text-slate-100;
-}
-
-.A11yText {
-  @apply mt-2 text-sm text-slate-300;
-}
-
-.A11yTextGroup {
-  @apply mt-2 space-y-3;
-}
-
-.A11yList {
-  @apply list-disc pl-5 text-sm text-slate-300;
-}
-
-.A11yListItem {
-  @apply mt-1;
-}
-
-.A11yListLabel {
-  @apply font-semibold text-slate-100;
-}
-
-.A11yTableWrapper {
-  @apply overflow-x-auto rounded-xl border border-slate-800/60;
-}
-
-.A11yTableStack {
-  @apply space-y-4 p-3 text-sm text-slate-300;
-}
-
-.A11yTableStackRow {
-  @apply flex flex-col gap-3 rounded-lg border border-slate-800/60 bg-slate-950/40 p-3;
-}
-
-.A11yTableStackItem {
-  @apply flex flex-col gap-1;
-}
-
-.A11yTableStackLabel {
-  @apply text-xs font-semibold uppercase tracking-wide text-slate-200;
-}
-
-.A11yTableStackValue {
-  @apply text-sm text-slate-100;
-}
-
-.A11yTable {
-  @apply w-full text-left text-sm text-slate-300;
-}
-
-.A11yTable thead th {
-  @apply bg-slate-950/60 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-slate-200;
-}
-
-.A11yTable tbody td {
-  @apply px-3 py-2 align-top;
-}
-</style>
