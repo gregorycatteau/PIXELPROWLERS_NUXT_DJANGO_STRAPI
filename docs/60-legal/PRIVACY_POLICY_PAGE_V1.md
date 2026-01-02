@@ -18,6 +18,7 @@ tags: ["privacy", "legal", "rgpd"]
 - Adresse du siège : 33340 Queyrac (France)
 - Email : contact@pixelprowlers.io
 - Site officiel : pixelprowlers.io
+Les identifiants légaux (SIREN, NAF) figurent ici à titre informatif. Ils ne permettent pas d'usurper l'identité du titulaire.
 
 ## Finalités et bases légales
 - Réponse aux demandes de contact : Consentement (RGPD art. 6.1.a)
@@ -29,11 +30,11 @@ tags: ["privacy", "legal", "rgpd"]
 | Fonctionnalité | Données | Obligatoire | Conséquence en cas de refus |
 | --- | --- | --- | --- |
 | Diagnostics (P1-P4) | Réponses agrégées, scores par bloc (stockage local) | Non | Le diagnostic reste utilisable mais sans sauvegarde locale |
-| Bibliothèque de ressources | Aucune donnée personnelle collectée | Non | Sans objet |
+| Bibliothèque de ressources | Aucune donnée personnelle collectée | Non | Sans objet (aucune collecte) |
 | Formulaire de contact | Nom, email, message | Oui | Impossible de traiter la demande |
-| Formulaire de contact | Entreprise, téléphone | Non | La réponse est possible mais moins contextualisée |
+| Formulaire de contact | Entreprise, téléphone | Non | La demande sera traitée, mais la réponse peut être moins personnalisée. |
 | Gate 125 (formations) | Nom complet, email, téléphone, entreprise / poste | Oui | Inscription impossible |
-| Gate 125 (formations) | Besoins spécifiques | Non | Inscription possible sans personnalisation |
+| Gate 125 (formations) | Besoins spécifiques | Non | La demande sera traitée, mais la réponse peut être moins personnalisée. |
 
 ## Destinataires et sous-traitants
 - Destinataires internes : support, équipe pédagogique (selon la demande).
@@ -73,6 +74,9 @@ tags: ["privacy", "legal", "rgpd"]
 
 ## Mises à jour
 Cette politique peut évoluer pour refléter les changements réglementaires ou techniques. Toute évolution majeure sera signalée. Dernière mise à jour : 02 janvier 2026.
+
+## Délégué à la protection des données (DPO)
+À ce jour, PixelProwlers n'a pas nommé de DPO. Cette section sera mise à jour lorsqu'un DPO sera désigné.
 
 ## Contact
 Pour toute question relative à la confidentialité, merci d'utiliser le formulaire de contact du site.
