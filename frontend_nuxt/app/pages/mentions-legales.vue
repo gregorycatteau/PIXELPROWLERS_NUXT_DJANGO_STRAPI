@@ -27,9 +27,19 @@
                   {{ paragraph.text }}
                 </span>
               </p>
-              <ul v-if="section.bullets.length" class="LegalList">
-                <li v-for="(item, index) in section.bullets" :key="`${section.title}-b-${index}`" class="LegalListItem">
-                  {{ item }}
+              <ul v-if="section.listItems.length" class="LegalList">
+                <li
+                  v-for="(item, index) in section.listItems"
+                  :key="`${section.title}-b-${index}`"
+                  class="LegalListItem"
+                >
+                  <span v-if="item.label && item.value">
+                    <span class="LegalListLabel">{{ item.label }}</span>
+                    <span>: {{ item.value }}</span>
+                  </span>
+                  <span v-else>
+                    {{ item.text }}
+                  </span>
                 </li>
               </ul>
             </div>
@@ -112,6 +122,10 @@ useHead({
 
 .LegalListItem {
   @apply mt-1;
+}
+
+.LegalListLabel {
+  @apply font-medium text-slate-100;
 }
 
 .LegalLink {

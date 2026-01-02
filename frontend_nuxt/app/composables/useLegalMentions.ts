@@ -10,10 +10,16 @@ type LegalMentionsParagraph = {
   linkTo?: string;
 };
 
+type LegalMentionsListItem = {
+  text: string;
+  label?: string;
+  value?: string;
+};
+
 type LegalMentionsSection = {
   title: string;
   paragraphs: LegalMentionsParagraph[];
-  bullets: string[];
+  listItems: LegalMentionsListItem[];
 };
 
 type LegalMentionsData = {
@@ -45,6 +51,17 @@ const splitBody = (raw: string): string => {
   return parts.slice(2).join('---').trim();
 };
 
+const resolveLinkTarget = (rawLink: string): string | undefined => {
+  const trimmed = rawLink.trim();
+  if (trimmed.includes('PRIVACY_POLICY_V1')) {
+    return '/politique-confidentialite';
+  }
+  if (trimmed.startsWith('/')) {
+    return trimmed;
+  }
+  return undefined;
+};
+
 const parseParagraphs = (lines: string[]): LegalMentionsParagraph[] => {
   const paragraphs: LegalMentionsParagraph[] = [];
   let buffer: string[] = [];
@@ -59,15 +76,22 @@ const parseParagraphs = (lines: string[]): LegalMentionsParagraph[] => {
 
     const linkMatch = text.match(/\[(.+?)\]\((.+?)\)/);
     if (linkMatch) {
-      const [full, linkText] = linkMatch;
-      const [before, after] = text.split(full);
-      paragraphs.push({
-        text: text.replace(full, '').trim(),
-        textBefore: before ?? '',
-        textAfter: after ?? '',
-        linkText,
-        linkTo: '/politique-confidentialite'
-      });
+      const [full, linkText, linkToRaw] = linkMatch;
+      const safeLinkText = linkText ?? '';
+      const linkTo = resolveLinkTarget(linkToRaw ?? '');
+      if (linkTo) {
+        const [before, after] = text.split(full);
+        paragraphs.push({
+          text: text.replace(full, '').trim(),
+          textBefore: before ?? '',
+          textAfter: after ?? '',
+          linkText: safeLinkText,
+          linkTo
+        });
+        buffer = [];
+        return;
+      }
+      paragraphs.push({ text: text.replace(full, safeLinkText).trim() });
     } else {
       paragraphs.push({ text });
     }
@@ -88,6 +112,20 @@ const parseParagraphs = (lines: string[]): LegalMentionsParagraph[] => {
   return paragraphs;
 };
 
+const parseListItem = (line: string): LegalMentionsListItem => {
+  const text = line.replace(/^-\s*/, '').trim();
+  const match = text.match(/^(.+?)\s*:\s*(.+)$/);
+  if (match) {
+    const [, label, value] = match;
+    return {
+      text,
+      label: label?.trim(),
+      value: value?.trim()
+    };
+  }
+  return { text };
+};
+
 const parseSections = (raw: string): LegalMentionsSection[] => {
   const body = splitBody(raw);
   const chunks = body.split('\n## ').filter(Boolean);
@@ -98,7 +136,7 @@ const parseSections = (raw: string): LegalMentionsSection[] => {
     const title = (titleLine ?? '').replace(/^##\s*/, '').trim();
     if (!title) continue;
 
-    const bullets: string[] = [];
+    const listItems: LegalMentionsListItem[] = [];
     const paragraphLines: string[] = [];
 
     for (const line of rest) {
@@ -108,7 +146,7 @@ const parseSections = (raw: string): LegalMentionsSection[] => {
         continue;
       }
       if (trimmed.startsWith('- ')) {
-        bullets.push(trimmed.replace(/^-\s*/, ''));
+        listItems.push(parseListItem(trimmed));
       } else {
         paragraphLines.push(trimmed);
       }
@@ -117,7 +155,7 @@ const parseSections = (raw: string): LegalMentionsSection[] => {
     sections.push({
       title,
       paragraphs: parseParagraphs(paragraphLines),
-      bullets
+      listItems
     });
   }
 
