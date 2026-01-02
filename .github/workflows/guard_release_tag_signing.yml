@@ -1,0 +1,46 @@
+name: Guard Release Tag Signing
+
+on:
+  push:
+    tags:
+      - "resources-*"
+      - "resources-p1-*"
+
+jobs:
+  guard-release-tag-signing:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify tag signature (presence-only)
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF_NAME}"
+          echo "Tag: ${TAG}"
+
+          if ! git show-ref --tags --verify --quiet "refs/tags/${TAG}"; then
+            echo "Tag ref not found: ${TAG}"
+            exit 1
+          fi
+
+          TAG_TYPE=$(git cat-file -t "${TAG}")
+          if [ "${TAG_TYPE}" != "tag" ]; then
+            echo "Release tags must be annotated and GPG-signed."
+            echo "Lightweight tag detected: ${TAG}"
+            exit 1
+          fi
+
+          if ! git cat-file -p "${TAG}" | grep -q "^gpgsig "; then
+            if ! git cat-file -p "${TAG}" | grep -q "BEGIN PGP SIGNATURE"; then
+              echo "Release tags must be GPG-signed. Recreate tag with -s (signed) and push again."
+              echo "Note: guard checks presence of gpgsig only; full verification requires a public key in CI."
+              exit 1
+            fi
+          fi
+
+          echo "OK: gpgsig present (presence-only check)."

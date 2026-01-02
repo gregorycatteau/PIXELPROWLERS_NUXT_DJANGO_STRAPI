@@ -1,0 +1,56 @@
+name: Resources Registry Smoke
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - "frontend_nuxt/app/config/resources/registryV0.data.mjs"
+      - "frontend_nuxt/app/pages/ressources/**"
+      - "frontend_nuxt/app/components/**/resources/**"
+      - "frontend_nuxt/scripts/smoke/**"
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - "frontend_nuxt/app/config/resources/registryV0.data.mjs"
+      - "frontend_nuxt/app/pages/ressources/**"
+      - "frontend_nuxt/app/components/**/resources/**"
+      - "frontend_nuxt/scripts/smoke/**"
+
+jobs:
+  resources-registry-smoke:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: frontend_nuxt/.nvmrc
+          cache: "npm"
+          cache-dependency-path: frontend_nuxt/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend_nuxt
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run --prefix frontend_nuxt typecheck
+
+      - name: Guards CI
+        run: npm run --prefix frontend_nuxt guards:ci
+
+      - name: Build
+        run: npm run --prefix frontend_nuxt build
+
+      - name: Resources pack smoke
+        run: npm run --prefix frontend_nuxt resources:pack:smoke
+
+      - name: Resources canon smoke (if present)
+        shell: bash
+        run: |
+          set -euo pipefail
+          node -e "const p=require('./frontend_nuxt/package.json'); if (p.scripts && p.scripts['resources:canon:smoke']) process.exit(0); process.exit(1);" \
+            && npm run --prefix frontend_nuxt resources:canon:smoke \
+            || echo "resources:canon:smoke not defined; skipping."
