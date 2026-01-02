@@ -9,6 +9,9 @@ on:
 jobs:
   guard-release-tag-signing:
     runs-on: ubuntu-latest
+    env:
+      ALLOWED_GPG_FINGERPRINTS: "SET_ME"
+      ALLOWED_GPG_KEYS_PATH: "docs/40-security/keys/allowed_release_tag_signers.asc"
 
     steps:
       - name: Checkout
@@ -16,12 +19,20 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Verify tag signature (presence-only)
+      - name: Verify tag signature (allowlist)
         shell: bash
         run: |
           set -euo pipefail
           TAG="${GITHUB_REF_NAME}"
           echo "Tag: ${TAG}"
+          echo "ALLOWED_GPG_FINGERPRINTS: ${ALLOWED_GPG_FINGERPRINTS}"
+          echo "Keys file: ${ALLOWED_GPG_KEYS_PATH}"
+
+          if [ -z "${ALLOWED_GPG_FINGERPRINTS}" ] || [ "${ALLOWED_GPG_FINGERPRINTS}" = "SET_ME" ]; then
+            echo "ALLOWED_GPG_FINGERPRINTS is empty. Set a comma-separated allowlist in repo variables or workflow env."
+            echo "Example: ABCD1234...,EFGH5678..."
+            exit 1
+          fi
 
           if ! git show-ref --tags --verify --quiet "refs/tags/${TAG}"; then
             echo "Tag ref not found: ${TAG}"
@@ -30,7 +41,7 @@ jobs:
 
           TAG_TYPE=$(git cat-file -t "${TAG}")
           if [ "${TAG_TYPE}" != "tag" ]; then
-            echo "Release tags must be annotated and GPG-signed."
+            echo "Release tags must be annotated and GPG-signed (no lightweight tags)."
             echo "Lightweight tag detected: ${TAG}"
             exit 1
           fi
@@ -38,9 +49,33 @@ jobs:
           if ! git cat-file -p "${TAG}" | grep -q "^gpgsig "; then
             if ! git cat-file -p "${TAG}" | grep -q "BEGIN PGP SIGNATURE"; then
               echo "Release tags must be GPG-signed. Recreate tag with -s (signed) and push again."
-              echo "Note: guard checks presence of gpgsig only; full verification requires a public key in CI."
               exit 1
             fi
           fi
 
-          echo "OK: gpgsig present (presence-only check)."
+          if [ ! -f "${ALLOWED_GPG_KEYS_PATH}" ]; then
+            echo "Missing allowed keys file: ${ALLOWED_GPG_KEYS_PATH}"
+            exit 1
+          fi
+
+          echo "Importing allowed public keys..."
+          gpg --batch --import "${ALLOWED_GPG_KEYS_PATH}"
+
+          echo "Verifying tag signature..."
+          git tag -v "${TAG}"
+
+          VERIFY_RAW=$(git verify-tag --raw "${TAG}" 2>&1)
+          FPR=$(printf '%s\n' "${VERIFY_RAW}" | awk '/\\[GNUPG:\\] VALIDSIG/ {print $3; exit}')
+          if [ -z "${FPR}" ]; then
+            echo "Unable to extract signer fingerprint."
+            echo "${VERIFY_RAW}"
+            exit 1
+          fi
+
+          ALLOWED_LIST=$(printf '%s' "${ALLOWED_GPG_FINGERPRINTS}" | tr -d ' ' | tr ',' '\n')
+          if ! printf '%s\n' "${ALLOWED_LIST}" | grep -Fxq "${FPR}"; then
+            echo "Signer fingerprint not in allowlist: ${FPR}"
+            exit 1
+          fi
+
+          echo "OK: signature verified and fingerprint allowed."

@@ -15,6 +15,7 @@ Release canonique : resources-p1-v1.0.1 (smoke OK, invariants V1 inchangés).
 
 ## Backlog (V1 maintenance)
 1) **Signer les tags release (GPG)** + ajouter un **guard CI** qui refuse les tags non signés.
+   Niveau 2 = verif cryptographique + allowlist fingerprints (recommande), necessite cles publiques en repo/CI.
 2) Ajouter un hook CI : **toute modification du registry ressources** déclenche un **smoke test** (preview build + checks essentiels).
 3) **Warnings Tailwind sourcemap** : non bloquants en V1, à suivre mais ne doivent pas interrompre la fabrique de ressources.
 
