@@ -399,8 +399,22 @@
         "domain": "product_specs"
       },
       {
+        "id": "PX_RELEASE_RESOURCES_P1_PATCH_V1_3_R1",
+        "path": "docs/20-product_specs/resources/PX_RELEASE_RESOURCES_P1_PATCH_V1_3_R1.md",
+        "status": "active",
+        "hasFrontmatter": true,
+        "domain": "product_specs"
+      },
+      {
         "id": "PX_QA_RESOURCES_CANONICAL_R1",
         "path": "docs/55-qa/PX_QA_RESOURCES_CANONICAL_R1.md",
+        "status": "active",
+        "hasFrontmatter": true,
+        "domain": "qa"
+      },
+      {
+        "id": "PX_QA_RESOURCES_PACK_PUBLISH_PROCEDURE_V1",
+        "path": "docs/55-qa/PX_QA_RESOURCES_PACK_PUBLISH_PROCEDURE_V1.md",
         "status": "active",
         "hasFrontmatter": true,
         "domain": "qa"

@@ -18,6 +18,7 @@
 | [PX_JOURNEY_ENGINE_SMOKE_TESTS.md](./PX_JOURNEY_ENGINE_SMOKE_TESTS.md) | active | PX Journey Engine — Smoke tests (P1/P2/P3/P4) |
 | [PX_P1_JOURNEY_TESTS.md](./PX_P1_JOURNEY_TESTS.md) | active | PX P1 — Script de tests manuels |
 | [PX_QA_RESOURCES_CANONICAL_R1.md](./PX_QA_RESOURCES_CANONICAL_R1.md) | active | PX QA — Resources Canonicalization (R1) |
+| [PX_QA_RESOURCES_PACK_PUBLISH_PROCEDURE_V1.md](./PX_QA_RESOURCES_PACK_PUBLISH_PROCEDURE_V1.md) | active | Procedure — Publish a Resource Pack (P1) |
 | [QA_INDEX.md](./QA_INDEX.md) | draft | 55 Qa — Index |
 | [RESOURCES_ACTIONS_PANEL_SMOKE_TESTS.md](./RESOURCES_ACTIONS_PANEL_SMOKE_TESTS.md) | active | Resources & Actions Panel — Smoke tests |
 | [SECURITY_GUARDS_SMOKE_TESTS.md](./SECURITY_GUARDS_SMOKE_TESTS.md) | active | Security Guards — Smoke tests |
