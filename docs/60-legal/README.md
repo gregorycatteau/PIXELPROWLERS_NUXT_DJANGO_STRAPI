@@ -9,6 +9,7 @@
 
 | Document | Status | Description |
 |----------|--------|-------------|
+| [LEGAL_MENTIONS_V1.md](./LEGAL_MENTIONS_V1.md) | draft | Mentions legales |
 | [PRIVACY_POLICY_V1.md](./PRIVACY_POLICY_V1.md) | active | Politique de Confidentialité PixelProwlers |
 | [rgpd_compliance.md](./rgpd_compliance.md) | draft | rgpd compliance |
 | [terms_of_service.md](./terms_of_service.md) | draft | terms of service |
