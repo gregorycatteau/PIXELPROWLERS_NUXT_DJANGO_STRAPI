@@ -19,7 +19,7 @@
           </div>
         </NuxtLink>
 
-        <nav class="SiteNav">
+        <nav class="SiteNav" aria-label="Navigation principale">
           <NuxtLink
             v-for="item in navItems"
             :key="item.key"
@@ -72,11 +72,11 @@
                 v-for="item in navItems"
                 :key="item.key"
                 :to="item.to"
-                class="MobileNavLink MobileNavLinkIcon"
+                class="MobileNavLink"
                 @click="closeMenu"
               >
                 <span class="MobileNavIcon" aria-hidden="true">{{ item.icon }}</span>
-                <span class="sr-only">{{ item.label }}</span>
+                <span class="MobileNavLabel">{{ item.label }}</span>
               </NuxtLink>
             </div>
           </div>
@@ -93,7 +93,9 @@
         <p>PixelProwlers — studio pluriactif.</p>
         <div class="SiteFooterLinks">
           <NuxtLink to="/mentions-legales" class="SiteFooterLink">Mentions légales</NuxtLink>
-          <NuxtLink to="/confidentialite" class="SiteFooterLink">Confidentialité</NuxtLink>
+          <NuxtLink to="/politique-confidentialite" class="SiteFooterLink">Politique de confidentialité</NuxtLink>
+          <NuxtLink to="/accessibilite" class="SiteFooterLink">Accessibilité</NuxtLink>
+          <NuxtLink to="/contact" class="SiteFooterLink">Contact</NuxtLink>
         </div>
       </div>
     </footer>
@@ -106,13 +108,14 @@ import { buildResourcesDeepLink } from '@/utils/deeplinks/resourcesDeepLink';
 
 const resourcesLink = buildResourcesDeepLink({});
 
+const p1JourneySlug = 'ma-structure-dysfonctionne';
+
 const navItems = [
   { key: 'home', to: '/', label: 'Accueil', icon: '🏠' },
-  { key: 'about', to: '/a-propos', label: 'À propos', icon: 'ℹ️' },
-  { key: 'relinium', to: '/relinium', label: 'Relinium', icon: '🧪' },
-  { key: 'accompagnement', to: '/accompagnement-formation', label: 'Accompagnement & formation', icon: '🛠️' },
-  { key: 'blog', to: '/blog', label: 'Blog', icon: '📰' },
+  { key: 'offer', to: '/offre', label: 'Offre', icon: '✨' },
+  { key: 'journey', to: `/parcours/${p1JourneySlug}`, label: 'Parcours (P1)', icon: '🧭' },
   { key: 'resources', to: resourcesLink, label: 'Ressources', icon: '📚' },
+  { key: 'formations', to: '/formations', label: 'Formations', icon: '🎓' },
   { key: 'contact', to: '/contact', label: 'Contact', icon: '✉️' }
 ];
 
@@ -120,14 +123,17 @@ const isMenuOpen = ref(false);
 const menuPanel = ref<HTMLElement | null>(null);
 const menuLinks = ref<HTMLElement | null>(null);
 
+// Ferme le menu mobile proprement (focus/restauration gérés ailleurs).
 const closeMenu = () => {
   isMenuOpen.value = false;
 };
 
+// Bascule l'ouverture du menu mobile.
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value;
 };
 
+// Garde le focus piégé dans le panneau mobile pour l'accessibilité.
 const trapFocus = (event: KeyboardEvent) => {
   if (!isMenuOpen.value) return;
   if (event.key !== 'Tab') return;
@@ -153,6 +159,7 @@ const trapFocus = (event: KeyboardEvent) => {
   }
 };
 
+// Active la gestion du focus et du scroll uniquement quand le menu est ouvert.
 watch(isMenuOpen, async (open) => {
   if (open) {
     await nextTick();
@@ -170,6 +177,7 @@ watch(isMenuOpen, async (open) => {
   }
 });
 
+// Nettoie l'écouteur de focus lors du démontage.
 onBeforeUnmount(() => {
   if (typeof document !== 'undefined') {
     document.removeEventListener('keydown', trapFocus);
@@ -254,7 +262,7 @@ onBeforeUnmount(() => {
 }
 
 .nav-link {
-  @apply rounded-full px-4 py-2 text-sm font-medium text-slate-200/90 transition hover:bg-slate-800/80 hover:text-white;
+  @apply rounded-full px-4 py-2 text-sm font-medium text-slate-200/90 transition hover:bg-slate-800/80 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950;
 }
 
 /* --- Main & footer --- */
@@ -276,7 +284,7 @@ onBeforeUnmount(() => {
 }
 
 .SiteFooterLink {
-  @apply hover:text-slate-200;
+  @apply hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/80 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 rounded;
 }
 
 .SkipLink {
@@ -284,7 +292,7 @@ onBeforeUnmount(() => {
 }
 
 .MobileMenuButton {
-  @apply inline-flex items-center justify-center rounded-xl border border-slate-700/80 bg-slate-900/70 px-3 py-2 text-slate-100 shadow-sm shadow-slate-900/60 transition hover:border-orange-400/60 hover:text-white;
+  @apply inline-flex items-center justify-center rounded-xl border border-slate-700/80 bg-slate-900/70 px-3 py-2 text-slate-100 shadow-sm shadow-slate-900/60 transition hover:border-orange-400/60 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950;
 }
 
 .MobileMenuIcon {
@@ -334,15 +342,15 @@ onBeforeUnmount(() => {
 }
 
 .MobileNavLink {
-  @apply rounded-xl px-4 py-3 text-base font-semibold text-slate-50 bg-slate-800/80 border border-slate-700 hover:border-orange-300/70 hover:bg-slate-800/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900;
-}
-
-.MobileNavLinkIcon {
-  @apply h-14 w-14 rounded-full flex items-center justify-center text-2xl mx-auto;
+  @apply rounded-xl px-4 py-3 text-base font-semibold text-slate-50 bg-slate-800/80 border border-slate-700 hover:border-orange-300/70 hover:bg-slate-800/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 flex items-center gap-3;
 }
 
 .MobileNavIcon {
-  @apply block leading-none;
+  @apply flex h-10 w-10 items-center justify-center rounded-full bg-slate-900/80 text-lg leading-none;
+}
+
+.MobileNavLabel {
+  @apply text-base;
 }
 
 /* --- Animation de transition pour le menu mobile --- */

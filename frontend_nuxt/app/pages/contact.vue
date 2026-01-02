@@ -8,7 +8,8 @@
         Nous écrire
       </template>
       <template #lead>
-        Un espace de contact plus complet sera bientôt disponible. D’ici là, tu peux nous joindre via contact@pixelprowlers.io.
+        Un espace de contact plus complet sera propose ici. En attendant, merci d'utiliser les canaux habituels de votre
+        organisation pour nous joindre.
       </template>
     </PPPageHeader>
   </main>
