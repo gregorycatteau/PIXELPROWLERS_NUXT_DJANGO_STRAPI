@@ -9,6 +9,7 @@
 
 | Document | Status | Description |
 |----------|--------|-------------|
+| [ABOUT_PAGE_V1.md](./ABOUT_PAGE_V1.md) | draft | À propos |
 | [ACCESSIBILITY_PAGE_V1.md](./ACCESSIBILITY_PAGE_V1.md) | draft | Accessibilité |
 | [LEGAL_MENTIONS_V1.md](./LEGAL_MENTIONS_V1.md) | draft | Mentions légales |
 | [PRIVACY_POLICY_PAGE_V1.md](./PRIVACY_POLICY_PAGE_V1.md) | draft | Politique de confidentialité |
