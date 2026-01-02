@@ -43,7 +43,15 @@
                 </li>
               </ul>
               <div v-if="section.table" class="PolicyTableWrapper">
-                <table class="PolicyTable">
+                <div class="PolicyTableStack md:hidden">
+                  <div v-for="(row, rowIndex) in section.table.rows" :key="`${section.title}-stack-${rowIndex}`" class="PolicyTableStackRow">
+                    <div v-for="(cell, cellIndex) in row" :key="`${section.title}-stack-${rowIndex}-${cellIndex}`" class="PolicyTableStackItem">
+                      <span class="PolicyTableStackLabel">{{ section.table.headers[cellIndex] }}</span>
+                      <span class="PolicyTableStackValue">{{ cell }}</span>
+                    </div>
+                  </div>
+                </div>
+                <table class="PolicyTable hidden md:table">
                   <thead>
                     <tr>
                       <th v-for="(header, index) in section.table.headers" :key="`${section.title}-h-${index}`">
@@ -84,6 +92,7 @@ const {
   cookies,
   securite,
   misesAJour,
+  dpo,
   contact
 } = usePrivacyPolicy();
 
@@ -97,6 +106,7 @@ const policySections = [
   cookies,
   securite,
   misesAJour,
+  dpo,
   contact
 ];
 
@@ -168,7 +178,7 @@ useHead({
 }
 
 .PolicyListLabel {
-  @apply font-medium text-slate-100;
+  @apply font-semibold text-slate-100;
 }
 
 .PolicyLink {
@@ -181,6 +191,26 @@ useHead({
 
 .PolicyTable {
   @apply w-full text-left text-sm text-slate-300;
+}
+
+.PolicyTableStack {
+  @apply space-y-4 p-3 text-sm text-slate-300;
+}
+
+.PolicyTableStackRow {
+  @apply flex flex-col gap-3 rounded-lg border border-slate-800/60 bg-slate-950/40 p-3;
+}
+
+.PolicyTableStackItem {
+  @apply flex flex-col gap-1;
+}
+
+.PolicyTableStackLabel {
+  @apply text-xs font-semibold uppercase tracking-wide text-slate-200;
+}
+
+.PolicyTableStackValue {
+  @apply text-sm text-slate-100;
 }
 
 .PolicyTable thead th {

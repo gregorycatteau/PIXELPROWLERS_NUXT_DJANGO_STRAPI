@@ -33,6 +33,7 @@ export type PrivacyPolicyData = {
   cookies: PrivacyPolicySection;
   securite: PrivacyPolicySection;
   misesAJour: PrivacyPolicySection;
+  dpo: PrivacyPolicySection;
   contact: PrivacyPolicySection;
 };
 
@@ -220,6 +221,7 @@ export const usePrivacyPolicy = (): PrivacyPolicyData => {
     cookies: extractSection(sections, 'Cookies et traceurs'),
     securite: extractSection(sections, 'Sécurité et anonymisation'),
     misesAJour: extractSection(sections, 'Mises à jour'),
+    dpo: extractSection(sections, 'Délégué à la protection des données (DPO)'),
     contact: extractSection(sections, 'Contact')
   };
 };
