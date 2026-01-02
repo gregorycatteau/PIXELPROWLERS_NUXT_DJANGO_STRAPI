@@ -113,7 +113,6 @@ const p1JourneySlug = 'ma-structure-dysfonctionne';
 const navItems = [
   { key: 'home', to: '/', label: 'Accueil', icon: '🏠' },
   { key: 'offer', to: '/offre', label: 'Offre', icon: '✨' },
-  { key: 'journey', to: `/parcours/${p1JourneySlug}`, label: 'Parcours (P1)', icon: '🧭' },
   { key: 'resources', to: resourcesLink, label: 'Ressources', icon: '📚' },
   { key: 'formations', to: '/formations', label: 'Formations', icon: '🎓' },
   { key: 'contact', to: '/contact', label: 'Contact', icon: '✉️' }
