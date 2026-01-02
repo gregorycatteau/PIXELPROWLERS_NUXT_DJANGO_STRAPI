@@ -144,7 +144,7 @@
 </template>
 
 <script setup lang="ts">
-// DS State components auto-imported by Nuxt
+// DS State components auto-imported by the framework
 </script>
 
 <style scoped>

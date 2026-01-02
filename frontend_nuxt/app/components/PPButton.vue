@@ -107,7 +107,7 @@ interface PPButtonProps {
   variant?: PPButtonVariant;
 
   /**
-   * Navigation interne Nuxt (si défini et non disabled/loading)
+   * Navigation interne (si défini et non disabled/loading)
    */
   to?: RouteLocationRaw;
 
