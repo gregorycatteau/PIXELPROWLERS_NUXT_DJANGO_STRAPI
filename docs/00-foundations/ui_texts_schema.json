@@ -56,6 +56,7 @@
   "pages/accompagnement-formation.vue:text_1": "Accompagnement & formation",
   "pages/accompagnement-formation.vue:text_2": "Formats courts pour avancer vite",
   "pages/accompagnement-formation.vue:text_3": "Choisis un format adapté à ta maturité : diagnostic express, sprint d’alignement ou\n          accompagnement sur 6 semaines pour livrer et documenter.",
+  "pages/accessibilite.vue:lead": "Cette page présente notre engagement en matière d’accessibilité et l’état de conformité du site.",
   "layouts/default.vue:text_1": "PixelProwlers",
   "layouts/default.vue:text_2": "Studio pluriactif",
   "layouts/default.vue:text_3": "PixelProwlers — studio pluriactif.",
