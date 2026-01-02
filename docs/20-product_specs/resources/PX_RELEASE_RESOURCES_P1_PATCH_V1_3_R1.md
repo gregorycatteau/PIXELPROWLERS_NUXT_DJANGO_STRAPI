@@ -11,13 +11,13 @@ tags: ["release", "resources", "p1", "v1.0.1", "qa"]
 # Release Note — Resources Pack P1 v1.0.1
 
 ## Objectif
-Patch tooling-only: ajout d'un smoke test deterministe pour prouver `draft => 404` en preview/prod, sans aucun changement produit.
+Patch tooling-only: ajout d'un smoke test déterministe pour prouver `draft => 404` en preview/prod, sans aucun changement produit.
 
 ## Tag
 - `resources-p1-v1.0.1`
-- Le pack `resources-p1-v1.0.0` reste scelle (produit inchange).
+- Le pack `resources-p1-v1.0.0` reste scellé (produit inchange).
 
-## Invariants (non negocialbles)
+## Invariants (non negociables)
 - Exactly **10** resources `published`.
 - `draft` => **404** en prod/preview.
 - Recos deterministes, pack-only, **<= 3**.
