@@ -3,7 +3,7 @@
 > **Périmètre** : Documentation
 
 <!-- GENERATED:START -->
-<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2026-01-01 -->
+<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2026-01-02 -->
 
 ## Documents
 
@@ -26,6 +26,7 @@
 | [PX_V1_3_JOURNEY_SCAFFOLDER_CLI_SPEC_V1.md](./PX_V1_3_JOURNEY_SCAFFOLDER_CLI_SPEC_V1.md) | active | PX V1.3 — Journey Scaffolder CLI (Spec V1) |
 | [PX_V1_3_JOURNEY_SCHEMA_RFC_V1.md](./PX_V1_3_JOURNEY_SCHEMA_RFC_V1.md) | active | PX V1.3 — JourneySchema (RFC V1) |
 | [PX_V1_3_PP_JOURNEY_STEP_SHELL_SPEC_V1.md](./PX_V1_3_PP_JOURNEY_STEP_SHELL_SPEC_V1.md) | active | PX V1.3 — PPJourneyStepShell Spec (V1) |
+| [PX_V1_3_RESOURCES_DEEPLINK_V1_DECISION_R1.md](./PX_V1_3_RESOURCES_DEEPLINK_V1_DECISION_R1.md) | active | PX V1.3 — Resources DeepLink V1 (Decision R1) |
 | [PX_V1_3_RESOURCES_LIBRARY_INTEGRATION.md](./PX_V1_3_RESOURCES_LIBRARY_INTEGRATION.md) | active | Resources Library — Integration Frontend (V1.3) |
 | [PX_V1_3_UNIVERSAL_BILAN_VIEWMODEL_RFC_V1.md](./PX_V1_3_UNIVERSAL_BILAN_VIEWMODEL_RFC_V1.md) | active | PX V1.3 — UniversalBilanViewModel (RFC V1) |
 | [journeys.md](./journeys.md) | draft | Journeys (Nuxt) — TODO |

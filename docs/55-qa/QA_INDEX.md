@@ -3,7 +3,7 @@
 > **Périmètre** : Checklists, smoke tests
 
 <!-- GENERATED:START -->
-<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2026-01-01 -->
+<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2026-01-02 -->
 
 ## Documents
 
@@ -17,6 +17,7 @@
 | [P4_GLOBAL_BILAN_SMOKE_TESTS.md](./P4_GLOBAL_BILAN_SMOKE_TESTS.md) | active | P4 Global Bilan — Smoke tests (engine + adapter) |
 | [PX_JOURNEY_ENGINE_SMOKE_TESTS.md](./PX_JOURNEY_ENGINE_SMOKE_TESTS.md) | active | PX Journey Engine — Smoke tests (P1/P2/P3/P4) |
 | [PX_P1_JOURNEY_TESTS.md](./PX_P1_JOURNEY_TESTS.md) | active | PX P1 — Script de tests manuels |
+| [PX_QA_RESOURCES_CANONICAL_R1.md](./PX_QA_RESOURCES_CANONICAL_R1.md) | active | PX QA — Resources Canonicalization (R1) |
 | [QA_INDEX.md](./QA_INDEX.md) | draft | 55 Qa — Index |
 | [RESOURCES_ACTIONS_PANEL_SMOKE_TESTS.md](./RESOURCES_ACTIONS_PANEL_SMOKE_TESTS.md) | active | Resources & Actions Panel — Smoke tests |
 | [SECURITY_GUARDS_SMOKE_TESTS.md](./SECURITY_GUARDS_SMOKE_TESTS.md) | active | Security Guards — Smoke tests |

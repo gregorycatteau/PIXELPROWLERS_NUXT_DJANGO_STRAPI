@@ -3,7 +3,7 @@
 > **Périmètre** : Doctrine sécu, modèles de menaces, contracts, guards
 
 <!-- GENERATED:START -->
-<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2026-01-01 -->
+<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2026-01-02 -->
 
 ## Documents
 

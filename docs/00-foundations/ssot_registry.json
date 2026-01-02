@@ -3,7 +3,7 @@
   "meta": {
     "description": "SSOT Registry - Registre machine-readable des documents canoniques PixelProwlers",
     "version": "1.3.0",
-    "lastUpdated": "2025-12-24",
+    "lastUpdated": "2026-01-02",
     "activeRelease": "V1.3",
     "rulebookRef": "docs/00-foundations/SSOT_RULEBOOK_V1.md",
     "agentsRegistryRef": "agents/agents_registry.json",
@@ -383,6 +383,27 @@
         "status": "active",
         "hasFrontmatter": true,
         "domain": "tech_specs"
+      },
+      {
+        "id": "PX_V1_3_RESOURCES_DEEPLINK_V1_DECISION_R1",
+        "path": "docs/30-tech_specs/frontend/PX_V1_3_RESOURCES_DEEPLINK_V1_DECISION_R1.md",
+        "status": "active",
+        "hasFrontmatter": true,
+        "domain": "tech_specs"
+      },
+      {
+        "id": "PX_MANIFEST_RESOURCES_P1_V1_PACK",
+        "path": "docs/20-product_specs/resources/PX_MANIFEST_RESOURCES_P1_V1_PACK.md",
+        "status": "active",
+        "hasFrontmatter": true,
+        "domain": "product_specs"
+      },
+      {
+        "id": "PX_QA_RESOURCES_CANONICAL_R1",
+        "path": "docs/55-qa/PX_QA_RESOURCES_CANONICAL_R1.md",
+        "status": "active",
+        "hasFrontmatter": true,
+        "domain": "qa"
       },
       {
         "id": "PX_V1_3_PP_JOURNEY_STEP_SHELL_SPEC_V1",
