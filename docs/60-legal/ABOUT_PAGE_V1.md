@@ -36,6 +36,48 @@ Notre approche combine clarification, outillage et accompagnement, avec une atte
 Le projet est né d'un constat simple : les collectifs engagés manquent de temps, de clarté et d'outils fiables pour tenir dans la durée.
 PixelProwlers vise à offrir une trajectoire numérique lisible et documentée, capable de réduire la charge mentale et de sécuriser les décisions.
 Notre ambition : faire évoluer le studio pour soutenir davantage de collectifs en tension, sans compromis sur la sobriété et l'éthique.
+La genèse du projet vient d'un besoin récurrent : remettre de la clarté là où les équipes s'épuisent face à des outils trop lourds.
+
+## Notre méthodologie et nos niveaux d'engagement
+PixelProwlers propose plusieurs niveaux d'intervention pour adapter l'accompagnement aux moyens et au contexte de chaque collectif.
+- Niveau 1 – Auto-diagnostic autonome : diagnostics et ressources utilisables en autonomie, sans compte.
+- Niveau 2 – Miroir sécurisé : regard extérieur structuré, restitution courte et priorisation.
+- Niveau 3 – Ateliers tactiques : 1 à 3 sessions ciblées pour débloquer un point précis.
+- Niveau 4 – Re-architecture accompagnée : programme plus long pour refondre outils, flux et documentation.
+Ces niveaux permettent de démarrer léger, puis d'aller plus loin si besoin, sans surdimensionner l'effort.
+
+## Nos règles du jeu
+- Privacy-first : pas de profilage caché ni de tracking tiers.
+- Données locales par défaut, opt-in explicite pour tout partage.
+- Consentement éclairé et réversible à chaque étape sensible.
+- Documentation systématique pour transmettre sans dépendance forcée.
+- Transparence sur les limites, les risques et les renoncements.
+
+## Déroulement d'un projet
+- Diagnostic et cadrage partagé.
+- Priorisation des chantiers et choix d'un format adapté.
+- Solution légère et testable (prototype, ajustements, rituels).
+- Transmission, documentation et montée en autonomie.
+Le client reste acteur du projet : chaque étape est co-construite et validée ensemble.
+
+## Pourquoi nous faire confiance
+- Approche privacy-first et sécurité by design.
+- Design éthique et sobriété numérique pour réduire la charge.
+- Partenariat clair, pas de dépendance forcée ni d'opacité.
+- Culture cybersécurité et rigueur documentaire.
+- Engagement social et environnemental aligné avec les collectifs.
+
+## Nos garanties de sécurité et de confidentialité
+- Pas de stockage serveur des réponses brutes sans consentement explicite.
+- Aucun identifiant stable de tracking et pas de profilage nominatif.
+- Rétention courte des logs techniques (7 à 30 jours).
+- Audits réguliers des pratiques et des accès [audit annuel RGPD à confirmer].
+- Toute évolution vers plus de rétention ou d'analytics est documentée et re-consentie.
+
+## Nos valeurs incarnées
+- Clarté éditoriale : exemple à venir.
+- Produit léger : exemple à venir.
+- Transmission : exemple à venir.
 
 ## Pourquoi choisir PixelProwlers
 - Une approche privacy-first et respectueuse des données.
@@ -50,3 +92,5 @@ Notre ambition : faire évoluer le studio pour soutenir davantage de collectifs 
 
 ## Authenticité et preuves
 Cette page est mise à jour régulièrement et reflète des engagements concrets. Elle vise la clarté, l'honnêteté et la cohérence avec nos pratiques.
+
+Envie de travailler ensemble ? Contacte-nous !
