@@ -11,19 +11,23 @@ const errors: string[] = [];
 const resources = listResources();
 const publishedResources = resources.filter((resource) => resource.status === 'published');
 
-if (publishedResources.length < 5) {
-  errors.push('❌ Registry V0 must include at least 5 published resources');
+if (publishedResources.length !== 10) {
+  errors.push(`❌ Registry V0 must include exactly 10 published resources (found ${publishedResources.length})`);
 }
 
 publishedResources.forEach((resource) => {
+  const outcome = typeof resource.outcome === 'string' ? resource.outcome.trim() : '';
+  if (!outcome) {
+    errors.push(`❌ Published resource missing outcome: ${resource.slug}`);
+  }
   const blocks = resource.contentBlocks ?? [];
   if (blocks.length === 0) {
     errors.push(`❌ Published resource missing contentBlocks: ${resource.slug}`);
     return;
   }
   const hasAction = blocks.some((block) => block.kind === 'action');
-  if (blocks.length < 2 && !hasAction) {
-    errors.push(`❌ Published resource lacks density: ${resource.slug}`);
+  if (blocks.length < 2 || !hasAction) {
+    errors.push(`❌ Published resource lacks required blocks: ${resource.slug}`);
   }
 });
 

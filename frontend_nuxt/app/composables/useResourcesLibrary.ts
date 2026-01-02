@@ -96,7 +96,6 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
   const filters = ref<ResourceFilters>({
     category: '',
   });
-  const sort = ref<string | undefined>(undefined);
   const effort = ref<ResourceEffort | undefined>(undefined);
   const level = ref<ResourceLevel | undefined>(undefined);
 
@@ -164,7 +163,6 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
     searchQuery.value = parsed.q ?? '';
     debouncedSearchQuery.value = parsed.q ?? '';
     filters.value.category = parsed.category ?? '';
-    sort.value = parsed.sort;
     effort.value = parsed.effort;
     level.value = parsed.level;
 
@@ -175,7 +173,6 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
     const canonicalRoute = buildResourcesDeepLink({
       q: debouncedSearchQuery.value,
       category: filters.value.category || undefined,
-      sort: sort.value,
       effort: effort.value,
       level: level.value,
       page: currentPage.value,
@@ -267,7 +264,6 @@ export function useResourcesLibrary(): UseResourcesLibraryReturn {
     filters.value = {
       category: '',
     };
-    sort.value = undefined;
     effort.value = undefined;
     level.value = undefined;
     currentPage.value = 1;

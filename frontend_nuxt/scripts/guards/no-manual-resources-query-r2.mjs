@@ -188,7 +188,7 @@ function main() {
 
   if (errors.length > 0) {
     console.log('\n📚 Fix: Use buildResourcesDeepLink() from @/utils/deeplinks/resourcesDeepLink.ts')
-    console.log('   Example: :to="buildResourcesDeepLink({ tags: [\'p1\'], sort: \'impact\' })"')
+    console.log('   Example: :to="buildResourcesDeepLink({ q: \'test\', category: \'diagnostic\', page: 2 })"')
     console.log('')
     process.exit(1)
   }

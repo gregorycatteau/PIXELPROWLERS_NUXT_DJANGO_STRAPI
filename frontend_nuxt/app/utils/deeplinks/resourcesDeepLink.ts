@@ -33,9 +33,7 @@ const VALID_CATEGORIES = new Set<string>([
 
 const VALID_EFFORTS = new Set<ResourceEffort>(['low', 'medium', 'high']);
 const VALID_LEVELS = new Set<ResourceLevel>(['intro', 'intermediate', 'advanced']);
-const VALID_SORTS = new Set<string>([]);
-
-const ALLOWLIST_KEYS = new Set(['q', 'category', 'sort', 'effort', 'level', 'page']);
+const ALLOWLIST_KEYS = new Set(['q', 'category', 'effort', 'level', 'page']);
 const FORBIDDEN_PARAM_PREFIXES = ['utm_'];
 const FORBIDDEN_PARAM_KEYS = [
   'gclid',
@@ -56,7 +54,6 @@ const CONTROL_CHARS = /[\u0000-\u001F\u007F]/g;
 export interface FiltersNormalized {
   q?: string;
   category?: ResourceCategory;
-  sort?: string;
   effort?: ResourceEffort;
   level?: ResourceLevel;
   page: number;
@@ -65,7 +62,6 @@ export interface FiltersNormalized {
 export interface DeepLinkInput {
   q?: string;
   category?: ResourceCategory;
-  sort?: string;
   effort?: ResourceEffort;
   level?: ResourceLevel;
   page?: number;
@@ -122,12 +118,6 @@ function normalizeCategory(value: unknown): ResourceCategory | undefined {
   return VALID_CATEGORIES.has(sanitized)
     ? (sanitized as ResourceCategory)
     : undefined;
-}
-
-function normalizeSort(value: unknown): string | undefined {
-  if (typeof value !== 'string') return undefined;
-  const sanitized = sanitizeString(value, 40).toLowerCase();
-  return VALID_SORTS.has(sanitized) ? sanitized : undefined;
 }
 
 function normalizeEffort(value: unknown): ResourceEffort | undefined {
@@ -222,7 +212,6 @@ function shallowEqualQuery(
 export const DEFAULT_FILTERS: FiltersNormalized = {
   q: undefined,
   category: undefined,
-  sort: undefined,
   effort: undefined,
   level: undefined,
   page: 1,
@@ -242,7 +231,6 @@ export function parseResourcesDeepLink(
     result.category = 'category' in query
       ? normalizeCategory(query['category'])
       : result.category;
-    result.sort = 'sort' in query ? normalizeSort(query['sort']) : result.sort;
     result.effort = 'effort' in query ? normalizeEffort(query['effort']) : result.effort;
     result.level = 'level' in query ? normalizeLevel(query['level']) : result.level;
     const pageValue = 'page' in query
@@ -288,11 +276,6 @@ export function buildResourcesDeepLink(
       query.category = category;
     }
 
-    const sort = normalizeSort(input.sort);
-    if (sort) {
-      query.sort = sort;
-    }
-
     const effort = normalizeEffort(input.effort);
     if (effort) {
       query.effort = effort;
@@ -327,7 +310,6 @@ export function parseResourcesDeepLinkWithMeta(
   const canonicalRoute = buildResourcesDeepLink({
     q: filters.q,
     category: filters.category || undefined,
-    sort: filters.sort,
     effort: filters.effort,
     level: filters.level,
     page: filters.page,

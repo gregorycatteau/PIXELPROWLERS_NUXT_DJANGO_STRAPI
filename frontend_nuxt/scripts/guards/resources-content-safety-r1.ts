@@ -18,6 +18,16 @@ const forbiddenTokens = [
   'src=',
   'href=',
 ];
+const forbiddenUrlPatterns = [
+  'http://',
+  'https://',
+  'www.',
+  '.com',
+  '.fr',
+  '.io',
+  '.net',
+  '.org',
+];
 
 function checkValue(value: string, context: string): void {
   const lowered = value.toLowerCase();
@@ -34,6 +44,15 @@ function checkValue(value: string, context: string): void {
   }
 }
 
+function checkBulletUrls(value: string, context: string): void {
+  const lowered = value.toLowerCase();
+  forbiddenUrlPatterns.forEach((token) => {
+    if (lowered.includes(token)) {
+      errors.push(`❌ Forbidden URL token "${token}" in ${context}`);
+    }
+  });
+}
+
 resources.forEach((resource) => {
   if (!slugPattern.test(resource.slug)) {
     errors.push(`❌ Invalid slug format: ${resource.slug}`);
@@ -47,6 +66,10 @@ resources.forEach((resource) => {
     checkValue(block.title, `contentBlocks[${index}].title ${resource.slug}`);
     block.bullets.forEach((bullet, bulletIndex) => {
       checkValue(bullet, `contentBlocks[${index}].bullets[${bulletIndex}] ${resource.slug}`);
+      checkBulletUrls(
+        bullet,
+        `contentBlocks[${index}].bullets[${bulletIndex}] ${resource.slug}`
+      );
     });
   });
 });

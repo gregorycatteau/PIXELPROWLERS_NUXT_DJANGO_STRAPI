@@ -29,7 +29,7 @@ export type ResourceV0 = {
   contentBlocks?: Array<{
     title: string;
     bullets: string[];
-    kind?: 'action' | 'guide' | 'checklist';
+    kind?: 'action' | 'guide' | 'checklist' | 'context' | 'warning';
   }>;
 };
 

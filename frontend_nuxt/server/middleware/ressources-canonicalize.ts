@@ -1,4 +1,4 @@
-import { defineEventHandler, getQuery, getRequestURL, sendRedirect, setResponseStatus } from 'h3';
+import { defineEventHandler, getQuery, getRequestURL, sendRedirect, setHeader, setResponseStatus } from 'h3';
 import { parseResourcesDeepLinkWithMeta } from '@/utils/deeplinks/resourcesDeepLink';
 
 const MAX_QUERYSTRING_LENGTH = 1024;
@@ -18,6 +18,9 @@ const buildPathWithQuery = (path: string, query: Record<string, string>): string
   return queryString ? `${path}?${queryString}` : path;
 };
 
+const ensureRessourcesLocation = (location: string): string =>
+  location.startsWith('/ressources') ? location : '/ressources';
+
 export default defineEventHandler((event) => {
   if (!isFlagEnabled()) return;
 
@@ -26,6 +29,7 @@ export default defineEventHandler((event) => {
   if (!path.startsWith('/ressources')) return;
 
   if (url.search.length > MAX_QUERYSTRING_LENGTH) {
+    setHeader(event, 'Cache-Control', 'no-store');
     setResponseStatus(event, 404);
     return 'Not Found';
   }
@@ -34,6 +38,7 @@ export default defineEventHandler((event) => {
     const canonical = parseResourcesDeepLinkWithMeta(getQuery(event), `${path}${url.search}`);
     if (!canonical.shouldReplace) return;
     if (canonical.reasonCodes.includes('too_long')) {
+      setHeader(event, 'Cache-Control', 'no-store');
       setResponseStatus(event, 404);
       return 'Not Found';
     }
@@ -41,11 +46,15 @@ export default defineEventHandler((event) => {
       ? {}
       : (canonical.canonicalRoute.query ?? {});
     const location = buildPathWithQuery('/ressources', canonicalQuery as Record<string, string>);
-    if (location === `${path}${url.search}`) return;
-    return sendRedirect(event, location, 307);
+    const safeLocation = ensureRessourcesLocation(location);
+    if (safeLocation === `${path}${url.search}`) return;
+    setHeader(event, 'Cache-Control', 'no-store');
+    return sendRedirect(event, safeLocation, 307);
   }
 
   if (url.search.length > 0) {
-    return sendRedirect(event, path, 307);
+    const safeLocation = ensureRessourcesLocation(path);
+    setHeader(event, 'Cache-Control', 'no-store');
+    return sendRedirect(event, safeLocation, 307);
   }
 });
