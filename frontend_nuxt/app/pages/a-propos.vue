@@ -1,117 +1,186 @@
 <template>
-  <div class="PageContainer">
-    <section class="PageSection">
-      <PPCard as="section" variant="default">
-        <PPPageHeader as="h1" density="comfort" align="left">
-          <template #eyebrow>
-            À propos
-          </template>
-          <template #title>
-            PixelProwlers, studio pluriactif
-          </template>
-          <template #lead>
-            Nous aidons les collectifs et organisations à clarifier leur posture, à rendre leurs offres lisibles et
-            à mettre en place des expériences numériques sobres qui filtrent les bonnes demandes.
-          </template>
-        </PPPageHeader>
-      </PPCard>
-      <div class="PillarsGrid">
-        <div class="SecondaryCard PillarCard" v-for="(item, index) in pillars" :key="index">
-          <p class="PillarLabel">Pilier {{ index + 1 }}</p>
-          <h2 class="PillarTitle">{{ item.title }}</h2>
-          <p class="PillarText">{{ item.body }}</p>
-        </div>
+  <PPStaticPageShell header-id="about-title">
+    <PPCard as="section" variant="default" class="pp-static-page__header-card">
+      <PPPageHeader as="h1" density="comfort" align="left" title-id="about-title">
+        <template #eyebrow>
+          À propos
+        </template>
+        <template #title>
+          À propos · PixelProwlers
+        </template>
+        <template #lead>
+          Découvre qui nous sommes, nos valeurs et comment nous pouvons t’accompagner.
+        </template>
+      </PPPageHeader>
+    </PPCard>
+
+    <div class="pp-static-page__stack">
+      <div class="pp-static-page__grid pp-static-page__grid--pillars">
+        <PPCard
+          v-for="section in pillarSections"
+          :key="section.title"
+          as="section"
+          variant="default"
+          class="pp-static-page__card"
+        >
+          <PPSectionHeader as="h2" density="comfort" :lead="section.lead">
+            <template #title>
+              {{ section.title }}
+            </template>
+          </PPSectionHeader>
+          <div class="pp-static-page__section-body">
+            <p v-for="(paragraph, index) in section.body" :key="`${section.title}-p-${index}`" class="pp-static-page__text">
+              {{ paragraph }}
+            </p>
+            <ul v-if="section.items.length" class="pp-static-page__list">
+              <li v-for="(item, index) in section.items" :key="`${section.title}-l-${index}`">
+                <span class="pp-static-page__list-label">{{ item.label }}</span>
+                <span v-if="item.value">: {{ item.value }}</span>
+              </li>
+            </ul>
+          </div>
+        </PPCard>
       </div>
-    </section>
-  </div>
+
+      <div class="pp-static-page__stack">
+        <PPCard
+          v-for="section in detailSections"
+          :key="section.title"
+          as="section"
+          variant="default"
+          class="pp-static-page__card"
+        >
+          <PPSectionHeader as="h2" density="comfort" :lead="section.lead">
+            <template #title>
+              {{ section.title }}
+            </template>
+          </PPSectionHeader>
+          <div class="pp-static-page__section-body">
+            <p v-for="(paragraph, index) in section.body" :key="`${section.title}-p-${index}`" class="pp-static-page__text">
+              {{ paragraph }}
+            </p>
+            <ol v-if="section.ordered && section.items.length" class="pp-static-page__list pp-static-page__list--ordered">
+              <li v-for="(item, index) in section.items" :key="`${section.title}-o-${index}`">
+                <span class="pp-static-page__list-label">{{ item.label }}</span>
+                <span v-if="item.value">: {{ item.value }}</span>
+              </li>
+            </ol>
+            <ul v-else-if="section.items.length" class="pp-static-page__list">
+              <li v-for="(item, index) in section.items" :key="`${section.title}-l-${index}`">
+                <span class="pp-static-page__list-label">{{ item.label }}</span>
+                <span v-if="item.value">: {{ item.value }}</span>
+              </li>
+            </ul>
+          </div>
+        </PPCard>
+
+        <PPCard as="section" variant="default" class="pp-static-page__card">
+          <PPSectionHeader
+            as="h2"
+            density="comfort"
+            lead="Tu peux nous partager ton contexte, tes contraintes et tes priorités. On prendra le temps de clarifier ensemble la suite."
+          >
+            <template #title>
+              Envie d’en parler ?
+            </template>
+          </PPSectionHeader>
+          <PPButton to="/contact" variant="primary" class="pp-static-page__cta">Discutons de ton projet</PPButton>
+        </PPCard>
+      </div>
+    </div>
+
+    <div class="pp-static-page__cta-row">
+      <PPButton to="/" variant="primary" class="pp-static-page__cta">Retour à l’accueil</PPButton>
+      <PPButton to="/parcours/ma-structure-dysfonctionne?step=E0_intro" variant="secondary" class="pp-static-page__cta">
+        Commencer le parcours
+      </PPButton>
+    </div>
+  </PPStaticPageShell>
 </template>
 
 <script setup lang="ts">
 import { useHead } from '#imports';
+import { useAbout } from '~/composables/useAbout';
 
-const pillars = [
-  { title: 'Clarté éditoriale', body: 'Rendre visibles les décisions, choix et renoncements.' },
-  { title: 'Produit léger', body: 'Des interfaces sobres, rapides, prêtes à évoluer.' },
-  { title: 'Transmission', body: 'Documenter ce qui est construit pour rester autonome.' }
-];
+const {
+  quiNousSommes,
+  valeurs,
+  approche,
+  histoire,
+  methodologie,
+  reglesDuJeu,
+  deroulement,
+  pourquoiConfiance,
+  garanties,
+  valeursIncarnees,
+  pourquoiChoisir,
+  nextSteps,
+  noteAuthenticite
+} = useAbout();
 
 const canonicalUrl = 'https://pixelprowlers.io/a-propos';
+const metaDescription = 'Découvre nos méthodes d’accompagnement, nos valeurs et nos garanties de sécurité.';
 
-const organizationJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: 'PixelProwlers',
-  url: 'https://pixelprowlers.io/',
-  logo: 'https://pixelprowlers.io/logo.png',
-  sameAs: [],
-  description:
-    'Studio pluriactif pour collectifs, associations et SCIC : clarté éditoriale, produit léger, transmission.'
+type AboutSectionView = {
+  title: string;
+  lead: string;
+  body: string[];
+  items: { label: string; value: string }[];
+  ordered?: boolean;
 };
 
-const webPageJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebPage',
-  url: canonicalUrl,
-  name: 'À propos · PixelProwlers, studio pluriactif éthique',
-  description: 'Clarté éditoriale, produit léger, transmission pour collectifs engagés, assos et SCIC.'
-};
+// Transforme une section éditoriale en structure affichable (lead + body).
+const toSectionView = (section: { title: string; paragraphs: string[]; items: { label: string; value: string }[] }, ordered = false): AboutSectionView => ({
+  title: section.title,
+  lead: section.paragraphs[0] ?? '',
+  body: section.paragraphs.slice(1),
+  items: section.items,
+  ordered
+});
+
+const pillarSections = [
+  toSectionView(quiNousSommes),
+  toSectionView(valeurs),
+  toSectionView(approche)
+];
+
+const detailSections = [
+  toSectionView(histoire),
+  toSectionView(methodologie),
+  toSectionView(reglesDuJeu),
+  toSectionView(deroulement, true),
+  toSectionView(pourquoiConfiance),
+  toSectionView(garanties),
+  toSectionView(valeursIncarnees),
+  toSectionView(pourquoiChoisir),
+  toSectionView(nextSteps),
+  toSectionView(noteAuthenticite)
+];
 
 useHead({
-  title: 'À propos · PixelProwlers, studio pluriactif éthique',
+  title: 'À propos · PixelProwlers',
   meta: [
     {
       name: 'description',
-      content: 'Clarté éditoriale, produit léger, transmission pour collectifs engagés, assos et SCIC.'
+      content: metaDescription
     },
     { name: 'robots', content: 'index,follow' },
     { property: 'og:type', content: 'article' },
-    { property: 'og:title', content: 'À propos · PixelProwlers, studio pluriactif éthique' },
+    { property: 'og:title', content: 'À propos · PixelProwlers' },
     {
       property: 'og:description',
-      content: 'Clarté éditoriale, produit léger, transmission pour collectifs engagés, assos et SCIC.'
+      content: metaDescription
     },
     { property: 'og:url', content: canonicalUrl },
     { property: 'og:image', content: '/mainhero.webp' },
     { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:title', content: 'À propos · PixelProwlers, studio pluriactif éthique' },
+    { name: 'twitter:title', content: 'À propos · PixelProwlers' },
     {
       name: 'twitter:description',
-      content: 'Clarté éditoriale, produit léger, transmission pour collectifs engagés, assos et SCIC.'
+      content: metaDescription
     },
     { name: 'twitter:image', content: '/mainhero.webp' }
   ],
-  link: [{ rel: 'canonical', href: canonicalUrl }],
-  script: [
-    { type: 'application/ld+json', innerHTML: JSON.stringify(organizationJsonLd) },
-    { type: 'application/ld+json', innerHTML: JSON.stringify(webPageJsonLd) }
-  ]
+  link: [{ rel: 'canonical', href: canonicalUrl }]
 });
 </script>
-
-<style scoped>
-@reference "@/assets/css/main.css";
-
-.PageContainer {
-  @apply w-full max-w-6xl mx-auto px-6 space-y-12 pb-16;
-}
-
-.PillarsGrid {
-  @apply grid gap-4 md:grid-cols-3;
-}
-
-.PillarCard {
-  @apply space-y-2;
-}
-
-.PillarLabel {
-  @apply text-sm text-orange-300;
-}
-
-.PillarTitle {
-  @apply text-xl font-semibold;
-}
-
-.PillarText {
-  @apply text-sm text-slate-300;
-}
-</style>
