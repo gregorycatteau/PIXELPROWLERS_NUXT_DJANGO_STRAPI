@@ -301,6 +301,7 @@ public/
 | **Pas de remote assets** | Guard `no-remote-assets.mjs` actif |
 | **Pas de v-html** | Guard `no_v_html_guard.ts` actif |
 | **Rate limiting contact** | Anti-abus sans service tiers |
+| **Contact full-stack (exception)** | Minimisation, rétention 6 mois, purge auto, logs anonymisés |
 
 ### 8.2 Données affichées
 

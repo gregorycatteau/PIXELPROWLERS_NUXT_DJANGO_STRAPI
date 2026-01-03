@@ -15,7 +15,10 @@ def test_contact_invalid_payload_returns_neutral_error():
     client = APIClient()
     response = client.post("/api/v1/contact/", data={}, format="json")
     assert response.status_code == 400
-    assert response.json() == {"error": "Données invalides"}
+    payload = response.json()
+    assert payload["status"] == "error"
+    assert payload["message"] == "Données invalides"
+    assert "errors" in payload
 
 
 @pytest.mark.django_db
@@ -23,13 +26,16 @@ def test_contact_honeypot_silent_success():
     client = APIClient()
     payload = {
         "email": "user@example.com",
-        "subject": "question_generale",
         "message": "Bonjour, ceci est un message valide.",
+        "consent": True,
+        "clientTimeOnPageSeconds": 5,
         "honeypot": "bot",
     }
     response = client.post("/api/v1/contact/", data=payload, format="json")
-    assert response.status_code == 201
-    assert response.json().get("success") is True
+    assert response.status_code == 200
+    body = response.json()
+    assert body.get("status") == "ok"
+    assert body.get("ticketId") is None
     assert "email" not in response.content.decode("utf-8").lower()
 
 

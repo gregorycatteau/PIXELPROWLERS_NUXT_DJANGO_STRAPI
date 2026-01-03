@@ -87,7 +87,9 @@ La consultation de la bibliothèque de ressources ne génère **aucune collecte 
 | Recherches effectuées | ❌ Non collecté |
 | Filtres utilisés | ❌ Non collecté |
 
-### 2.3 Formulaire de contact
+### 2.3 Formulaire de contact (full-stack)
+
+Le formulaire de contact est traite cote serveur pour repondre aux demandes. Les donnees sont conservees au maximum 6 mois, puis purgees automatiquement. Des emails transactionnels sont emis (notification interne et accuse utilisateur). Les logs techniques sont anonymises et ne contiennent pas le contenu des messages. Le diagnostic P1 reste front-only, sans retention serveur des reponses.
 
 | Donnée | Obligatoire | Finalité | Rétention |
 |--------|-------------|----------|-----------|

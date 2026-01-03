@@ -105,6 +105,17 @@ PX_CACHE_FAIL_CLOSED = False
 PX_CACHE_FAIL_RETRY_AFTER = 60
 PX_HEALTH_CHECK_CACHE = False
 
+PX_CONTACT_RATE_LIMITS = {
+    "minute": {"limit": 5, "window": 60},
+    "hour": {"limit": 20, "window": 3600},
+}
+PX_CONTACT_MIN_SECONDS = 3
+CONTACT_SUPPORT_EMAIL = "support@example.com"
+CONTACT_FROM_EMAIL = "no-reply@example.com"
+CONTACT_RETENTION_DAYS = 180
+
+EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
+
 # CORS
 CORS_ALLOW_ALL_ORIGINS = True
 

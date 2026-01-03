@@ -9,7 +9,8 @@
           Confidentialité
         </template>
         <template #lead>
-          Nous collectons le strict minimum, sans tracking tiers ni profilage. Cette page résume notre approche.
+          Nous collectons le strict minimum, sans tracking tiers ni profilage. Le formulaire de contact sert
+          uniquement à répondre, avec conservation limitée, purge automatique et logs anonymisés. P1 reste front-only.
         </template>
       </PPPageHeader>
     </PPCard>
@@ -79,7 +80,7 @@ const privacySections: PrivacySection[] = [
     paragraphs: [
       {
         text:
-          'Quand tu nous contactes, nous utilisons tes informations uniquement pour répondre à ta demande et assurer le suivi.'
+          'Quand tu nous contactes, nous utilisons tes informations uniquement pour répondre à ta demande, avec rétention courte et purge automatique.'
       }
     ],
     items: []
@@ -120,7 +121,7 @@ useHead({
     {
       name: 'description',
       content:
-        'Résumé de la politique de confidentialité PixelProwlers : collecte minimale, pas de tracking tiers et lien vers la politique complète.'
+        'Résumé de la politique de confidentialité PixelProwlers : collecte minimale, contact avec rétention courte, logs anonymisés, lien vers la politique complète.'
     },
     { name: 'robots', content: 'index,follow' },
     { property: 'og:type', content: 'article' },
@@ -128,7 +129,7 @@ useHead({
     {
       property: 'og:description',
       content:
-        'Résumé de la politique de confidentialité PixelProwlers : collecte minimale, pas de tracking tiers et lien vers la politique complète.'
+        'Résumé de la politique de confidentialité PixelProwlers : collecte minimale, contact avec rétention courte, logs anonymisés, lien vers la politique complète.'
     },
     { property: 'og:url', content: canonicalUrl },
     { property: 'og:image', content: '/mainhero.webp' },
@@ -137,7 +138,7 @@ useHead({
     {
       name: 'twitter:description',
       content:
-        'Résumé de la politique de confidentialité PixelProwlers : collecte minimale, pas de tracking tiers et lien vers la politique complète.'
+        'Résumé de la politique de confidentialité PixelProwlers : collecte minimale, contact avec rétention courte, logs anonymisés, lien vers la politique complète.'
     },
     { name: 'twitter:image', content: '/mainhero.webp' }
   ],
