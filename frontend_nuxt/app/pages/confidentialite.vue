@@ -10,9 +10,8 @@
             Politique de confidentialité
           </template>
           <template #lead>
-            Les données collectées via le formulaire de contact servent uniquement à répondre à ta demande.
-            Nous ne partageons rien avec des tiers. Cette page sera enrichie avec les mentions RGPD détaillées
-            avant mise en production.
+            Les données collectées via le formulaire de contact servent à répondre à ta demande, avec conservation
+            limitée et purge automatique. Les logs techniques sont anonymisés. Le diagnostic P1 reste front-only.
           </template>
         </PPPageHeader>
       </PPCard>
@@ -31,7 +30,7 @@ useHead({
     {
       name: 'description',
       content:
-        'Politique de confidentialité : données utilisées uniquement pour répondre aux demandes, sans partage à des tiers.'
+        'Politique de confidentialité : contact pour répondre, conservation limitée, logs anonymisés, diagnostic P1 front-only.'
     },
     { name: 'robots', content: 'noindex,follow' },
     { property: 'og:type', content: 'article' },
@@ -39,7 +38,7 @@ useHead({
     {
       property: 'og:description',
       content:
-        'Politique de confidentialité : données utilisées uniquement pour répondre aux demandes, sans partage à des tiers.'
+        'Politique de confidentialité : contact pour répondre, conservation limitée, logs anonymisés, diagnostic P1 front-only.'
     },
     { property: 'og:url', content: canonicalUrl },
     { property: 'og:image', content: '/mainhero.webp' },
@@ -48,7 +47,7 @@ useHead({
     {
       name: 'twitter:description',
       content:
-        'Politique de confidentialité : données utilisées uniquement pour répondre aux demandes, sans partage à des tiers.'
+        'Politique de confidentialité : contact pour répondre, conservation limitée, logs anonymisés, diagnostic P1 front-only.'
     },
     { name: 'twitter:image', content: '/mainhero.webp' }
   ],

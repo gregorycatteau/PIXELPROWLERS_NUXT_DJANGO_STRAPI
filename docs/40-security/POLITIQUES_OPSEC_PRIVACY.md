@@ -20,6 +20,12 @@ Objectif : formaliser les politiques de souveraineté, confidentialité, gestion
 - Ce qu’on ne fait pas : pas de stockage serveur des réponses brutes sans opt-in Relinium ; pas de corrélation avec Fit en V1.x.  
 - Bouton “Effacer mes réponses” : purge des clés locales (réponses, scores, tags, bilans, préférences analytics locales).
 
+> **Exception contrôlée — Contact full-stack (V1.3)**  
+> PII isolées, finalité unique (répondre), rétention courte avec purge automatique.  
+> Logs sans payload PII, IP anonymisée (prefix + hash).  
+> Anti-abus: honeypot, time-gate, rate limiting, erreurs neutres (anti-oracle).  
+> Scope strict: le diagnostic P1 reste front-only.
+
 ## 3. Analytics
 - Schéma minimal : events anonymisés (start/complete, clic ressource, opt-in Relinium, issues Fit) avec propriétés bucketisées, sans PII ni identifiant stable.  
 - Interdit : réponses brutes, PII, device IDs persistants.  

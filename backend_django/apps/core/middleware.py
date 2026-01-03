@@ -78,8 +78,6 @@ class RateLimitMiddleware:
         if path.startswith("/api/v1/health/"):
             return None
 
-        if method == "POST" and path == "/api/v1/contact/":
-            return "contact"
         if method == "GET" and path == "/api/v1/resources/":
             return "resources"
         if method == "POST" and path == "/api/v1/gate125/register/":

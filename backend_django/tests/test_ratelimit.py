@@ -54,25 +54,12 @@ def test_rate_limit_middleware_behaviors():
         response = middleware(DummyRequest("/api/v1/health/"))
         assert response.status_code == 200
 
-    # B) contact: 3 ok then 429 + cooldown
-    for _ in range(3):
+    # B) contact: pas de rate limit middleware (géré dans la vue)
+    for _ in range(4):
         response = middleware(DummyRequest("/api/v1/contact/", method="POST"))
         assert response.status_code == 200
 
-    response = middleware(DummyRequest("/api/v1/contact/", method="POST"))
-    assert response.status_code == 429
-    assert json.loads(response.content) == {"error": "Trop de requêtes"}
-    assert response.headers.get("Retry-After")
-    assert response.headers.get("X-RateLimit-Limit")
-    assert response.headers.get("X-RateLimit-Remaining") == "0"
-    assert response.headers.get("X-RateLimit-Reset")
-
-    # C) cooldown active => 429 + Retry-After > 0
-    response = middleware(DummyRequest("/api/v1/contact/", method="POST"))
-    assert response.status_code == 429
-    assert int(response.headers.get("Retry-After", "0")) > 0
-
-    # D) resources: no Retry-After
+    # C) resources: no Retry-After
     for _ in range(2):
         response = middleware(DummyRequest("/api/v1/resources/", method="GET"))
         assert response.status_code == 200
@@ -84,7 +71,7 @@ def test_rate_limit_middleware_behaviors():
     assert response.headers.get("X-RateLimit-Remaining") == "0"
     assert response.headers.get("X-RateLimit-Reset")
 
-    # E) gate125: cooldown and headers
+    # D) gate125: cooldown and headers
     for _ in range(2):
         response = middleware(DummyRequest("/api/v1/gate125/register/", method="POST"))
         assert response.status_code == 200
@@ -93,7 +80,7 @@ def test_rate_limit_middleware_behaviors():
     assert json.loads(response.content) == {"error": "Trop de requêtes"}
     assert int(response.headers.get("Retry-After", "0")) > 0
 
-    # F) neutral body (no leak)
+    # E) neutral body (no leak)
     body = json.dumps(json.loads(response.content)).lower()
     assert "limit" not in body
     assert "window" not in body
@@ -112,6 +99,4 @@ def test_rate_limit_fail_closed_on_cache_error(monkeypatch):
     middleware = RateLimitMiddleware(lambda _req: JsonResponse({"ok": True}, status=200))
     response = middleware(DummyRequest("/api/v1/contact/", method="POST"))
 
-    assert response.status_code == 429
-    assert json.loads(response.content) == {"error": "Trop de requêtes"}
-    assert response.headers.get("Retry-After") == "60"
+    assert response.status_code == 200

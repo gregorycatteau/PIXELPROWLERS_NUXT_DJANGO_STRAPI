@@ -3,7 +3,7 @@
 > **Périmètre** : Stratégie SEO
 
 <!-- GENERATED:START -->
-<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2026-01-02 -->
+<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2026-01-03 -->
 
 ## Documents
 

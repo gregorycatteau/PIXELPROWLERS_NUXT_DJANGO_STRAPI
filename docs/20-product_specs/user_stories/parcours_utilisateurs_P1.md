@@ -284,6 +284,7 @@ afin de le garder, le relire, ou le partager plus tard si je le souhaite, sans d
   - un rappel des blocs explorés / non explorés,
   - **aucune donnée nominative** (ni nom, ni structure, ni personne).
 - Aucun fichier n’est généré par un serveur, aucune donnée n’est uploadée.
+- Scope : données du diagnostic P1 uniquement ; le contact est un flux séparé.
 - Aucune inscription n’est demandée pour exporter.
 - L’export ne déclenche **pas d’envoi analytics détaillé** ; au plus, un event coarse `p1_export_clicked` (si validé côté sécu).
 
@@ -309,6 +310,7 @@ afin de repartir à zéro ou de laisser cet appareil sans traces de ce diagnosti
 - Un court message explique **clairement** :
   - ce que cela efface,
   - que rien n’était stocké côté serveur.
+- Scope : données du diagnostic P1 uniquement ; le contact est un flux séparé.
 - Aucune donnée P1 ne subsiste dans le storage local après exécution de la purge.
 - Le bouton ne touche **pas** aux autres parties du site (contact, blog, etc.).
 
@@ -359,6 +361,7 @@ et sans me voir reprocher de ne pas l’avoir “terminé comme il faut”.
   - à son retour, s’il revient sur P1, les scores agrégés éventuellement persistés peuvent être réutilisés, mais jamais les réponses brutes.
 - Aucune logique de gamification culpabilisante (barres type “tu es à 80 %, encore un peu !”) n’est utilisée.
 - Aucun mail, notification ou relance n’est envoyée, puisque P1 ne collecte aucune donnée de contact.
+- Scope : données du diagnostic P1 uniquement ; le contact est un flux séparé.
 
 ---
 

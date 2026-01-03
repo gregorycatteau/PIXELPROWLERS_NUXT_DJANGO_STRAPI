@@ -220,6 +220,71 @@
         "domain": "product_specs"
       },
       {
+        "id": "PX_AUDIT_CONTACT_FULLSTACK_DOC_IMPACT_V1_3",
+        "path": "docs/20-product_specs/contact/PX_AUDIT_CONTACT_FULLSTACK_DOC_IMPACT_V1_3.md",
+        "status": "draft",
+        "hasFrontmatter": true,
+        "domain": "product_specs",
+        "owners": [
+          "Marty"
+        ],
+        "tags": [
+          "audit",
+          "contact",
+          "privacy",
+          "v1.3"
+        ]
+      },
+      {
+        "id": "PX_V1_3_CONTACT_FULLSTACK_SPEC",
+        "path": "docs/20-product_specs/contact/PX_V1_3_CONTACT_FULLSTACK_SPEC.md",
+        "status": "draft",
+        "hasFrontmatter": true,
+        "domain": "product_specs",
+        "owners": [
+          "Marty"
+        ],
+        "tags": [
+          "product_specs",
+          "contact",
+          "full-stack",
+          "v1.3"
+        ]
+      },
+      {
+        "id": "PX_V1_3_CONTACT_FULLSTACK_USER_STORIES",
+        "path": "docs/20-product_specs/user_stories/PX_V1_3_CONTACT_FULLSTACK_USER_STORIES.md",
+        "status": "draft",
+        "hasFrontmatter": true,
+        "domain": "product_specs",
+        "owners": [
+          "Marty"
+        ],
+        "tags": [
+          "user_stories",
+          "contact",
+          "full-stack",
+          "v1.3"
+        ]
+      },
+      {
+        "id": "PX_V1_3_CONTACT_FULLSTACK_DECISION_R1",
+        "path": "docs/30-tech_specs/backend/PX_V1_3_CONTACT_FULLSTACK_DECISION_R1.md",
+        "status": "draft",
+        "hasFrontmatter": true,
+        "domain": "backend",
+        "owners": [
+          "Marty",
+          "Eva"
+        ],
+        "tags": [
+          "decision",
+          "contact",
+          "full-stack",
+          "v1.3"
+        ]
+      },
+      {
         "id": "DOCS_DOD_AND_CONVENTIONS_V1",
         "path": "docs/00-foundations/DOCS_DOD_AND_CONVENTIONS_V1.md",
         "status": "active",

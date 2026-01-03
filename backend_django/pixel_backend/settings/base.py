@@ -113,15 +113,24 @@ PX_CACHE_FAIL_RETRY_AFTER = 60
 PX_HEALTH_CHECK_CACHE = False
 
 PX_RATE_LIMITS = {
-    "contact": {"limit": 3, "window": 60},
     "gate125": {"limit": 10, "window": 3600},
     "resources": {"limit": 60, "window": 60},
 }
 
 PX_COOLDOWNS = {
-    "contact": 300,
     "gate125": 3600,
 }
+
+PX_CONTACT_RATE_LIMITS = {
+    "minute": {"limit": 5, "window": 60},
+    "hour": {"limit": 20, "window": 3600},
+}
+PX_CONTACT_MIN_SECONDS = int(os.environ.get("PX_CONTACT_MIN_SECONDS", "3"))
+CONTACT_SUPPORT_EMAIL = os.environ.get("CONTACT_SUPPORT_EMAIL", "contact@pixelprowlers.io")
+CONTACT_FROM_EMAIL = os.environ.get("CONTACT_FROM_EMAIL", CONTACT_SUPPORT_EMAIL)
+CONTACT_NOTIFY_SUBJECT = os.environ.get("CONTACT_NOTIFY_SUBJECT", "Nouveau message de contact")
+CONTACT_ACK_SUBJECT = os.environ.get("CONTACT_ACK_SUBJECT", "Nous avons bien reçu votre message")
+CONTACT_RETENTION_DAYS = int(os.environ.get("CONTACT_RETENTION_DAYS", "180"))
 
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS: list[str] = []
