@@ -90,7 +90,7 @@ export const RESOURCE_REGISTRY_V0 = [
     effort: 'low',
     status: 'published',
     updatedAt: '2026-01-01',
-    relatedJourneys: ['p1'],
+    relatedJourneys: ['p1', 'p3'],
     relatedResourceSlugs: [
       'mfa-partout-en-20min',
       'backups-test-15min',
@@ -128,7 +128,7 @@ export const RESOURCE_REGISTRY_V0 = [
     effort: 'low',
     status: 'published',
     updatedAt: '2026-01-01',
-    relatedJourneys: ['p1'],
+    relatedJourneys: ['p1', 'p3'],
     relatedResourceSlugs: [],
     contentBlocks: [
       {
