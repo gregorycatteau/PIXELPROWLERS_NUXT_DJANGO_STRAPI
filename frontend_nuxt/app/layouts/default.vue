@@ -92,6 +92,7 @@
       <div class="container-xl SiteFooterInner">
         <p>PixelProwlers — studio pluriactif.</p>
         <div class="SiteFooterLinks">
+          <NuxtLink to="/parcours" class="SiteFooterLink">Parcours</NuxtLink>
           <NuxtLink to="/mentions-legales" class="SiteFooterLink">Mentions légales</NuxtLink>
           <NuxtLink to="/politique-confidentialite" class="SiteFooterLink">Politique de confidentialité</NuxtLink>
           <NuxtLink to="/accessibilite" class="SiteFooterLink">Accessibilité</NuxtLink>
@@ -115,6 +116,7 @@ const navItems = [
   { key: 'accompagnement', to: '/accompagnement-formation', label: 'Accompagnement & formation', icon: '🛠️' },
   { key: 'blog', to: '/blog', label: 'Blog', icon: '📰' },
   { key: 'resources', to: resourcesLink, label: 'Ressources', icon: '📚' },
+  { key: 'journeys', to: '/parcours', label: 'Parcours', icon: '🧭' },
   { key: 'contact', to: '/contact', label: 'Contact', icon: '✉️' }
 ];
 
