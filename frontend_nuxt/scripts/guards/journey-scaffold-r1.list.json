@@ -148,10 +148,10 @@
       "questionsPointer": "app/config/journeys/p4QuestionsV1_0",
       "requiredSteps": [
         "E0_intro",
-        "E_panorama",
-        "E_bilan",
-        "E_resources",
-        "E_exit"
+        "E1_panorama",
+        "E2_bilan",
+        "E3_resources",
+        "E4_exit"
       ],
       "files": [
         "app/config/journeys/p4CopyV1_0.ts",
