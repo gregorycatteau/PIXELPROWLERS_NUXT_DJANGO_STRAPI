@@ -50,4 +50,4 @@ jobs:
         run: npm run build
 
       - name: Smoke (Parcours catalog)
-        run: bash frontend_nuxt/scripts/smoke/smoke-parcours-catalog.sh
+        run: bash ./scripts/smoke/smoke-parcours-catalog.sh
