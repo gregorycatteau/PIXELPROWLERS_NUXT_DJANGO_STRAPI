@@ -3,7 +3,7 @@
 > **Périmètre** : Specs fonctionnelles, user stories, UX content, audits UX/UI
 
 <!-- GENERATED:START -->
-<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2026-01-03 -->
+<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2026-01-07 -->
 
 ## Sous-dossiers
 

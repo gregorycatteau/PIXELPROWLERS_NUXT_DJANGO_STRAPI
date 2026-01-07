@@ -3,7 +3,7 @@
 > **Périmètre** : Architecture, frontend/backend, CI/quality
 
 <!-- GENERATED:START -->
-<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2026-01-03 -->
+<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2026-01-07 -->
 
 ## Sous-dossiers
 
