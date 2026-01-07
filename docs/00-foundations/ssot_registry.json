@@ -354,6 +354,24 @@
         "priority": "P1"
       },
       {
+        "id": "PX_V1_3_P2_PROMOTION_PROD_R1",
+        "path": "docs/30-tech_specs/frontend/PX_V1_3_P2_PROMOTION_PROD_R1.md",
+        "status": "active",
+        "hasFrontmatter": true,
+        "domain": "frontend",
+        "owners": [
+          "Dan"
+        ],
+        "priority": "P1",
+        "tags": [
+          "tech_specs",
+          "frontend",
+          "journeys",
+          "p2",
+          "release"
+        ]
+      },
+      {
         "id": "PX_V1_3_P2_JOURNEY_MINIMAL",
         "path": "docs/20-product_specs/functional/PX_V1_3_P2_JOURNEY_MINIMAL.md",
         "status": "active",
