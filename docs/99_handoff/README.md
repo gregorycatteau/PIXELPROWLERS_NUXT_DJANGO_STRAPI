@@ -10,6 +10,7 @@
 | Document | Status | Description |
 |----------|--------|-------------|
 | [P1_global_bilan_reperes_handoff.md](./P1_global_bilan_reperes_handoff.md) | archived | Handoff — Refactor UX du bloc « Repères (version publique) » (P1 Global Bilan) |
+| [PR_parcours_industrialization.md](./PR_parcours_industrialization.md) | draft | PR Title |
 
 **Owners** : Heider
 
