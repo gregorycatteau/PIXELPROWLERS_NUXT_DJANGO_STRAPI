@@ -1,7 +1,41 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-BASE="${BASE:-http://127.0.0.1:3011}"
+PORT="${PORT:-3011}"
+BASE="${BASE:-http://127.0.0.1:${PORT}}"
+
+if [[ -z "${BASE:-}" && -n "${PORT:-}" ]]; then
+  BASE="http://127.0.0.1:${PORT}"
+fi
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+cd "$ROOT_DIR"
+
+cleanup() {
+  if [[ -n "${DEV_PID:-}" ]]; then
+    kill "$DEV_PID" >/dev/null 2>&1 || true
+    wait "$DEV_PID" >/dev/null 2>&1 || true
+  fi
+}
+trap cleanup EXIT
+
+NODE_ENV=production npm run build >/tmp/pp-smoke-resources-pack-build.log 2>&1
+NITRO_PORT="$PORT" node .output/server/index.mjs >/tmp/pp-smoke-resources-pack.log 2>&1 &
+DEV_PID=$!
+
+status="000"
+for _ in {1..30}; do
+  status=$(curl -s -o /dev/null -w "%{http_code}" "${BASE}/ressources" || true)
+  if [[ "$status" != "000" ]]; then
+    break
+  fi
+  sleep 1
+done
+
+if [[ "$status" == "000" ]]; then
+  echo "FAIL resources-pack-smoke-r1: server not responding on ${BASE}"
+  exit 1
+fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REGISTRY_PATH="${SCRIPT_DIR}/../../app/config/resources/registryV0.data.mjs"
@@ -43,10 +77,10 @@ if [[ -z "$published_slug" ]]; then
   exit 1
 fi
 
-head_status() {
+path_status() {
   local path="$1"
   local url="${BASE}${path}"
-  curl -sS -I "$url" | tr -d '\r' | head -n1 | awk '{print $2}'
+  curl -s -o /dev/null -w "%{http_code}" "$url"
 }
 
 expect_status() {
@@ -54,7 +88,7 @@ expect_status() {
   local path="$2"
   local expected="$3"
   local status
-  status=$(head_status "$path")
+  status=$(path_status "$path")
   if [[ "$status" == "$expected" ]]; then
     echo "PASS ${label} -> ${status}"
     return
