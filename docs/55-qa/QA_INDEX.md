@@ -29,6 +29,20 @@
 
 <!-- GENERATED:END -->
 
+<!-- KEEP -->
+## CI Guards (R1)
+
+- `frontend_nuxt/scripts/guards/no-tech-reveal-r1.mjs` — bloque les termes techniques visibles côté UI.
+- `frontend_nuxt/scripts/guards/journey-schema-integrity-r1.mjs` — vérifie l’intégrité minimale des schemas/parcours.
+
+## Smoke scripts (ops)
+
+- `frontend_nuxt/scripts/smoke/smoke-journey-dev-allowlist.sh`
+- `frontend_nuxt/scripts/smoke/smoke-journey-prod-p1-only.sh`
+- `bash frontend_nuxt/scripts/smoke/smoke-journey-dev-allowlist.sh`
+- `bash frontend_nuxt/scripts/smoke/smoke-journey-prod-p1-only.sh`
+<!-- ENDKEEP -->
+
 ---
 
 **Parent** : [docs/README.md](../README.md)
