@@ -45,8 +45,18 @@ required_slugs=(
   "parcours-p5"
 )
 
+search_text() {
+  local needle="$1"
+  local file="$2"
+  if command -v rg >/dev/null 2>&1; then
+    rg -Fq "$needle" "$file"
+    return $?
+  fi
+  grep -Fq "$needle" "$file"
+}
+
 for slug in "${required_slugs[@]}"; do
-  if ! rg -q "${slug}" "$OUTPUT_FILE"; then
+  if ! search_text "${slug}" "$OUTPUT_FILE"; then
     echo "❌ smoke-parcours-catalog: missing slug ${slug} in catalog"
     exit 1
   fi
