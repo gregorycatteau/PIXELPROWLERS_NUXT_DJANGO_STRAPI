@@ -45,3 +45,9 @@ jobs:
 
       - name: Guards CI (all security + quality guards)
         run: npm run guards:ci
+
+      - name: Build (Nuxt)
+        run: npm run build
+
+      - name: Smoke (Parcours catalog)
+        run: bash frontend_nuxt/scripts/smoke/smoke-parcours-catalog.sh
