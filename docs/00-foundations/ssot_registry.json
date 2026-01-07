@@ -450,6 +450,13 @@
         "domain": "tech_specs"
       },
       {
+        "id": "PX_V1_3_P2_P5_JOURNEY_VISIBILITY_R1",
+        "path": "docs/30-tech_specs/frontend/PX_V1_3_P2_P5_JOURNEY_VISIBILITY_R1.md",
+        "status": "active",
+        "hasFrontmatter": true,
+        "domain": "tech_specs"
+      },
+      {
         "id": "PX_V1_3_RESOURCES_DEEPLINK_V1_DECISION_R1",
         "path": "docs/30-tech_specs/frontend/PX_V1_3_RESOURCES_DEEPLINK_V1_DECISION_R1.md",
         "status": "active",
@@ -483,6 +490,19 @@
         "status": "active",
         "hasFrontmatter": true,
         "domain": "qa"
+      },
+      {
+        "id": "PX_QA_NO_TECH_REVEAL_R1",
+        "path": "docs/55-qa/PX_QA_NO_TECH_REVEAL_R1.md",
+        "status": "active",
+        "hasFrontmatter": true,
+        "domain": "qa",
+        "tags": [
+          "qa",
+          "security",
+          "no-tech-reveal",
+          "guard"
+        ]
       },
       {
         "id": "PX_V1_MAINTENANCE_BACKLOG_RESOURCES_P1",
