@@ -1,3 +1,13 @@
+---
+id: PX_V1_3_PR_HANDOFF_PARCOURS_INDUSTRIALIZATION
+version: 1.0.0
+status: draft
+date: 2026-01-07
+owners: ["Dan"]
+scope: ["pixelprowlers.io", "ssot", "ci", "journeys"]
+tags: ["handoff", "pr", "ci", "journeys", "resources"]
+---
+
 <!--
 PR HANDOFF SUMMARY
 Branch: parcours_industrialization

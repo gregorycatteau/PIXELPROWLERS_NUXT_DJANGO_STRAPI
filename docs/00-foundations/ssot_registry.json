@@ -505,6 +505,20 @@
         ]
       },
       {
+        "id": "PX_V1_3_PR_HANDOFF_PARCOURS_INDUSTRIALIZATION",
+        "path": "docs/99_handoff/PR_parcours_industrialization.md",
+        "status": "draft",
+        "hasFrontmatter": true,
+        "domain": "governance",
+        "tags": [
+          "handoff",
+          "pr",
+          "ci",
+          "journeys",
+          "resources"
+        ]
+      },
+      {
         "id": "PX_V1_MAINTENANCE_BACKLOG_RESOURCES_P1",
         "path": "docs/55-qa/PX_V1_MAINTENANCE_BACKLOG_RESOURCES_P1.md",
         "status": "active",
