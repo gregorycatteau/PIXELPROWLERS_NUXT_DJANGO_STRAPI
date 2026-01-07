@@ -34,11 +34,12 @@
 
 - `frontend_nuxt/scripts/guards/no-tech-reveal-r1.mjs` — bloque les termes techniques visibles côté UI.
 - `frontend_nuxt/scripts/guards/journey-schema-integrity-r1.mjs` — vérifie l’intégrité minimale des schemas/parcours.
+- `frontend_nuxt/scripts/guards/journey-prod-p1-only-r1.mjs` — guard prod visibility-driven (prod=visibility: "prod").
 
 ## Smoke scripts (ops)
 
 - `frontend_nuxt/scripts/smoke/smoke-journey-dev-allowlist.sh`
-- `frontend_nuxt/scripts/smoke/smoke-journey-prod-p1-only.sh`
+- `frontend_nuxt/scripts/smoke/smoke-journey-prod-p1-only.sh` — smoke prod visibility-driven.
 - `bash frontend_nuxt/scripts/smoke/smoke-journey-dev-allowlist.sh`
 - `bash frontend_nuxt/scripts/smoke/smoke-journey-prod-p1-only.sh`
 <!-- ENDKEEP -->
