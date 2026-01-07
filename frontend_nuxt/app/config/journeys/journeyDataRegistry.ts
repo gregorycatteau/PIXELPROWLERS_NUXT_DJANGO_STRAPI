@@ -104,7 +104,7 @@ const questionsRegistry: Record<string, PanoramaQuestionsBundle> = {
   },
   'app/config/journeys/p4QuestionsV1_0': {
     questions: p4PanoramaQuestions,
-    axisOrder: P4_PANORAMA_AXIS_ORDER,
+    axisOrder: [...P4_PANORAMA_AXIS_ORDER],
     axesMeta: p4PanoramaAxesMeta
   },
   'app/config/journeys/p5QuestionsV1_0': { questions: p5PanoramaQuestions, axisOrder: P5_PANORAMA_AXIS_ORDER, axesMeta: p5PanoramaAxesMeta },

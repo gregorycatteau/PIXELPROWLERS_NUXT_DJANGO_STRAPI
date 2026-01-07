@@ -7,8 +7,9 @@ export const p4Manifest: JourneyManifestV1 = {
   visibility: 'prod',
   maturity: 'stub',
   axes: [
-    { axisId: 'clarity', label: 'Clarte' },
-    { axisId: 'capacity', label: 'Capacite' }
+    { axisId: 'symptomes', label: 'Signaux' },
+    { axisId: 'rythmes', label: 'Rythmes' },
+    { axisId: 'coordination', label: 'Coordination' }
   ],
   modules: {
     panorama: true,
