@@ -27,10 +27,11 @@ const matchesKeywords = (value: string, keywords: string[]): boolean =>
 const addRecommendation = (
   items: ResourceRecommendation[],
   candidate: ResourceRecommendation,
-  allowedSlugs: Set<string>
+  allowedSlugs: Set<string>,
+  requirePack = true
 ): void => {
   if (!allowedSlugs.has(candidate.slug)) return;
-  if (!PACK_SLUGS.has(candidate.slug)) return;
+  if (requirePack && !PACK_SLUGS.has(candidate.slug)) return;
   if (items.some((item) => item.slug === candidate.slug)) return;
   if (items.length >= 3) return;
   items.push(candidate);
@@ -47,6 +48,43 @@ export const recommendResourcesFromBilan = (
 ): ResourceRecommendation[] => {
   const recommendations: ResourceRecommendation[] = [];
   const allowedSlugs = resolveAllowedSlugs(input?.journeyId);
+
+  if (input?.journeyId === 'p5') {
+    const axes = input?.panorama?.axes ?? [];
+    const axesSorted = axes
+      .slice()
+      .sort((a, b) => (a.score - b.score) || a.id.localeCompare(b.id));
+
+    const axisMap: Record<string, ResourceRecommendation> = {
+      symptomes: {
+        slug: 'tableau-bord-3-signaux',
+        reason: 'Les signaux de tension doivent etre visibles rapidement.'
+      },
+      rythmes: {
+        slug: 'rituel-hebdo-15min',
+        reason: 'Un rythme court stabilise la charge et les ajustements.'
+      },
+      alignement: {
+        slug: 'decision-log-minimal',
+        reason: 'Des arbitrages traces clarifient les priorites.'
+      }
+    };
+
+    axesSorted.forEach((axis) => {
+      const reco = axisMap[axis.id];
+      if (!reco) return;
+      addRecommendation(recommendations, reco, allowedSlugs, false);
+    });
+
+    if (!recommendations.length) {
+      const fallback = axisMap.rythmes;
+      if (fallback) {
+        addRecommendation(recommendations, fallback, allowedSlugs, false);
+      }
+    }
+
+    return recommendations;
+  }
 
   const axes = input?.panorama?.axes ?? [];
   const axesSorted = axes

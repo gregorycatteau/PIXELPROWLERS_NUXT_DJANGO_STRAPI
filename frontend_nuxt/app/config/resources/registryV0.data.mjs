@@ -52,7 +52,7 @@ export const RESOURCE_REGISTRY_V0 = [
     effort: 'low',
     status: 'published',
     updatedAt: '2026-01-01',
-    relatedJourneys: ['p1', 'p2'],
+    relatedJourneys: ['p1', 'p2', 'p5'],
     relatedResourceSlugs: [
       'tableau-bord-3-signaux',
       'decision-log-minimal',
@@ -164,7 +164,7 @@ export const RESOURCE_REGISTRY_V0 = [
     effort: 'low',
     status: 'published',
     updatedAt: '2026-01-01',
-    relatedJourneys: ['p1', 'p4'],
+    relatedJourneys: ['p1', 'p4', 'p5'],
     relatedResourceSlugs: [],
     contentBlocks: [
       {
@@ -269,7 +269,7 @@ export const RESOURCE_REGISTRY_V0 = [
     effort: 'medium',
     status: 'published',
     updatedAt: '2026-01-01',
-    relatedJourneys: ['p1'],
+    relatedJourneys: ['p1', 'p5'],
     relatedResourceSlugs: [],
     contentBlocks: [
       {
