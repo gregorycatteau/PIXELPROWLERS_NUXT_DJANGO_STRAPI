@@ -29,6 +29,7 @@
 | [PX_V1_3_P2_PROMOTION_PROD_R1.md](./PX_V1_3_P2_PROMOTION_PROD_R1.md) | active | P2 — Promotion Prod (R1) |
 | [PX_V1_3_P3_PROMOTION_PROD_R1.md](./PX_V1_3_P3_PROMOTION_PROD_R1.md) | active | P3 — Promotion Prod (R1) |
 | [PX_V1_3_P4_PROMOTION_PROD_R1.md](./PX_V1_3_P4_PROMOTION_PROD_R1.md) | active | P4 — Promotion Prod (R1) |
+| [PX_V1_3_P5_PROMOTION_PROD_R1.md](./PX_V1_3_P5_PROMOTION_PROD_R1.md) | active | P5 — Promotion Prod (R1) |
 | [PX_V1_3_PP_JOURNEY_STEP_SHELL_SPEC_V1.md](./PX_V1_3_PP_JOURNEY_STEP_SHELL_SPEC_V1.md) | active | PX V1.3 — PPJourneyStepShell Spec (V1) |
 | [PX_V1_3_RESOURCES_DEEPLINK_V1_DECISION_R1.md](./PX_V1_3_RESOURCES_DEEPLINK_V1_DECISION_R1.md) | active | PX V1.3 — Resources DeepLink V1 (Decision R1) |
 | [PX_V1_3_RESOURCES_LIBRARY_INTEGRATION.md](./PX_V1_3_RESOURCES_LIBRARY_INTEGRATION.md) | active | Resources Library — Integration Frontend (V1.3) |
