@@ -3,53 +3,66 @@ import path from 'node:path';
 
 // journey-prod-p1-only-r1:guard
 //
-// OBJECTIF : En prod, seul P1 est visible. Les autres journeys exigent un flag dev explicite.
+// OBJECTIF : En prod, seuls les journeys "visibility: prod" sont visibles.
+// Les journeys "dev" doivent rester 404 en prod.
 
 const ROOT = process.cwd();
 const VISIBILITY_FILE = 'app/config/journeys/visibility.ts';
 const MIDDLEWARE_FILE = 'server/middleware/journey-slug-guard.ts';
 const PAGE_FILE = 'app/pages/parcours/[journeySlug].vue';
 
-const MANIFEST_FILES = [
-  'app/config/journeys/manifests/p1.manifest.ts',
-  'app/config/journeys/manifests/p2.manifest.ts',
-  'app/config/journeys/manifests/p3.manifest.ts',
-  'app/config/journeys/manifests/p4.manifest.ts',
-  'app/config/journeys/manifests/p5.manifest.ts',
-  'app/config/journeys/manifests/p2_stub.manifest.ts',
-  'app/config/journeys/manifests/p3_stub.manifest.ts',
-  'app/config/journeys/manifests/p4_stub.manifest.ts'
-];
+const MANIFEST_DIR = 'app/config/journeys/manifests';
+const MANIFEST_EXT = '.manifest.ts';
 
-const readFile = (relPath) => {
-  const abs = path.join(ROOT, relPath);
-  if (!fs.existsSync(abs)) return { path: relPath, content: null };
-  return { path: relPath, content: fs.readFileSync(abs, 'utf8') };
+const readFile = (absPath) => {
+  const relPath = path.relative(ROOT, absPath);
+  if (!fs.existsSync(absPath)) return { path: relPath, content: null };
+  return { path: relPath, content: fs.readFileSync(absPath, 'utf8') };
+};
+
+const getManifestFiles = () => {
+  const dir = path.join(ROOT, MANIFEST_DIR);
+  if (!fs.existsSync(dir)) return [];
+  return fs
+    .readdirSync(dir)
+    .filter((file) => file.endsWith(MANIFEST_EXT))
+    .filter((file) => !file.endsWith('_template.manifest.ts'))
+    .filter((file) => !file.includes('_stub.manifest.ts'))
+    .map((file) => path.join(dir, file));
+};
+
+const extractField = (content, fieldName) => {
+  const match = content.match(new RegExp(`${fieldName}:\\s*['"]([^'"]+)['"]`));
+  return match?.[1] ?? null;
 };
 
 const hasAllPatterns = (content, patterns) =>
   patterns.every((pattern) => pattern.test(content));
 
 function main() {
-  console.log('🔍 journey-prod-p1-only-r1:guard — Checking prod-only visibility...\n');
+  console.log('🔍 journey-prod-p1-only-r1:guard — Checking visibility-driven prod gate...\n');
 
-  const visibility = readFile(VISIBILITY_FILE);
-  const middleware = readFile(MIDDLEWARE_FILE);
-  const page = readFile(PAGE_FILE);
+  const visibility = readFile(path.join(ROOT, VISIBILITY_FILE));
+  const middleware = readFile(path.join(ROOT, MIDDLEWARE_FILE));
+  const page = readFile(path.join(ROOT, PAGE_FILE));
 
   const errors = [];
+  const manifestFiles = getManifestFiles();
 
   if (!visibility.content) {
     errors.push(`Missing visibility helper: ${VISIBILITY_FILE}`);
   } else {
     const required = [
-      /manifest\.visibility\s*===\s*['"]prod['"]/, 
-      /context\.isDev/, 
-      /devAllowlist/, 
-      /allowlist\.has/ 
+      /manifest\.visibility\s*===\s*['"]prod['"]/,
+      /context\.isDev/,
+      /devAllowlist/,
+      /allowlist\.has/
     ];
     if (!hasAllPatterns(visibility.content, required)) {
       errors.push(`Visibility helper missing required gating logic: ${VISIBILITY_FILE}`);
+    }
+    if (!/if\s*\(!context\.isDev\)\s*return\s*false/.test(visibility.content)) {
+      errors.push(`Visibility helper must block dev journeys in prod: ${VISIBILITY_FILE}`);
     }
   }
 
@@ -61,25 +74,37 @@ function main() {
     errors.push(`Missing visibility gating in page: ${PAGE_FILE}`);
   }
 
-  const p1Manifest = readFile('app/config/journeys/manifests/p1.manifest.ts');
-  if (!p1Manifest.content || !/visibility:\s*['"]prod['"]/.test(p1Manifest.content)) {
-    errors.push('P1 manifest must be visibility: "prod"');
+  if (manifestFiles.length === 0) {
+    errors.push(`No manifest files found in ${MANIFEST_DIR}`);
   }
 
-  MANIFEST_FILES.forEach((filePath) => {
-    if (filePath.endsWith('p1.manifest.ts')) return;
-    const file = readFile(filePath);
+  let prodCount = 0;
+  manifestFiles.forEach((absPath) => {
+    const file = readFile(absPath);
     if (!file.content) {
-      errors.push(`Missing manifest: ${filePath}`);
+      errors.push(`Missing manifest: ${file.path}`);
       return;
     }
-    if (!/visibility:\s*['"]dev['"]/.test(file.content)) {
-      errors.push(`Non-prod manifest must be visibility: "dev" (${filePath})`);
+    const slug = extractField(file.content, 'slug') ?? 'unknown';
+    const visibilityValue = extractField(file.content, 'visibility');
+    if (!visibilityValue) {
+      errors.push(`Missing visibility in manifest: ${file.path} (slug: ${slug})`);
+      return;
     }
-    if (/visibility:\s*['"]prod['"]/.test(file.content)) {
-      errors.push(`Non-prod manifest cannot be visibility: "prod" (${filePath})`);
+    if (!['prod', 'dev'].includes(visibilityValue)) {
+      errors.push(
+        `Invalid visibility in manifest: ${file.path} (slug: ${slug}, visibility: ${visibilityValue})`
+      );
+      return;
+    }
+    if (visibilityValue === 'prod') {
+      prodCount += 1;
     }
   });
+
+  if (prodCount < 1) {
+    errors.push('At least one manifest must be visibility: "prod"');
+  }
 
   if (errors.length) {
     console.log('❌ journey-prod-p1-only-r1:guard — FAIL\n');
@@ -88,7 +113,7 @@ function main() {
   }
 
   console.log('✅ journey-prod-p1-only-r1:guard — OK');
-  console.log('   └── P1 is prod-only, others require dev allowlist');
+  console.log('   └── Prod access follows manifest visibility');
   console.log('');
 }
 
