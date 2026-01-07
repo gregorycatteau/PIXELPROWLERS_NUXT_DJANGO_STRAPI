@@ -99,7 +99,7 @@ const questionsRegistry: Record<string, PanoramaQuestionsBundle> = {
   },
   'app/config/journeys/p3QuestionsV1_0': {
     questions: p3PanoramaQuestions,
-    axisOrder: P3_PANORAMA_AXIS_ORDER,
+    axisOrder: [...P3_PANORAMA_AXIS_ORDER],
     axesMeta: p3PanoramaAxesMeta
   },
   'app/config/journeys/p4QuestionsV1_0': {
