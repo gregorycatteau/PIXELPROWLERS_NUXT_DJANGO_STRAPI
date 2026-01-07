@@ -64,7 +64,13 @@ const hasPanoramaScores = computed(() => Boolean(scores.value?.panorama) || Bool
 const resolveCanonicalSteps = () => {
   const stepIds = allowedSteps.value;
   const panorama = stepIds.includes('E_panorama') ? 'E_panorama' : 'E1_panorama';
-  const bilan = stepIds.includes('E_bilan') ? 'E_bilan' : stepIds.includes('E_global_bilan') ? 'E_global_bilan' : 'E2_panorama_bilan';
+  const bilan = stepIds.includes('E_bilan')
+    ? 'E_bilan'
+    : stepIds.includes('E2_bilan')
+      ? 'E2_bilan'
+      : stepIds.includes('E_global_bilan')
+        ? 'E_global_bilan'
+        : 'E2_panorama_bilan';
   return { panorama, bilan };
 };
 
