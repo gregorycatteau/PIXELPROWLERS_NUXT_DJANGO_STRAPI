@@ -6,7 +6,7 @@ export const p3BilanAdapter: JourneyBilanAdapter = {
   journeyId: 'p3',
   buildViewModel() {
     const vm = createEmptyUniversalBilanViewModel({
-      copy: { title: 'Bilan P3', subtitle: 'Synthese locale (stub).' },
+      copy: { title: 'Bilan P3', subtitle: 'Synthese locale.' },
       summaryNav: [
         { id: 'gb_panorama', label: 'Panorama' },
         { id: 'gb_export', label: 'Export' }

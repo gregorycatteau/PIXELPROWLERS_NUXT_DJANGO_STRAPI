@@ -1,12 +1,12 @@
 export const p3Copy = {
   intro: {
-    title: 'Parcours P3 (stub)',
-    subtitle: 'Panorama rapide, reponses locales uniquement.',
+    title: 'Parcours P3',
+    subtitle: 'Un panorama simple pour clarifier la situation.',
     cta: 'Commencer le panorama'
   },
   panorama: {
     title: 'Panorama P3',
-    subtitle: 'Questions de base pour poser le contexte.',
+    subtitle: 'Questions simples pour poser le contexte.',
     meta: 'Tu peux ignorer des questions.',
     validate: 'Voir le bilan',
     back: 'Retour'
@@ -24,11 +24,11 @@ export const p3Copy = {
   },
   global: {
     title: 'Bilan global P3',
-    subtitle: 'Synthese publique, basee sur des agregats.',
+    subtitle: 'Synthese generale, basee sur des agregats.',
     panoramaHeading: 'Panorama',
     blocksHeading: 'Blocs exploratoires',
-    exportHeading: 'Export (client-side)',
-    exportNotice: 'Le texte ci-dessus est genere cote client.',
+    exportHeading: 'Export',
+    exportNotice: 'Le texte ci-dessus est genere sur cet appareil.',
     copyCta: 'Copier le bilan',
     printCta: 'Imprimer',
     clearCta: 'Effacer mes reponses de cet appareil',
@@ -41,6 +41,6 @@ export const p3Copy = {
     blocksHeading: '--- Bloc exploratoire ---',
     globalHeading: '--- Bilan global (agrege) ---',
     metaHeading: '--- Metadonnees ---',
-    closingLine: 'Bilan genere cote client.'
+    closingLine: 'Bilan genere sur cet appareil.'
   }
 };
