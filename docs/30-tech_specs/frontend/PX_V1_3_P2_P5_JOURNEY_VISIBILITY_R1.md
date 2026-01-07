@@ -11,8 +11,8 @@ tags: ["tech_specs", "frontend", "journeys", "resources", "security"]
 # P2-P5 Journey Visibility and Resources Gate (R1)
 
 ## Invariants
-- Prod is P1 only.
-- P2-P5 return a strict 404 in prod (same behavior as unknown slug).
+- Prod is visibility-driven: any manifest with `visibility: "prod"` is public.
+- Manifests with `visibility: "dev"` return a strict 404 in prod.
 - Dev can allow P2-P5 only under an explicit allowlist flag.
 - No remote assets, no v-html, no innerHTML, no tech reveal.
 
@@ -36,8 +36,8 @@ Examples:
 - `recommendResourcesFromBilan` must also respect the journey filter when `journeyId` is provided.
 
 ## Definition of Done (DoD)
-- P1 remains accessible in prod.
-- P2-P5 are strict 404 in prod from both middleware and page validation.
+- Journeys with `visibility: "prod"` are accessible in prod.
+- Journeys with `visibility: "dev"` are strict 404 in prod from both middleware and page validation.
 - P2-P5 can be enabled in dev only with an explicit allowlist flag.
 - StepResourcesE3 never shows resources outside the current journey.
 - New guards pass in CI.
@@ -48,5 +48,10 @@ Examples:
 
 ## Verification commands
 - Dev (P2 allowed): `NUXT_PUBLIC_JOURNEYS_DEV_ALLOWLIST=p2 npm run dev`
-- Prod build: `NODE_ENV=production npm run build` and request `/parcours/parcours-p2` -> 404
+- Prod smoke: `bash frontend_nuxt/scripts/smoke/smoke-journey-prod-p1-only.sh`
 - CI: `npm run typecheck`, `npm run guards:ci`, `npm run build`
+
+## Promotion checklist (dev -> prod)
+1. Set `visibility: "prod"` in the journey manifest.
+2. Re-run the prod smoke script (all prod journeys should return 200).
+3. Re-run CI guards (`npm run guards:ci`).

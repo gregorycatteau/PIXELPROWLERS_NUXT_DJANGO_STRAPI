@@ -29,10 +29,13 @@ const currentComponent = computed(() => {
     case 'E2_panorama_bilan':
       return StepPanoramaBilanE2;
     case 'E_bilan':
+    case 'E2_bilan':
       return StepBilanE2;
     case 'E_resources':
+    case 'E3_resources':
       return StepResourcesE3;
     case 'E_exit':
+    case 'E4_exit':
       return StepExitE4;
     case 'E_global_bilan':
       return GlobalBilanEngine;
