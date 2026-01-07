@@ -7,9 +7,9 @@ Branch: parcours_industrialization
 Industrialize journeys visibility + resource filtering + SSOT-backed guards
 
 ## Contexte
-Cette PR industrialise la mise en production des parcours en verrouillant la visibilite en prod, en filtrant les ressources par journey, et en branchant les guards sur une source SSOT. L'objectif est d'eviter toute fuite cross-journey, d'imposer P1-only en prod, et d'apporter des preuves claires (smokes + gates + docs).
+Cette PR industrialise la mise en production des parcours en verrouillant la visibilite en prod, en filtrant les ressources par journey, et en branchant les guards sur une source SSOT. L'objectif est d'eviter toute fuite cross-journey, d'imposer P1-only en prod, et d'apporter des preuves claires (smokes + gates + docs). P2–P5 sont developpables en dev via allowlist. En prod, ils restent 404 tant qu'ils ne sont pas promus (invariant GO-PROD).
 
-## Invariants
+## Invariants GO-PROD (phase actuelle)
 - PROD = P1 only
 - P2–P5 = 404 strict prod
 - DEV allowlist via `NUXT_PUBLIC_JOURNEYS_DEV_ALLOWLIST`
@@ -44,6 +44,17 @@ cd frontend_nuxt && npm run guards:ci
 cd frontend_nuxt && ./scripts/smoke/smoke-journey-dev-allowlist.sh
 cd frontend_nuxt && ./scripts/smoke/smoke-journey-prod-p1-only.sh
 ```
+
+## Activation plan (quand P2 est pret)
+- Changer la visibility du manifest P2 de "dev" -> "prod".
+- S'assurer que le pack ressources P2 est pret (pas de fuite cross-journey).
+- Smokes + gates + QA no-tech-reveal OK.
+
+## Why this matters
+- Eviter les pages fantomes.
+- Eviter les promesses non tenues.
+- Eviter le leak de ressources/copy.
+- Garder le SEO propre.
 
 ## Notes / risques
 - Warnings Tailwind sourcemap en build (non bloquant).
