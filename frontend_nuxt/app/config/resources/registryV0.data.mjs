@@ -128,7 +128,7 @@ export const RESOURCE_REGISTRY_V0 = [
     effort: 'low',
     status: 'published',
     updatedAt: '2026-01-01',
-    relatedJourneys: ['p1', 'p3', 'p5'],
+    relatedJourneys: ['p1', 'p2', 'p3', 'p5'],
     relatedResourceSlugs: [],
     contentBlocks: [
       {
@@ -199,7 +199,7 @@ export const RESOURCE_REGISTRY_V0 = [
     effort: 'medium',
     status: 'published',
     updatedAt: '2026-01-01',
-    relatedJourneys: ['p1'],
+    relatedJourneys: ['p1', 'p2'],
     relatedResourceSlugs: [],
     contentBlocks: [
       {
@@ -234,7 +234,7 @@ export const RESOURCE_REGISTRY_V0 = [
     effort: 'low',
     status: 'published',
     updatedAt: '2026-01-01',
-    relatedJourneys: ['p1'],
+    relatedJourneys: ['p1', 'p2'],
     relatedResourceSlugs: [],
     contentBlocks: [
       {
