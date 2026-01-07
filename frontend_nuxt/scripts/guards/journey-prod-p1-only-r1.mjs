@@ -53,7 +53,7 @@ function main() {
     errors.push(`Missing visibility helper: ${VISIBILITY_FILE}`);
   } else {
     const required = [
-      /manifest\.visibility\s*===\s*['"]prod['"]/,
+      /manifest\.visibility\s*===\s*['"]prod['"]/, 
       /context\.isDev/,
       /devAllowlist/,
       /allowlist\.has/
