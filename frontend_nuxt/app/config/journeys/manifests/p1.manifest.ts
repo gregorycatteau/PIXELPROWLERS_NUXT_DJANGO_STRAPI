@@ -3,6 +3,7 @@ import type { JourneyManifestV1 } from './types';
 export const p1Manifest: JourneyManifestV1 = {
   id: 'p1',
   slug: 'ma-structure-dysfonctionne',
+  visibility: 'prod',
   maturity: 'prod',
   axes: [
     { axisId: 'human', label: 'Humain' },

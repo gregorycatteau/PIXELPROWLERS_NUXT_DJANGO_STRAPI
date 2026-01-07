@@ -1,91 +1,108 @@
 """
-Serializers pour le formulaire de contact.
+Serializers pour le formulaire de contact (full-stack).
 
-Implémente la spec API_SPEC_V1.md:
-- Champ subject avec allowlist enum
-- Sanitization NFKC + zero-width strip
+Implémente la spec V1.3:
+- Sanitization NFKC + zero-width strip + strip contrôles
 - Validation stricte des longueurs
-- Messages d'erreur génériques (anti-probing)
+- Messages d'erreur neutres par champ
 """
 from __future__ import annotations
 
+import re
+import unicodedata
+
 from rest_framework import serializers
 
-from apps.core.sanitizers import sanitize_email, sanitize_string, validate_in_allowlist
+from apps.core.sanitizers import ZERO_WIDTH_PATTERN, sanitize_email
 
-from .models import ContactMessage, Prospect
+ERROR_INVALID = "Valeur invalide"
+ERROR_REQUIRED = "Champ requis"
 
-# Subjects autorisés (allowlist enum)
-VALID_SUBJECTS = frozenset([
-    "question_generale",
-    "demande_accompagnement",
-    "signalement_bug",
-    "autre",
-])
+CONTROL_CHARS_PATTERN = re.compile(r"[\u0000-\u001f\u007f]")
+
+
+def _strip_control_chars(value: str, allow_newlines: bool = False) -> str:
+    if allow_newlines:
+        value = value.replace("\r", "\n")
+        return re.sub(r"[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]", "", value)
+    return CONTROL_CHARS_PATTERN.sub("", value)
+
+
+def _sanitize_text(value: str, max_length: int, allow_newlines: bool = False) -> str:
+    if not value:
+        return ""
+    normalized = unicodedata.normalize("NFKC", value)
+    cleaned = ZERO_WIDTH_PATTERN.sub("", normalized)
+    cleaned = _strip_control_chars(cleaned, allow_newlines=allow_newlines)
+    cleaned = cleaned.strip()
+    if len(cleaned) > max_length:
+        raise serializers.ValidationError(ERROR_INVALID)
+    return cleaned
+
+
+def _reject_crlf(value: str) -> str:
+    if "\r" in value or "\n" in value:
+        raise serializers.ValidationError(ERROR_INVALID)
+    return value
 
 
 class ContactMessageSerializer(serializers.Serializer):
-    """
-    Valide et structure les données du formulaire de contact.
+    """Valide les données du formulaire de contact."""
 
-    Champs:
-    - email: Email RFC 5322, max 254 chars (obligatoire)
-    - subject: Enum allowlist (obligatoire)
-    - message: Corps du message, 10-2000 chars (obligatoire)
-    - honeypot: Champ caché anti-bot (doit être vide)
-    """
-
-    email = serializers.EmailField(max_length=254)
-    subject = serializers.CharField(max_length=50)
-    message = serializers.CharField(min_length=10, max_length=2000)
+    firstName = serializers.CharField(
+        max_length=80,
+        required=False,
+        allow_blank=True,
+        error_messages={"required": ERROR_REQUIRED, "blank": ERROR_INVALID, "max_length": ERROR_INVALID},
+    )
+    lastName = serializers.CharField(
+        max_length=80,
+        required=False,
+        allow_blank=True,
+        error_messages={"required": ERROR_REQUIRED, "blank": ERROR_INVALID, "max_length": ERROR_INVALID},
+    )
+    email = serializers.EmailField(
+        max_length=120,
+        error_messages={"required": ERROR_REQUIRED, "blank": ERROR_REQUIRED, "invalid": ERROR_INVALID},
+    )
+    message = serializers.CharField(
+        max_length=4000,
+        min_length=10,
+        error_messages={
+            "required": ERROR_REQUIRED,
+            "blank": ERROR_REQUIRED,
+            "max_length": ERROR_INVALID,
+            "min_length": ERROR_INVALID,
+        },
+    )
+    consent = serializers.BooleanField(
+        error_messages={"required": ERROR_REQUIRED, "invalid": ERROR_INVALID},
+    )
     honeypot = serializers.CharField(required=False, allow_blank=True, default="")
+    clientTimeOnPageSeconds = serializers.FloatField(required=False, min_value=0)
+
+    def validate_firstName(self, value: str) -> str:
+        cleaned = _sanitize_text(value, max_length=80)
+        return _reject_crlf(cleaned)
+
+    def validate_lastName(self, value: str) -> str:
+        cleaned = _sanitize_text(value, max_length=80)
+        return _reject_crlf(cleaned)
 
     def validate_email(self, value: str) -> str:
-        """Sanitize et valide l'email."""
-        return sanitize_email(value)
-
-    def validate_subject(self, value: str) -> str:
-        """Valide que le subject est dans l'allowlist."""
-        sanitized = sanitize_string(value, max_length=50)
-        if not validate_in_allowlist(sanitized, VALID_SUBJECTS):
-            # Message générique (anti-probing)
-            raise serializers.ValidationError("Valeur invalide")
-        return sanitized
+        sanitized = sanitize_email(value)
+        return _reject_crlf(sanitized)
 
     def validate_message(self, value: str) -> str:
-        """Sanitize le message."""
-        sanitized = sanitize_string(value, max_length=2000)
+        sanitized = _sanitize_text(value, max_length=4000, allow_newlines=True)
         if len(sanitized) < 10:
-            raise serializers.ValidationError("Valeur invalide")
+            raise serializers.ValidationError(ERROR_INVALID)
         return sanitized
 
+    def validate_consent(self, value: bool) -> bool:
+        if value is not True:
+            raise serializers.ValidationError(ERROR_INVALID)
+        return value
+
     def validate_honeypot(self, value: str) -> str:
-        """
-        Vérifie que le honeypot est vide.
-
-        Note: La gestion du honeypot rempli est faite dans la vue
-        pour retourner un faux succès (silent drop).
-        """
-        return value.strip() if value else ""
-
-    def create(self, validated_data: dict) -> ContactMessage:
-        """
-        Crée ou met à jour le prospect puis enregistre le message.
-
-        Note: Le champ honeypot est géré dans la vue avant d'appeler create().
-        """
-        email = validated_data["email"]
-        subject = validated_data["subject"]
-        message = validated_data["message"]
-
-        # Créer ou récupérer le prospect
-        prospect, created = Prospect.objects.get_or_create(
-            email=email,
-            defaults={"name": "", "organisation": ""},
-        )
-
-        # Créer le message de contact
-        return ContactMessage.objects.create(
-            prospect=prospect,
-            message=f"[{subject}] {message}",
-        )
+        return _sanitize_text(value, max_length=120)

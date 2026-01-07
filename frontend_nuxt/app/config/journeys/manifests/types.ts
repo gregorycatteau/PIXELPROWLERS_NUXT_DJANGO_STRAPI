@@ -1,4 +1,5 @@
 export type JourneyManifestMaturity = 'stub' | 'core' | 'full' | 'prod';
+export type JourneyVisibility = 'prod' | 'dev';
 
 export type JourneyManifestModules = {
   panorama?: boolean;
@@ -42,6 +43,7 @@ export type JourneyManifestV1 = {
   id: string;
   slug: string;
   engine?: 'legacy' | 'universal';
+  visibility: JourneyVisibility;
   maturity: JourneyManifestMaturity;
   axes?: JourneyManifestAxis[];
   modules: JourneyManifestModules;

@@ -4,6 +4,7 @@ export const p2_stubManifest: JourneyManifestV1 = {
   id: 'p2_stub',
   slug: 'parcours-p2-stub',
   engine: 'universal',
+  visibility: 'dev',
   maturity: 'stub',
   axes: [
     { axisId: 'clarity', label: 'Clarte' },

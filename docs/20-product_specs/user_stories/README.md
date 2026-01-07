@@ -3,12 +3,13 @@
 > **Périmètre** : Documentation
 
 <!-- GENERATED:START -->
-<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2026-01-02 -->
+<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2026-01-07 -->
 
 ## Documents
 
 | Document | Status | Description |
 |----------|--------|-------------|
+| [PX_V1_3_CONTACT_FULLSTACK_USER_STORIES.md](./PX_V1_3_CONTACT_FULLSTACK_USER_STORIES.md) | draft | Contact full-stack V1.3 - User stories |
 | [PX_V1_3_PARCOURS_UTILISATEURS_P1.md](./PX_V1_3_PARCOURS_UTILISATEURS_P1.md) | active | PX_V1_3_PARCOURS_UTILISATEURS_P1.md |
 | [PX_V1_3_X_OPERATION_125_USER_STORIES.md](./PX_V1_3_X_OPERATION_125_USER_STORIES.md) | active | Opération 125% — Epics & User Stories (V1.3.x feature) |
 | [formulaire_contact.md](./formulaire_contact.md) | draft | Formulaire de Contact — User Stories |

@@ -1,7 +1,13 @@
 import { createError, defineEventHandler } from 'h3';
 import { getManifestBySlug } from '~/config/journeys/manifests/registry';
+import { isJourneyAllowedInCurrentEnv } from '~/config/journeys/visibility';
 
 const PATH_PREFIX = '/parcours/';
+
+const getVisibilityContext = () => ({
+  isDev: process.env.NODE_ENV !== 'production',
+  devAllowlist: process.env.NUXT_PUBLIC_JOURNEYS_DEV_ALLOWLIST
+});
 
 const isValidJourneySlug = (slug: string) => {
   if (slug.length < 1 || slug.length > 80) {
@@ -31,7 +37,8 @@ export default defineEventHandler((event) => {
     throw createError({ statusCode: 404, statusMessage: 'Not Found' });
   }
 
-  if (!isValidJourneySlug(slug) || !getManifestBySlug(slug)) {
+  const manifest = getManifestBySlug(slug);
+  if (!isValidJourneySlug(slug) || !isJourneyAllowedInCurrentEnv(manifest, getVisibilityContext())) {
     throw createError({ statusCode: 404, statusMessage: 'Not Found' });
   }
 });

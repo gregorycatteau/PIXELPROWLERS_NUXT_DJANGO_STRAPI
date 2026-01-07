@@ -93,7 +93,9 @@
         <p>PixelProwlers — studio pluriactif.</p>
         <div class="SiteFooterLinks">
           <NuxtLink to="/mentions-legales" class="SiteFooterLink">Mentions légales</NuxtLink>
-          <NuxtLink to="/confidentialite" class="SiteFooterLink">Confidentialité</NuxtLink>
+          <NuxtLink to="/politique-confidentialite" class="SiteFooterLink">Politique de confidentialité</NuxtLink>
+          <NuxtLink to="/accessibilite" class="SiteFooterLink">Accessibilité</NuxtLink>
+          <NuxtLink to="/a-propos" class="SiteFooterLink">À propos</NuxtLink>
         </div>
       </div>
     </footer>

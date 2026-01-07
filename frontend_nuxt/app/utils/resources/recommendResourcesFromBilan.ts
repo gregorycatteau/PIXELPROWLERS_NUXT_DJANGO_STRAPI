@@ -4,9 +4,12 @@ import { P1_PACK_V1_SLUGS } from '~/config/resources/packs/p1PackV1';
 
 export type ResourceRecommendation = { slug: string; reason: string };
 
-export type RecoInput = Pick<GlobalBilanViewModel, 'panorama' | 'sections' | 'modules'>;
+export type RecoInput = Pick<GlobalBilanViewModel, 'panorama' | 'sections' | 'modules'> & {
+  journeyId?: string;
+};
 
-const RESOURCE_SLUGS = new Set(listResources().map((resource) => resource.slug));
+const ALL_RESOURCES = listResources();
+const RESOURCE_SLUGS = new Set(ALL_RESOURCES.map((resource) => resource.slug));
 const PACK_SLUGS = new Set<string>(P1_PACK_V1_SLUGS);
 
 const KEYWORDS = {
@@ -23,19 +26,27 @@ const matchesKeywords = (value: string, keywords: string[]): boolean =>
 
 const addRecommendation = (
   items: ResourceRecommendation[],
-  candidate: ResourceRecommendation
+  candidate: ResourceRecommendation,
+  allowedSlugs: Set<string>
 ): void => {
-  if (!RESOURCE_SLUGS.has(candidate.slug)) return;
+  if (!allowedSlugs.has(candidate.slug)) return;
   if (!PACK_SLUGS.has(candidate.slug)) return;
   if (items.some((item) => item.slug === candidate.slug)) return;
   if (items.length >= 3) return;
   items.push(candidate);
 };
 
+const resolveAllowedSlugs = (journeyId?: string): Set<string> => {
+  if (!journeyId) return RESOURCE_SLUGS;
+  const matched = ALL_RESOURCES.filter((resource) => resource.relatedJourneys?.includes(journeyId));
+  return new Set(matched.map((resource) => resource.slug));
+};
+
 export const recommendResourcesFromBilan = (
   input?: RecoInput | null
 ): ResourceRecommendation[] => {
   const recommendations: ResourceRecommendation[] = [];
+  const allowedSlugs = resolveAllowedSlugs(input?.journeyId);
 
   const axes = input?.panorama?.axes ?? [];
   const axesSorted = axes
@@ -53,21 +64,21 @@ export const recommendResourcesFromBilan = (
       addRecommendation(recommendations, {
         slug,
         reason: 'Besoin de gouvernance simple et de decisions tracees.'
-      });
+      }, allowedSlugs);
     }
 
     if (matchesKeywords(axisText, KEYWORDS.communication)) {
       addRecommendation(recommendations, {
         slug: 'rituel-hebdo-15min',
         reason: 'Le bilan indique des frictions de coordination a traiter.'
-      });
+      }, allowedSlugs);
     }
 
     if (matchesKeywords(axisText, KEYWORDS.security)) {
       addRecommendation(recommendations, {
         slug: 'inventaire-acces-30min',
         reason: 'Le bilan met en avant des sujets de securite a stabiliser.'
-      });
+      }, allowedSlugs);
     }
   });
 

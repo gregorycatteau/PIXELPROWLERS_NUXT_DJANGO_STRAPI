@@ -72,7 +72,10 @@ import JourneyEngineUniversal from '~/components/journey/JourneyEngineUniversal.
 import { P1_RESOURCES_V1_3, type P1Resource, type P1ResourceId } from '@/config/resources/p1ResourcesV1_3';
 import { getManifestBySlug } from '~/config/journeys/manifests/registry';
 import { getJourneySchemaById } from '~/config/journeys/schemaRegistry';
+import { isJourneyAllowedInCurrentEnv } from '~/config/journeys/visibility';
 import { parseStepParam } from '~/utils/journeys/stepParam';
+
+const runtimeConfig = useRuntimeConfig();
 
 const normalizeJourneySlug = (raw: unknown) => (typeof raw === 'string' ? raw.trim() : '');
 const isValidJourneySlug = (slug: string) => {
@@ -87,7 +90,10 @@ const validateJourneyRoute = (ctx: { params: Record<string, unknown> }) => {
   if (!isValidJourneySlug(slug)) {
     return false;
   }
-  return Boolean(getManifestBySlug(slug));
+  const manifest = getManifestBySlug(slug);
+  if (!manifest) return false;
+  if (import.meta.dev) return true;
+  return manifest.visibility === 'prod';
 };
 
 definePageMeta({
@@ -99,8 +105,12 @@ const nuxtRoute = useRoute();
 
 const journeySlug = computed(() => normalizeJourneySlug(nuxtRoute.params.journeySlug));
 const manifest = computed(() => getManifestBySlug(journeySlug.value));
+const visibilityContext = computed(() => ({
+  isDev: import.meta.dev,
+  devAllowlist: runtimeConfig.public.journeysDevAllowlist
+}));
 
-if (!isValidJourneySlug(journeySlug.value) || !manifest.value) {
+if (!isValidJourneySlug(journeySlug.value) || !isJourneyAllowedInCurrentEnv(manifest.value, visibilityContext.value)) {
   throw createError({ statusCode: 404, statusMessage: 'Not Found' });
 }
 
