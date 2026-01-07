@@ -4,7 +4,7 @@ export const p4Manifest: JourneyManifestV1 = {
   id: 'p4',
   slug: 'parcours-p4',
   engine: 'universal',
-  visibility: 'dev',
+  visibility: 'prod',
   maturity: 'stub',
   axes: [
     { axisId: 'clarity', label: 'Clarte' },
