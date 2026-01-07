@@ -17,11 +17,11 @@ Branch: parcours_industrialization
 Industrialize journeys visibility + resource filtering + SSOT-backed guards
 
 ## Contexte
-Cette PR industrialise la mise en production des parcours en verrouillant la visibilite en prod, en filtrant les ressources par journey, et en branchant les guards sur une source SSOT. L'objectif est d'eviter toute fuite cross-journey, d'imposer P1-only en prod, et d'apporter des preuves claires (smokes + gates + docs). P2–P5 sont developpables en dev via allowlist. En prod, ils restent 404 tant qu'ils ne sont pas promus (invariant GO-PROD).
+Cette PR industrialise la mise en production des parcours en verrouillant la visibilite en prod, en filtrant les ressources par journey, et en branchant les guards sur une source SSOT. L'objectif est d'eviter toute fuite cross-journey, d'imposer une visibilite prod pilotee par les manifests, et d'apporter des preuves claires (smokes + gates + docs). P2–P5 restent developpables en dev via allowlist, et sont accessibles en prod lorsqu'ils sont promus.
 
 ## Invariants GO-PROD (phase actuelle)
-- PROD = P1 only
-- P2–P5 = 404 strict prod
+- PROD = visibility-driven (`visibility: "prod"` dans le manifest)
+- P1–P5 = 200 en prod (parcours promus)
 - DEV allowlist via `NUXT_PUBLIC_JOURNEYS_DEV_ALLOWLIST`
 - Ressources filtrees par `relatedJourneys`
 - no-tech-reveal guard base sur SSOT
@@ -55,9 +55,9 @@ cd frontend_nuxt && ./scripts/smoke/smoke-journey-dev-allowlist.sh
 cd frontend_nuxt && ./scripts/smoke/smoke-journey-prod-p1-only.sh
 ```
 
-## Activation plan (quand P2 est pret)
-- Changer la visibility du manifest P2 de "dev" -> "prod".
-- S'assurer que le pack ressources P2 est pret (pas de fuite cross-journey).
+## Activation plan (quand un nouveau parcours est pret)
+- Changer la visibility du manifest de "dev" -> "prod".
+- S'assurer que le pack ressources est pret (pas de fuite cross-journey).
 - Smokes + gates + QA no-tech-reveal OK.
 
 ## Why this matters
