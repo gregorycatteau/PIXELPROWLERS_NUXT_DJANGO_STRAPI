@@ -5,12 +5,21 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$ROOT_DIR"
 
-export NUXT_PUBLIC_JOURNEYS_DEV_ALLOWLIST=p2
+ALLOWLIST_VALUE="${NUXT_PUBLIC_JOURNEYS_DEV_ALLOWLIST:-p2}"
+export NUXT_PUBLIC_JOURNEYS_DEV_ALLOWLIST="${ALLOWLIST_VALUE}"
 
 HOST=127.0.0.1
 PORT=3011
 BASE_URL="http://${HOST}:${PORT}"
-TARGET_PATH="/parcours/parcours-p2"
+FIRST_ALLOWLIST_ENTRY="$(echo "${ALLOWLIST_VALUE}" | cut -d',' -f1 | xargs)"
+TARGET_SLUG="${FIRST_ALLOWLIST_ENTRY}"
+if [[ "${TARGET_SLUG}" =~ ^p[0-9]+$ ]]; then
+  TARGET_SLUG="parcours-${TARGET_SLUG}"
+fi
+if [[ "${TARGET_SLUG}" == "*" || "${TARGET_SLUG}" == "all" ]]; then
+  TARGET_SLUG="parcours-p2"
+fi
+TARGET_PATH="/parcours/${TARGET_SLUG}"
 
 cleanup() {
   if [[ -n "${DEV_PID:-}" ]]; then
