@@ -24,6 +24,9 @@ const normalizeText = (value: string): string =>
 const matchesKeywords = (value: string, keywords: string[]): boolean =>
   keywords.some((keyword) => value.includes(keyword));
 
+const normalizeScore = (score: number): number =>
+  score > 5 ? score / 20 : score;
+
 const addRecommendation = (
   items: ResourceRecommendation[],
   candidate: ResourceRecommendation,
@@ -54,7 +57,8 @@ export const recommendResourcesFromBilan = (
     .sort((a, b) => (b.score - a.score) || a.id.localeCompare(b.id));
 
   axesSorted.forEach((axis) => {
-    if (axis.score < 4) return;
+    const score = normalizeScore(axis.score ?? 0);
+    if (score < 4) return;
     const axisText = normalizeText(`${axis.id} ${axis.label}`);
 
     if (matchesKeywords(axisText, KEYWORDS.governance)) {
@@ -81,6 +85,21 @@ export const recommendResourcesFromBilan = (
       }, allowedSlugs);
     }
   });
+
+  if (recommendations.length === 0 && input?.journeyId === 'p2') {
+    addRecommendation(recommendations, {
+      slug: 'reunion-30min-sans-noyade',
+      reason: 'Une action courte pour fixer des priorites claires.'
+    }, allowedSlugs);
+    addRecommendation(recommendations, {
+      slug: 'decision-log-minimal',
+      reason: 'Clarifier les decisions pour reduire les retours en arriere.'
+    }, allowedSlugs);
+    addRecommendation(recommendations, {
+      slug: 'charte-canaux-3-couleurs',
+      reason: 'Stabiliser la coordination et le flux des demandes.'
+    }, allowedSlugs);
+  }
 
   return recommendations;
 };

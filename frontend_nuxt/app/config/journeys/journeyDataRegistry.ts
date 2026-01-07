@@ -94,7 +94,7 @@ const copyRegistry: Record<string, JourneyCopyBundle> = {
 const questionsRegistry: Record<string, PanoramaQuestionsBundle> = {
   'app/config/journeys/p2QuestionsV1_0': {
     questions: p2PanoramaQuestions,
-    axisOrder: P2_PANORAMA_AXIS_ORDER,
+    axisOrder: [...P2_PANORAMA_AXIS_ORDER],
     axesMeta: p2PanoramaAxesMeta
   },
   'app/config/journeys/p3QuestionsV1_0': {
