@@ -7,6 +7,25 @@
         heading-id="journey-step-heading-E0_intro"
       />
 
+      <div v-if="outcomeParagraphs.length" class="space-y-2">
+        <p v-for="paragraph in outcomeParagraphs" :key="paragraph" class="pp-journey-body text-sm text-[color:var(--color-text-muted)]">
+          {{ paragraph }}
+        </p>
+      </div>
+
+      <div v-if="introSections.length" class="space-y-4">
+        <PPCard v-for="(section, index) in introSections" :key="`${section.title}-${index}`" variant="soft" class="space-y-2">
+          <h3 class="text-base font-semibold">
+            {{ section.title }}
+          </h3>
+          <ul class="pp-journey-body list-disc list-inside space-y-1">
+            <li v-for="(item, itemIndex) in section.items" :key="`${section.title}-${itemIndex}`">
+              {{ item }}
+            </li>
+          </ul>
+        </PPCard>
+      </div>
+
       <button type="button" class="pp-journey-cta-primary" @click="handleStart">
         {{ copy.cta }}
       </button>
@@ -18,8 +37,10 @@
 import { computed } from 'vue';
 import type { JourneyManifestV1 } from '~/config/journeys/manifests/types';
 import JourneyLayout from '~/components/journey/JourneyLayout.vue';
+import PPCard from '~/components/PPCard.vue';
 import JourneyStepHeader from '~/components/journey/JourneyStepHeader.vue';
 import { getJourneyCopy } from '~/config/journeys/journeyDataRegistry';
+import type { JourneyCopyIntro } from '~/config/journeys/journeyDataRegistry';
 import { getJourneySchemaById } from '~/config/journeys/schemaRegistry';
 
 const props = defineProps<{
@@ -27,15 +48,27 @@ const props = defineProps<{
   goToStep: (stepId: string) => void;
 }>();
 
-const fallbackCopy = {
+const fallbackCopy: JourneyCopyIntro = {
   title: `Parcours ${props.manifest.id.toUpperCase()}`,
   subtitle: 'Panorama rapide, reponses locales uniquement.',
   cta: 'Commencer le panorama'
 };
 
-const copy = computed(() => {
+const copy = computed<JourneyCopyIntro>(() => {
   const bundle = getJourneyCopy(props.manifest);
   return bundle?.intro ? { ...fallbackCopy, ...bundle.intro } : fallbackCopy;
+});
+
+const outcomeParagraphs = computed(() => (copy.value.outcome ?? '').split('\n\n').filter(Boolean));
+
+const introSections = computed(() => {
+  const sections = copy.value.sections ? Object.values(copy.value.sections) : [];
+  return sections
+    .map((section) => ({
+      title: section.title,
+      items: section.items.filter(Boolean)
+    }))
+    .filter((section) => section.title && section.items.length);
 });
 
 const journeySchema = computed(() => getJourneySchemaById(props.manifest.id));

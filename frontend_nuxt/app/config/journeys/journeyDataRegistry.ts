@@ -32,10 +32,17 @@ import { p4_stubCopy } from './p4_stubCopyV1_0';
 
 import { p4_stubPanoramaAxesMeta, p4_stubPanoramaQuestions, P4_STUB_PANORAMA_AXIS_ORDER } from './p4_stubQuestionsV1_0';
 
+export type JourneyCopyIntroSection = {
+  title: string;
+  items: string[];
+};
+
 export type JourneyCopyIntro = {
   title: string;
   subtitle?: string;
   cta?: string;
+  outcome?: string;
+  sections?: Record<string, JourneyCopyIntroSection>;
 };
 
 export type JourneyCopyPanorama = {
