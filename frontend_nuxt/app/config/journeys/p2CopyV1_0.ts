@@ -1,13 +1,13 @@
 export const p2Copy = {
   intro: {
-    title: 'Parcours P2 (stub)',
-    subtitle: 'Panorama rapide, reponses locales uniquement.',
+    title: 'La coordination patine — 6 questions pour y voir clair',
+    subtitle: 'En 6 questions, tu clarifies priorités, coordination et sécurité, et repars avec 3 actions concrètes.',
     cta: 'Commencer le panorama'
   },
   panorama: {
     title: 'Panorama P2',
     subtitle: 'Questions de base pour poser le contexte.',
-    meta: 'Tu peux ignorer des questions.',
+    meta: 'Tu repars avec un bilan clair et trois actions pour fluidifier ta coordination.',
     validate: 'Voir le bilan',
     back: 'Retour'
   },
