@@ -17,6 +17,7 @@
 | [PX_V1_3_1_P1_HYPOTHESES_STRUCTURANTES_COPY.md](./PX_V1_3_1_P1_HYPOTHESES_STRUCTURANTES_COPY.md) | active | P1 — Hypothèses structurantes (atterrissage + première vérif) |
 | [PX_V1_3_1_P1_SYSTEM_SCALPELS_COPY.md](./PX_V1_3_1_P1_SYSTEM_SCALPELS_COPY.md) | active | P1 System Scalpels Copy v1.3.1 |
 | [PX_V1_3_1_P2_COPY.md](./PX_V1_3_1_P2_COPY.md) | draft | Parcours P2 — « Mon site / mes outils ne suivent pas » (Copy Pack V0.1) |
+| [PX_V1_3_1_P3_COPY.md](./PX_V1_3_1_P3_COPY.md) | draft | Parcours P3 — « Je suis à bout / je pense à tout lâcher » (Copy Pack V0.1) |
 | [PX_V1_3_RESOURCES_CATALOG_V1.json](./PX_V1_3_RESOURCES_CATALOG_V1.json) | active | Fichier JSON |
 | [PX_V1_3_RESOURCES_LIBRARY_SPEC.md](./PX_V1_3_RESOURCES_LIBRARY_SPEC.md) | active | PX_V1_3_RESOURCES_LIBRARY_SPEC |
 
