@@ -1,20 +1,20 @@
 import type { JourneyBilanAdapter } from './types';
 import { createEmptyUniversalBilanViewModel } from '@/types/bilan';
 import { assertNoRawAnswers } from '@/utils/bilan/assertNoRawAnswers';
-import type { ResourcesActionsItemVM } from '@/types/bilan';
+import type { ResourcesActionsItemVM, UniversalBilanSectionsVM } from '@/types/bilan';
 import { listResources } from '@/config/resources/registryV0';
 import { useCoreJourneyStorage } from '@/composables/useCoreJourneyStorage';
+import { p4Copy } from '@/config/journeys/p4CopyV1_0';
 import { P4_PANORAMA_AXIS_ORDER, p4PanoramaAxesMeta } from '@/config/journeys/p4QuestionsV1_0';
 
 const P4_ACTION_SLUGS = [
-  'reunion-30min-sans-noyade',
   'rituel-hebdo-15min',
-  'compte-rendu-utile-1page',
-  'tableau-bord-3-signaux'
-];
+  'tableau-bord-3-signaux',
+  'reunion-30min-sans-noyade'
+] as const;
 
-const clampScore = (value: number) => Math.max(0, Math.min(100, Math.round(value)));
-const scoreToPercent = (score: number) => clampScore((score / 5) * 100);
+const clampAxisScore = (value: number) => Math.max(0, Math.min(5, Number.isFinite(value) ? value : 0));
+const clampPercent = (value: number) => Math.max(0, Math.min(100, Math.round(value)));
 
 const buildActionCards = (): ResourcesActionsItemVM[] => {
   const resources = listResources();
@@ -24,22 +24,29 @@ const buildActionCards = (): ResourcesActionsItemVM[] => {
     const resource = bySlug.get(slug);
     if (!resource) return [];
     if (!resource.relatedJourneys?.includes('p4')) return [];
-    const outcome = resource.outcome ? `Outcome: ${resource.outcome}` : 'Outcome: a clarifier.';
-    const effort = `Effort: ${resource.effort}`;
-    return [{
-      id: `p4_action_${slug}`,
-      kind: 'action',
-      title: resource.title,
-      description: `${resource.summary} ${outcome} ${effort}`,
-      tags: [resource.category, 'priorites'],
-      format: resource.level,
-      cta: {
-        type: 'route',
-        label: 'Voir',
-        target: `/ressources/${resource.slug}`
-      },
-      reason: 'Action immediate et locale.'
-    }];
+
+    const descriptionParts = [
+      resource.summary,
+      resource.outcome ? `Outcome: ${resource.outcome}` : null,
+      `Effort: ${resource.effort}`
+    ].filter(Boolean);
+
+    return [
+      {
+        id: `p4_action_${slug}`,
+        kind: 'action',
+        title: resource.title,
+        description: descriptionParts.join(' '),
+        tags: [resource.category, 'priorites'],
+        format: resource.level,
+        cta: {
+          type: 'route',
+          label: p4Copy.resources?.cta ?? 'Voir',
+          target: `/ressources/${resource.slug}`
+        },
+        reason: 'Action immediate et locale.'
+      }
+    ];
   });
 };
 
@@ -49,35 +56,82 @@ export const p4BilanAdapter: JourneyBilanAdapter = {
     const storage = useCoreJourneyStorage({ journeyId: 'p4' });
     storage.loadFromStorage();
     const panorama = storage.scores.value?.panorama ?? null;
+    const totalQuestions = P4_PANORAMA_AXIS_ORDER.length * 2;
 
     const axes = P4_PANORAMA_AXIS_ORDER.map((axisId) => {
       const axisMeta = p4PanoramaAxesMeta[axisId];
       const storedAxis = panorama?.byAxis?.[axisId];
-      const score = scoreToPercent(storedAxis?.score ?? 0);
+      const score = clampAxisScore(storedAxis?.score ?? 0);
+      const filledSegments = Math.max(0, Math.min(5, Math.round(score)));
       return {
         id: axisId,
         label: axisMeta.label,
-        score
+        score,
+        filledSegments
       };
     });
 
-    const priorities = axes
+    const actionCards = buildActionCards();
+    const priorityAxes = axes
       .slice()
       .sort((a, b) => (b.score - a.score) || a.label.localeCompare(b.label))
       .slice(0, 2);
-    const globalScore = clampScore(
-      axes.reduce((acc, axis) => acc + axis.score, 0) / Math.max(axes.length, 1)
-    );
+    const priorityLabels = priorityAxes.map((axis) => axis.label).join(', ');
 
-    const actionCards = buildActionCards();
+    const axisAverage = axes.reduce((acc, axis) => acc + axis.score, 0) / Math.max(axes.length, 1);
+    const globalScore = clampPercent((axisAverage / 5) * 100);
+
     const actionTags = Array.from(new Set(actionCards.flatMap((item) => item.tags ?? [])));
-    const priorityLabels = priorities.map((axis) => axis.label).join(', ');
+
+    const sections: UniversalBilanSectionsVM = {
+      reperes: {
+        id: 'reperes',
+        title: p4Copy.bilan?.scoreLabel ?? 'Score global (0-5)',
+        summary: `Score global: ${globalScore}/100.`,
+        state: 'full',
+        itemsCount: axes.length
+      },
+      risques: {
+        id: 'risques',
+        title: p4Copy.bilan?.prioritiesLabel ?? 'Priorites immediates',
+        summary: priorityLabels ? `Priorites : ${priorityLabels}.` : 'Priorites disponibles.',
+        state: 'full',
+        itemsCount: priorityAxes.length
+      },
+      recommandations: {
+        id: 'recommandations',
+        title: p4Copy.bilan?.actionCardsIntro ?? 'Actions immediates',
+        summary: actionCards.length
+          ? `${actionCards.length} actions concretes pour reprendre le tempo.`
+          : 'Actions a definir.',
+        state: actionCards.length ? 'full' : 'empty',
+        itemsCount: actionCards.length
+      },
+      actions: {
+        id: 'actions',
+        title: 'Ressources',
+        summary: p4Copy.resources?.intro ?? 'Ressources locales disponibles.',
+        state: actionCards.length ? 'full' : 'empty',
+        itemsCount: actionCards.length
+      }
+    };
 
     const vm = createEmptyUniversalBilanViewModel({
-      copy: { title: 'Bilan P4', subtitle: 'Synthese locale.' },
-      axisSummaryLabel: 'Scores panorama (0-100)',
+      copy: {
+        title: p4Copy.global.title,
+        subtitle: p4Copy.global.subtitle,
+        exportHeading: p4Copy.global.exportHeading ?? 'Export (client-side)',
+        exportNotice: p4Copy.global.exportNotice ?? 'Le texte ci-dessus est genere cote client.',
+        copyCta: p4Copy.global.copyCta ?? 'Copier le bilan',
+        printCta: p4Copy.global.printCta ?? 'Imprimer',
+        clearCta: p4Copy.global.clearCta ?? 'Effacer mes reponses de cet appareil',
+        backToHub: p4Copy.global.backToHub ?? 'Retour au panorama',
+        sovereigntyNote: p4Copy.global.sovereigntyNote ?? 'Ce bilan reste sur cet appareil.'
+      },
+      axisSummaryLabel: p4Copy.bilan?.scoreLabel ?? 'Score global (0-5)',
       completedBlocksLabel: 'Aucun bloc',
-      panoramaAnsweredLabel: 'Reponses panorama',
+      blocksSummaryHeading: 'Blocs exploratoires',
+      panoramaAnsweredLabel: `${panorama?.answeredCount ?? 0}/${totalQuestions}`,
       summaryNav: [
         { id: 'gb_panorama', label: 'Panorama' },
         { id: 'gb_export', label: 'Export' }
@@ -90,36 +144,7 @@ export const p4BilanAdapter: JourneyBilanAdapter = {
         blocks: [],
         completedLabel: 'Panorama'
       },
-      sections: {
-        reperes: {
-          id: 'reperes',
-          title: 'Reperes',
-          summary: `Score global: ${globalScore}/100.`,
-          state: 'full',
-          itemsCount: axes.length
-        },
-        risques: {
-          id: 'risques',
-          title: 'Priorites',
-          summary: priorityLabels ? `Priorites: ${priorityLabels}.` : 'Priorites disponibles.',
-          state: 'full',
-          itemsCount: priorities.length
-        },
-        recommandations: {
-          id: 'recommandations',
-          title: 'Actions immediates',
-          summary: 'Actions concretes pour stabiliser le rythme.',
-          state: 'full',
-          itemsCount: actionCards.length
-        },
-        actions: {
-          id: 'actions',
-          title: 'Cartes action',
-          summary: 'Cartes prêtes a activer en autonomie.',
-          state: 'full',
-          itemsCount: actionCards.length
-        }
-      },
+      sections,
       modules: {
         resourcesActions: {
           recommended: actionCards,
