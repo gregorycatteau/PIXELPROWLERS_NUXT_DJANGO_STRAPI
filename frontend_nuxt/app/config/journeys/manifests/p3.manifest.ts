@@ -5,11 +5,11 @@ export const p3Manifest: JourneyManifestV1 = {
   slug: 'parcours-p3',
   engine: 'universal',
   visibility: 'prod',
-  maturity: 'stub',
+  maturity: 'core',
   axes: [
-    { axisId: 'symptomes', label: 'Signaux' },
-    { axisId: 'organisation', label: 'Organisation' },
-    { axisId: 'decisions', label: 'Decisions' }
+    { axisId: 'charge', label: 'Charge & rythme' },
+    { axisId: 'clarity', label: 'Clarte & limites' },
+    { axisId: 'support', label: 'Soutien & relais' }
   ],
   modules: {
     panorama: true,
