@@ -17,7 +17,7 @@
 
       <div class="space-y-4">
         <p class="pp-journey-body">
-          Cette section regroupe des ressources publiques pour continuer a ton rythme.
+          {{ copy.intro }}
         </p>
         <p class="pp-stepresources__disclaimer">
           Aucun contenu n'est partage. Tout reste local.
@@ -51,7 +51,7 @@
       <template #footer>
         <div v-if="showResourcesLink" class="flex flex-wrap gap-3 justify-center">
           <NuxtLink class="pp-cta-primary" :to="resourcesLink">
-            Acceder aux ressources
+            {{ copy.cta }}
           </NuxtLink>
         </div>
       </template>
@@ -74,6 +74,7 @@ import { getBilanAdapter } from '~/adapters/bilan/registry';
 import { createEmptyUniversalBilanViewModel, withUniversalBilanDefaults } from '~/types/bilan';
 import { recommendResourcesFromBilan } from '@/utils/resources/recommendResourcesFromBilan';
 import { safeRoutePath } from '@/utils/cta/safeCta';
+import { getJourneyCopy } from '~/config/journeys/journeyDataRegistry';
 
 const props = defineProps<{
   manifest: JourneyManifestV1;
@@ -91,6 +92,19 @@ const resourcesBySlug = computed(
 const emptyVm = createEmptyUniversalBilanViewModel();
 const adapter = computed(() => getBilanAdapter(props.manifest.id));
 const vm = computed(() => withUniversalBilanDefaults(adapter.value?.buildViewModel() ?? emptyVm));
+
+const fallbackCopy = {
+  intro: 'Cette section regroupe des ressources publiques pour continuer a ton rythme.',
+  cta: 'Acceder aux ressources'
+};
+
+const copy = computed(() => {
+  const bundle = getJourneyCopy(props.manifest);
+  return {
+    intro: bundle?.resources?.intro ?? fallbackCopy.intro,
+    cta: bundle?.resources?.cta ?? fallbackCopy.cta
+  };
+});
 
 const resourceItems = computed(() => {
   const recommendations = recommendResourcesFromBilan({
