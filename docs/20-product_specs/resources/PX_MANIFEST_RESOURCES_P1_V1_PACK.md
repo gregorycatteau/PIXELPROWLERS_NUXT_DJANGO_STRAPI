@@ -18,7 +18,7 @@ Pas de vitrine, pas de narration, pas de liens externes. On construit une **mach
 - `resources-p1-v1.0.0`
 
 ## Doctrine V1 (non négociable)
-- **P1 only** : P2–P5 = **404 strict** en prod (feature-flag seulement en dev/preview interne)
+- **Prod visibility-driven** : seuls les parcours `visibility: "prod"` sont publics ; les autres restent 404 en prod
 - **Hard cap** : exactement **10 ressources published** (guard `=== 10`)
 - **Recos Bilan** : pack-only, **≤ 3**, déterministes, fallback = `[]` + CTA “Explorer la bibliothèque”
 - **Contenu texte-only** : pas de HTML, pas de rendu markdown, pas de `v-html`

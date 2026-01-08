@@ -4,10 +4,12 @@ export const p3Manifest: JourneyManifestV1 = {
   id: 'p3',
   slug: 'parcours-p3',
   engine: 'universal',
+  visibility: 'prod',
   maturity: 'stub',
   axes: [
-    { axisId: 'clarity', label: 'Clarte' },
-    { axisId: 'capacity', label: 'Capacite' }
+    { axisId: 'symptomes', label: 'Signaux' },
+    { axisId: 'organisation', label: 'Organisation' },
+    { axisId: 'decisions', label: 'Decisions' }
   ],
   modules: {
     panorama: true,

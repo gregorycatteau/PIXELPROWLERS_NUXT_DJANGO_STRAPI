@@ -23,7 +23,7 @@
           Aucun contenu n'est partage. Tout reste local.
         </p>
 
-        <div class="grid gap-3">
+        <div v-if="resourceItems.length" class="grid gap-3">
           <PPCard v-for="item in resourceItems" :key="item.id" variant="soft" class="p-4 space-y-2">
             <div class="flex items-center justify-between gap-3">
               <div>
@@ -40,10 +40,16 @@
             </div>
           </PPCard>
         </div>
+        <PPEmptyState
+          v-else
+          icon="folder"
+          title="Aucune ressource associee"
+          description="Ce parcours ne propose pas encore de ressources publiques."
+        />
       </div>
 
       <template #footer>
-        <div class="flex flex-wrap gap-3 justify-center">
+        <div v-if="showResourcesLink" class="flex flex-wrap gap-3 justify-center">
           <NuxtLink class="pp-cta-primary" :to="resourcesLink">
             {{ copy.cta }}
           </NuxtLink>
@@ -60,6 +66,7 @@ import JourneyLayout from '~/components/journey/JourneyLayout.vue';
 import JourneyStepHeader from '~/components/journey/JourneyStepHeader.vue';
 import PPJourneyStepShell from '~/components/journey/PPJourneyStepShell.vue';
 import PPCard from '~/components/PPCard.vue';
+import PPEmptyState from '~/components/PPEmptyState.vue';
 import { buildResourcesDeepLink } from '~/utils/deeplinks/resourcesDeepLink';
 import { listResources } from '@/config/resources/registryV0';
 import { RESOURCE_CATEGORY_LABELS } from '@/data/resourcesData';
@@ -75,7 +82,12 @@ const props = defineProps<{
 }>();
 
 const allResources = listResources();
-const resourcesBySlug = new Map(allResources.map((resource) => [resource.slug, resource]));
+const journeyResources = computed(() =>
+  allResources.filter((resource) => resource.relatedJourneys?.includes(props.manifest.id))
+);
+const resourcesBySlug = computed(
+  () => new Map(journeyResources.value.map((resource) => [resource.slug, resource]))
+);
 
 const emptyVm = createEmptyUniversalBilanViewModel();
 const adapter = computed(() => getBilanAdapter(props.manifest.id));
@@ -99,10 +111,11 @@ const resourceItems = computed(() => {
     panorama: vm.value.panorama,
     sections: vm.value.sections,
     modules: vm.value.modules,
+    journeyId: props.manifest.id
   });
 
   return recommendations.flatMap((reco) => {
-    const resource = resourcesBySlug.get(reco.slug);
+    const resource = resourcesBySlug.value.get(reco.slug);
     if (!resource) return [];
     return [{
       id: resource.id,
@@ -116,6 +129,7 @@ const resourceItems = computed(() => {
 });
 
 const resourcesLink = buildResourcesDeepLink({});
+const showResourcesLink = computed(() => journeyResources.value.length > 0);
 </script>
 
 <style scoped>

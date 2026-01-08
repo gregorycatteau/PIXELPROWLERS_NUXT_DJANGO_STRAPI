@@ -3,6 +3,7 @@ import type { JourneyManifestV1 } from './types';
 export const journeyManifestTemplate: JourneyManifestV1 = {
   id: 'px',
   slug: 'mon-parcours',
+  visibility: 'dev',
   maturity: 'stub',
   axes: [],
   modules: {

@@ -4,11 +4,12 @@ export const p2Manifest: JourneyManifestV1 = {
   id: 'p2',
   slug: 'parcours-p2',
   engine: 'universal',
+  visibility: 'prod',
   maturity: 'stub',
   axes: [
-    { axisId: 'clarity', label: 'Gouvernance et priorités' },
-    { axisId: 'capacity', label: 'Coordination et suivi' },
-    { axisId: 'security', label: 'Sécurité et risques' }
+    { axisId: 'gouvernance', label: 'Gouvernance' },
+    { axisId: 'coordination', label: 'Coordination' },
+    { axisId: 'securite', label: 'Securite' }
   ],
   modules: {
     panorama: true,

@@ -4,10 +4,12 @@ export const p4Manifest: JourneyManifestV1 = {
   id: 'p4',
   slug: 'parcours-p4',
   engine: 'universal',
+  visibility: 'prod',
   maturity: 'stub',
   axes: [
-    { axisId: 'clarity', label: 'Clarte' },
-    { axisId: 'capacity', label: 'Capacite' }
+    { axisId: 'symptomes', label: 'Signaux' },
+    { axisId: 'rythmes', label: 'Rythmes' },
+    { axisId: 'coordination', label: 'Coordination' }
   ],
   modules: {
     panorama: true,

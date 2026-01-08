@@ -45,3 +45,21 @@ jobs:
 
       - name: Guards CI (all security + quality guards)
         run: npm run guards:ci
+
+      - name: Build (Nuxt)
+        run: npm run build
+
+      - name: Smoke (Parcours catalog)
+        run: bash ./scripts/smoke/smoke-parcours-catalog.sh
+
+      - name: Smoke (Value P2)
+        run: bash ./scripts/smoke/smoke-p2-value.sh
+
+      - name: Smoke (Value P3)
+        run: bash ./scripts/smoke/smoke-p3-value.sh
+
+      - name: Smoke (Value P4)
+        run: bash ./scripts/smoke/smoke-p4-value.sh
+
+      - name: Smoke (Value P5)
+        run: bash ./scripts/smoke/smoke-p5-value.sh

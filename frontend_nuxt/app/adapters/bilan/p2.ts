@@ -1,226 +1,127 @@
-import { computed } from 'vue';
 import type { JourneyBilanAdapter } from './types';
-import type { ResourcesActionsItemVM } from '@/types/bilan';
 import { createEmptyUniversalBilanViewModel } from '@/types/bilan';
-import { createEmptySections } from '@/adapters/bilan/universalBilanViewModel';
 import { assertNoRawAnswers } from '@/utils/bilan/assertNoRawAnswers';
-import { useCoreJourneyStorage } from '~/composables/useCoreJourneyStorage';
-import { p2Copy } from '~/config/journeys/p2CopyV1_0';
-import { p2PanoramaAxesMeta, P2_PANORAMA_AXIS_ORDER, type P2PanoramaAxisId } from '~/config/journeys/p2QuestionsV1_0';
-import { BILAN_SKIP_SIGNAL_COPY } from '~/config/bilan/bilanSkipSignalCopy';
+import type { ResourcesActionsItemVM } from '@/types/bilan';
+import { listResources } from '@/config/resources/registryV0';
+import { useCoreJourneyStorage } from '@/composables/useCoreJourneyStorage';
+import { P2_PANORAMA_AXIS_ORDER, p2PanoramaAxesMeta } from '@/config/journeys/p2QuestionsV1_0';
 
-const DEFAULT_BILAN_COPY = {
-  scoreLabel: 'Niveau de friction',
-  prioritiesLabel: 'Priorités immédiates',
-  actionCards: [
-    {
-      title: 'Clarifier la promesse en une phrase',
-      description:
-        'Avant de refaire quoi que ce soit, assure-toi que le message est limpide : qui tu aides, ce que tu proposes, et la prochaine étape. Souvent, c’est le levier le plus rapide.',
-      cta: 'Écrire la phrase'
-    },
-    {
-      title: 'Sécuriser et simplifier les accès',
-      description:
-        'Fais l’inventaire des comptes et des clés (domaine, hébergement, boîte mail, outils). Retire les accès inutiles. Objectif : éviter l’effet “personne ne sait”.',
-      cta: 'Faire l’inventaire'
-    },
-    {
-      title: 'Tester le parcours principal sur mobile',
-      description:
-        'Ouvre le site sur un téléphone et fais le parcours principal comme un visiteur : arriver, comprendre, agir. Note 3 blocages max, puis corrige dans cet ordre.',
-      cta: 'Faire le test'
-    }
-  ]
-};
-
-const RESOURCES_TARGETS = [
-  '/ressources/reunion-30min-sans-noyade',
-  '/ressources/decision-log-minimal',
-  '/ressources/charte-canaux-3-couleurs'
+const P2_ACTION_SLUGS = [
+  'reunion-30min-sans-noyade',
+  'decision-log-minimal',
+  'charte-canaux-3-couleurs'
 ];
 
-const axisLabelFor = (axisId: P2PanoramaAxisId) => p2PanoramaAxesMeta[axisId]?.label ?? axisId;
-const axisShortLabelFor = (axisId: P2PanoramaAxisId) =>
-  p2PanoramaAxesMeta[axisId]?.shortLabel ?? axisLabelFor(axisId);
-const filledSegments = (score: number) => Math.max(0, Math.min(5, Math.round(score)));
-const priorityLabel = (score: number) => {
-  if (score >= 4) return 'Prioritaire';
-  if (score >= 2) return 'À surveiller';
-  return 'Secondaire';
-};
-const toSectionState = (count: number, partial = false) => {
-  if (!count) return 'empty';
-  return partial ? 'partial' : 'full';
+const clampScore = (value: number) => Math.max(0, Math.min(100, Math.round(value)));
+const scoreToPercent = (score: number) => clampScore((score / 5) * 100);
+
+const buildResourcesActions = (): ResourcesActionsItemVM[] => {
+  const resources = listResources();
+  const bySlug = new Map(resources.map((resource) => [resource.slug, resource]));
+
+  return P2_ACTION_SLUGS.flatMap((slug) => {
+    const resource = bySlug.get(slug);
+    if (!resource) return [];
+    return [{
+      id: `p2_action_${slug}`,
+      kind: 'action',
+      title: resource.title,
+      description: resource.summary,
+      tags: [resource.category, 'priorites'],
+      format: resource.level,
+      cta: {
+        type: 'route',
+        label: 'Voir',
+        target: `/ressources/${resource.slug}`
+      },
+      reason: 'Action immediatement activable.'
+    }];
+  });
 };
 
 export const p2BilanAdapter: JourneyBilanAdapter = {
   journeyId: 'p2',
   buildViewModel() {
     const storage = useCoreJourneyStorage({ journeyId: 'p2' });
-    const bilanCopy = p2Copy.bilan ?? DEFAULT_BILAN_COPY;
-    const panoramaScores = computed(() => storage.scores.value?.panorama ?? null);
-    const answeredCount = computed(() => panoramaScores.value?.answeredCount ?? 0);
-    const skippedCount = computed(() => panoramaScores.value?.skippedCount ?? 0);
-    const totalCount = computed(() => answeredCount.value + skippedCount.value);
-    const hasPanorama = computed(() => totalCount.value > 0);
+    storage.loadFromStorage();
+    const panorama = storage.scores.value?.panorama ?? null;
 
-    const axisScores = computed(() =>
-      (P2_PANORAMA_AXIS_ORDER as P2PanoramaAxisId[])
-        .map((axisId, order) => ({
-          id: axisId,
-          order,
-          score: panoramaScores.value?.byAxis?.[axisId]?.score ?? 0
-        }))
-        .sort((a, b) => (b.score !== a.score ? b.score - a.score : a.order - b.order))
-    );
-    const maxScore = computed(() => axisScores.value.reduce((acc, axis) => Math.max(acc, axis.score), 0));
-    const priorityAxisIds = computed(() =>
-      axisScores.value
-        .filter((axis) => axis.score === maxScore.value && maxScore.value >= 4)
-        .map((axis) => axis.id)
-    );
-
-    const panoramaAxesForCard = computed(() =>
-      axisScores.value.map((axis) => ({
-        id: axis.id,
-        label: axisLabelFor(axis.id),
-        emoji: '',
-        score: axis.score,
-        isPriority: priorityAxisIds.value.includes(axis.id),
-        priorityLabel: priorityLabel(axis.score),
-        filledSegments: filledSegments(axis.score)
-      }))
-    );
-
-    const panoramaCompletenessLabel = computed(() => {
-      const answered = answeredCount.value;
-      const skipped = skippedCount.value;
-      const total = totalCount.value;
-      if (!total) return 'Panorama partiel (0/0)';
-      if (skipped === 0) return `Panorama complet (${answered}/${total})`;
-      return `Panorama partiel (${answered}/${total})`;
-    });
-
-    const axisSummaryLabel = computed(() => {
-      const summary = axisScores.value
-        .map((axis) => `${axisShortLabelFor(axis.id)}:${axis.score}`)
-        .join(' · ');
-      return summary ? `${bilanCopy.scoreLabel} · ${summary}` : bilanCopy.scoreLabel;
-    });
-
-    const panoramaAnsweredLabel = computed(() => `R ${answeredCount.value} / NR ${skippedCount.value}`);
-    const completedBlocksLabel = computed(() => 'aucun');
-
-    const skipSignal = computed(() => {
-      const axisSignals = (P2_PANORAMA_AXIS_ORDER as P2PanoramaAxisId[]).map((axisId) => {
-        const stats = panoramaScores.value?.byAxis?.[axisId];
-        const skipped = stats?.skippedCount ?? 0;
-        const total =
-          stats?.totalCount ??
-          (stats?.answeredCount ?? 0) + (stats?.skippedCount ?? 0) + (stats?.missingCount ?? 0);
-        const ratio = total > 0 ? skipped / total : 0;
-        return {
-          axisId,
-          skippedCount: skipped,
-          totalCount: total,
-          show: skipped >= 2 || ratio >= 0.2
-        };
-      });
+    const axes = P2_PANORAMA_AXIS_ORDER.map((axisId) => {
+      const axisMeta = p2PanoramaAxesMeta[axisId];
+      const storedAxis = panorama?.byAxis?.[axisId];
+      const score = scoreToPercent(storedAxis?.score ?? 0);
       return {
-        globalSkippedCount: skippedCount.value,
-        byAxis: axisSignals,
-        copy: BILAN_SKIP_SIGNAL_COPY
+        id: axisId,
+        label: axisMeta.label,
+        score
       };
     });
 
-    const summaryNav = [
-      { id: 'gb_reperes', label: bilanCopy.prioritiesLabel },
-      { id: 'gb_panorama', label: p2Copy.global.panoramaHeading ?? 'Panorama' },
-      { id: 'gb_export', label: 'Export' }
-    ];
+    const priorities = axes
+      .slice()
+      .sort((a, b) => (b.score - a.score) || a.label.localeCompare(b.label))
+      .slice(0, 3);
 
-    const repereCount = computed(() => (hasPanorama.value ? panoramaAxesForCard.value.length : 0));
-    const sections = createEmptySections({
-      reperes: {
-        title: bilanCopy.prioritiesLabel,
-        summary: 'Synthèse des axes et repères clés.',
-        state: toSectionState(repereCount.value, skippedCount.value > 0),
-        itemsCount: repereCount.value
-      },
-      risques: {
-        title: 'Risques',
-        summary: 'Aucun signal prioritaire détecté.',
-        state: 'empty',
-        itemsCount: 0
-      },
-      recommandations: {
-        title: 'Recommandations',
-        summary: 'Pistes et ressources à explorer.',
-        state: 'empty',
-        itemsCount: 0
-      },
-      actions: {
-        title: 'Actions',
-        summary: 'Actions concrètes pour avancer.',
-        state: 'empty',
-        itemsCount: 0
-      }
-    });
+    const resourcesActions = buildResourcesActions();
+    const resourcesTags = Array.from(new Set(resourcesActions.flatMap((item) => item.tags ?? [])));
 
-    const actionCards = bilanCopy.actionCards.map((card, index) => ({
-      id: `p2_card_${index + 1}`,
-      kind: 'action' as const,
-      title: card.title,
-      description: card.description,
-      cta: {
-        type: 'route' as const,
-        label: card.cta,
-        target: RESOURCES_TARGETS[index] ?? '/ressources'
-      }
-    })) satisfies ResourcesActionsItemVM[];
-
+    const priorityLabels = priorities.map((axis) => axis.label).join(', ');
     const vm = createEmptyUniversalBilanViewModel({
-      copy: {
-        title: p2Copy.global.title,
-        subtitle: p2Copy.global.subtitle,
-        exportHeading: p2Copy.global.exportHeading,
-        exportNotice: p2Copy.global.exportNotice,
-        sovereigntyNote: p2Copy.global.sovereigntyNote,
-        copyCta: p2Copy.global.copyCta,
-        printCta: p2Copy.global.printCta,
-        backToHub: p2Copy.global.backToHub
-      },
-      axisSummaryLabel: axisSummaryLabel.value,
-      completedBlocksLabel: completedBlocksLabel.value,
-      panoramaAnsweredLabel: panoramaAnsweredLabel.value,
-      summaryNav,
-      blocksSummaryHeading: p2Copy.global.blocksHeading ?? 'Blocs exploratoires',
-      completedBlocks: completedBlocksLabel.value,
+      copy: { title: 'Bilan P2', subtitle: 'Synthese locale.' },
+      axisSummaryLabel: 'Scores panorama (0-100)',
+      completedBlocksLabel: 'Aucun bloc',
+      panoramaAnsweredLabel: 'Reponses panorama',
+      summaryNav: [
+        { id: 'gb_panorama', label: 'Panorama' },
+        { id: 'gb_export', label: 'Export' }
+      ],
       panorama: {
-        answeredCount: answeredCount.value,
-        skippedCount: skippedCount.value,
-        completenessLabel: panoramaCompletenessLabel.value,
-        axes: panoramaAxesForCard.value,
+        answeredCount: panorama?.answeredCount ?? 0,
+        skippedCount: panorama?.skippedCount ?? 0,
+        completenessLabel: 'Panorama synthese',
+        axes,
         blocks: [],
-        completedLabel: completedBlocksLabel.value
+        completedLabel: 'Panorama'
       },
-      sections,
+      sections: {
+        reperes: {
+          id: 'reperes',
+          title: 'Reperes',
+          summary: 'Trois axes mesures pour cadrer la situation.',
+          state: 'full',
+          itemsCount: axes.length
+        },
+        risques: {
+          id: 'risques',
+          title: 'Priorites',
+          summary: priorityLabels ? `Priorites: ${priorityLabels}.` : 'Priorites disponibles.',
+          state: 'full',
+          itemsCount: priorities.length
+        },
+        recommandations: {
+          id: 'recommandations',
+          title: 'Actions immediates',
+          summary: 'Trois actions concretes a lancer sans attendre.',
+          state: 'full',
+          itemsCount: resourcesActions.length
+        },
+        actions: {
+          id: 'actions',
+          title: 'Ressources utiles',
+          summary: 'Ressources coherentes avec les actions proposees.',
+          state: 'full',
+          itemsCount: resourcesActions.length
+        }
+      },
       modules: {
         resourcesActions: {
-          recommended: actionCards,
+          recommended: resourcesActions,
           library: [],
-          tags: []
-        },
-        skipSignal: skipSignal.value
+          tags: resourcesTags
+        }
       },
-      meta: {
-        isEmpty: !hasPanorama.value,
-        partial: !hasPanorama.value,
-        maturity: 'stub'
-      }
+      meta: { isEmpty: false, partial: false, maturity: 'core' }
     });
-
     assertNoRawAnswers(vm);
     return vm;
   }

@@ -4,10 +4,12 @@ export const p5Manifest: JourneyManifestV1 = {
   id: 'p5',
   slug: 'parcours-p5',
   engine: 'universal',
+  visibility: 'prod',
   maturity: 'stub',
   axes: [
-    { axisId: 'clarity', label: 'Clarte' },
-    { axisId: 'capacity', label: 'Capacite' }
+    { axisId: 'symptomes', label: 'Symptomes' },
+    { axisId: 'rythmes', label: 'Rythmes' },
+    { axisId: 'alignement', label: 'Alignement' }
   ],
   modules: {
     panorama: true,
