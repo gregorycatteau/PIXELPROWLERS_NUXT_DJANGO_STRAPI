@@ -41,7 +41,7 @@ Cette PR industrialise la mise en production des parcours en verrouillant la vis
 - `no-tech-reveal-r1` adosse au SSOT
 
 ### Smokes
-- Scripts dev/prod pour valider allowlist et 404 prod
+- Scripts dev/prod pour valider allowlist et 404 pour parcours non-promus
 
 ### Docs / SSOT
 - Spec visibility P2–P5
