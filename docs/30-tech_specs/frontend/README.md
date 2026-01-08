@@ -3,7 +3,7 @@
 > **Périmètre** : Documentation
 
 <!-- GENERATED:START -->
-<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2026-01-07 -->
+<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2026-01-08 -->
 
 ## Documents
 
@@ -27,6 +27,7 @@
 | [PX_V1_3_JOURNEY_SCHEMA_RFC_V1.md](./PX_V1_3_JOURNEY_SCHEMA_RFC_V1.md) | active | PX V1.3 — JourneySchema (RFC V1) |
 | [PX_V1_3_P2_P5_JOURNEY_VISIBILITY_R1.md](./PX_V1_3_P2_P5_JOURNEY_VISIBILITY_R1.md) | active | P2-P5 Journey Visibility and Resources Gate (R1) |
 | [PX_V1_3_P2_PROMOTION_PROD_R1.md](./PX_V1_3_P2_PROMOTION_PROD_R1.md) | active | P2 — Promotion Prod (R1) |
+| [PX_V1_3_P3_JOURNEY_MINIMAL.md](./PX_V1_3_P3_JOURNEY_MINIMAL.md) | active | P3 — Parcours minimal (dev) |
 | [PX_V1_3_P3_PROMOTION_PROD_R1.md](./PX_V1_3_P3_PROMOTION_PROD_R1.md) | active | P3 — Promotion Prod (R1) |
 | [PX_V1_3_P4_PROMOTION_PROD_R1.md](./PX_V1_3_P4_PROMOTION_PROD_R1.md) | active | P4 — Promotion Prod (R1) |
 | [PX_V1_3_P5_PROMOTION_PROD_R1.md](./PX_V1_3_P5_PROMOTION_PROD_R1.md) | active | P5 — Promotion Prod (R1) |

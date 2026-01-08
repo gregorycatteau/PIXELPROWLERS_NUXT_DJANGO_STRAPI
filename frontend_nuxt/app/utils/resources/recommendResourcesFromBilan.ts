@@ -101,5 +101,36 @@ export const recommendResourcesFromBilan = (
     }, allowedSlugs);
   }
 
+  if (input?.journeyId === 'p3') {
+    const axisToSlug: Record<string, ResourceRecommendation> = {
+      decisions: {
+        slug: 'decision-log-minimal',
+        reason: 'Besoin de decisions tracees pour eviter les retours en arriere.'
+      },
+      organisation: {
+        slug: 'matrice-responsabilites-raci-lite',
+        reason: 'Rendre les roles lisibles pour accelerer les decisions.'
+      },
+      symptomes: {
+        slug: 'reunion-30min-sans-noyade',
+        reason: 'Une action courte pour sortir des boucles improductives.'
+      }
+    };
+
+    axesSorted.forEach((axis) => {
+      if (recommendations.length >= 3) return;
+      const candidate = axisToSlug[axis.id];
+      if (!candidate) return;
+      addRecommendation(recommendations, candidate, allowedSlugs);
+    });
+
+    if (recommendations.length === 0) {
+      addRecommendation(recommendations, {
+        slug: 'rituel-hebdo-15min',
+        reason: 'Instaurer un rythme court pour stabiliser les priorites.'
+      }, allowedSlugs);
+    }
+  }
+
   return recommendations;
 };

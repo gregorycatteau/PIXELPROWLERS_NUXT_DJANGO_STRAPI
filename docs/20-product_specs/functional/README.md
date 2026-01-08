@@ -3,7 +3,7 @@
 > **Périmètre** : Documentation
 
 <!-- GENERATED:START -->
-<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2026-01-07 -->
+<!-- ⚠️ Section générée automatiquement par ssot_generate_indexes.py — 2026-01-08 -->
 
 ## Documents
 
@@ -15,7 +15,6 @@
 | [PX_V1_3_P1_ENGAGEMENT_INTEGRATION.md](./PX_V1_3_P1_ENGAGEMENT_INTEGRATION.md) | draft | PX_V1_3_P1_ENGAGEMENT_INTEGRATION.md |
 | [PX_V1_3_P1_ENGAGEMENT_LEVELS.md](./PX_V1_3_P1_ENGAGEMENT_LEVELS.md) | active | PX_V1_3_P1_ENGAGEMENT_LEVELS.md |
 | [PX_V1_3_P2_JOURNEY_MINIMAL.md](./PX_V1_3_P2_JOURNEY_MINIMAL.md) | active | P2 — Parcours minimal (dev) |
-| [PX_V1_3_P3_JOURNEY_MINIMAL.md](./PX_V1_3_P3_JOURNEY_MINIMAL.md) | active | P3 — Parcours minimal (dev) |
 | [PX_V1_3_X_OFFRE_FORMATIONS_ACCOMPAGNEMENT_OVERVIEW.md](./PX_V1_3_X_OFFRE_FORMATIONS_ACCOMPAGNEMENT_OVERVIEW.md) | active | Offre PixelProwlers — Formations & Accompagnement (Overview) — V1.3.x feature |
 | [PX_V1_3_X_OPERATION_125_PRODUCT_SPEC.md](./PX_V1_3_X_OPERATION_125_PRODUCT_SPEC.md) | active | OPÉRATION 125% — Product Spec (V1.3.x feature) |
 | [PX_V1_X_PIXELPROWLERS_ENGAGEMENT_LEVELS_PUBLIC.md](./PX_V1_X_PIXELPROWLERS_ENGAGEMENT_LEVELS_PUBLIC.md) | active | PixelProwlers – Niveaux d’engagement (version publique) |
