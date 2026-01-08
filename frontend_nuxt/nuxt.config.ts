@@ -13,7 +13,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000',
-      journeysDevAllowlist: process.env.NUXT_PUBLIC_JOURNEYS_DEV_ALLOWLIST || ''
+      journeysDevAllowlist: process.env.NUXT_PUBLIC_JOURNEYS_DEV_ALLOWLIST || '',
+      ppJourneysDisabled: process.env.NUXT_PUBLIC_PP_JOURNEYS_DISABLED || ''
     }
   },
   nitro: {
