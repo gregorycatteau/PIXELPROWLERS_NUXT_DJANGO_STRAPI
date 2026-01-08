@@ -11,7 +11,7 @@ tags: ["qa", "security", "copy", "guard", "no-tech-reveal"]
 # PX QA - No Tech Reveal (R1)
 
 ## But & invariants
-- P1-only prod: aucune exposition de vocabulaire technique dans les textes visibles du public.
+- Prod visibility-driven: aucune exposition de vocabulaire technique dans les textes visibles du public.
 - No tech reveal: pas d'indices sur le stack, l'infra, les outils, ni les details d'implementation.
 - Exceptions legales: pages legales possibles (RGPD, cookies) avec garde-fous explicites.
 
