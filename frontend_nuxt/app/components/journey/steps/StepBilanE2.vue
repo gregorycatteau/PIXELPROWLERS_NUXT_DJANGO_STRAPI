@@ -20,6 +20,33 @@
           Voici les sections obligatoires du bilan. Les donnees restent locales.
         </p>
 
+        <div v-if="panoramaAxes.length" class="space-y-3">
+          <p class="text-sm font-semibold">Panorama express</p>
+          <div class="grid gap-3 sm:grid-cols-3">
+            <PPCard
+              v-for="axis in panoramaAxes"
+              :key="axis.id"
+              variant="soft"
+              class="p-4 space-y-2"
+            >
+              <p class="text-xs uppercase tracking-wide text-[color:var(--color-text-muted)]">
+                {{ axis.label }}
+              </p>
+              <p class="text-2xl font-semibold">{{ axis.score }}</p>
+              <p class="text-xs text-[color:var(--color-text-muted)]">Score sur 100</p>
+            </PPCard>
+          </div>
+        </div>
+
+        <div v-if="priorities.length" class="space-y-2">
+          <p class="text-sm font-semibold">Priorites immediates</p>
+          <ol class="list-decimal space-y-1 pl-5 text-sm text-[color:var(--color-text-muted)]">
+            <li v-for="axis in priorities" :key="axis.id">
+              {{ axis.label }}
+            </li>
+          </ol>
+        </div>
+
         <div class="grid gap-3">
           <PPCard
             v-for="section in orderedSections"
@@ -45,6 +72,13 @@
             />
           </PPCard>
         </div>
+
+        <ResourcesActionsPanel
+          v-if="hasResourcesActions"
+          :recommended="resourcesActions.recommended"
+          :library="resourcesActions.library"
+          :tags="resourcesActions.tags"
+        />
       </div>
     </PPJourneyStepShell>
   </JourneyLayout>
@@ -58,6 +92,7 @@ import JourneyStepHeader from '~/components/journey/JourneyStepHeader.vue';
 import PPJourneyStepShell from '~/components/journey/PPJourneyStepShell.vue';
 import PPCard from '~/components/PPCard.vue';
 import PPEmptyState from '~/components/PPEmptyState.vue';
+import ResourcesActionsPanel from '~/components/journey/bilan/ResourcesActionsPanel.vue';
 import { getBilanAdapter } from '~/adapters/bilan/registry';
 import { createEmptyUniversalBilanViewModel, withUniversalBilanDefaults } from '~/types/bilan';
 import { UNIVERSAL_BILAN_SECTION_IDS } from '~/adapters/bilan/universalBilanViewModel';
@@ -73,6 +108,22 @@ const vm = computed(() => withUniversalBilanDefaults(adapter.value?.buildViewMod
 
 const orderedSections = computed(() =>
   UNIVERSAL_BILAN_SECTION_IDS.map((id) => vm.value.sections[id])
+);
+
+const panoramaAxes = computed(() => vm.value.panorama.axes ?? []);
+const priorities = computed(() =>
+  panoramaAxes.value
+    .slice()
+    .sort((a, b) => (b.score - a.score) || a.label.localeCompare(b.label))
+    .slice(0, 3)
+);
+const resourcesActions = computed(() => vm.value.modules?.resourcesActions ?? {
+  recommended: [],
+  library: [],
+  tags: []
+});
+const hasResourcesActions = computed(() =>
+  Boolean(resourcesActions.value.recommended.length || resourcesActions.value.library.length)
 );
 
 // Helper pour afficher un libelle d'etat neutre par section.

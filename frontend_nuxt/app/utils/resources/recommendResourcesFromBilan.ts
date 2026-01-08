@@ -86,6 +86,21 @@ export const recommendResourcesFromBilan = (
     }
   });
 
+  if (recommendations.length === 0 && input?.journeyId === 'p2') {
+    addRecommendation(recommendations, {
+      slug: 'reunion-30min-sans-noyade',
+      reason: 'Une action courte pour fixer des priorites claires.'
+    }, allowedSlugs);
+    addRecommendation(recommendations, {
+      slug: 'decision-log-minimal',
+      reason: 'Clarifier les decisions pour reduire les retours en arriere.'
+    }, allowedSlugs);
+    addRecommendation(recommendations, {
+      slug: 'charte-canaux-3-couleurs',
+      reason: 'Stabiliser la coordination et le flux des demandes.'
+    }, allowedSlugs);
+  }
+
   if (input?.journeyId === 'p3') {
     const axisToSlug: Record<string, ResourceRecommendation> = {
       decisions: {
