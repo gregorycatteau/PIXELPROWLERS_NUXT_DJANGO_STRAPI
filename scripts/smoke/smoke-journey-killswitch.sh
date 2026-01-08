@@ -16,10 +16,26 @@ build() {
   npm run --prefix frontend_nuxt build >/tmp/pp-smoke-journey-build.log 2>&1
 }
 
+ensure_port_free() {
+  local port="$1"
+  if command -v lsof >/dev/null 2>&1; then
+    local pids
+    pids=$(lsof -ti :"$port" || true)
+    if [[ -n "$pids" ]]; then
+      echo "Cleaning up processes on port ${port}: ${pids}" >&2
+      for pid in $pids; do
+        kill -9 "$pid" >/dev/null 2>&1 || true
+      done
+      sleep 1
+    fi
+  fi
+}
+
 start_preview() {
   local port="$1"
   local disable_flag="$2"
   local log_file="$3"
+  ensure_port_free "$port"
   NUXT_PUBLIC_PP_JOURNEYS_DISABLED="$disable_flag" npm run --prefix frontend_nuxt start -- --port "$port" >"$log_file" 2>&1 &
   echo $!
 }
