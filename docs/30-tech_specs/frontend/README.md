@@ -31,6 +31,7 @@
 | [PX_V1_3_P3_PROMOTION_PROD_R1.md](./PX_V1_3_P3_PROMOTION_PROD_R1.md) | active | P3 — Promotion Prod (R1) |
 | [PX_V1_3_P4_JOURNEY_MINIMAL.md](./PX_V1_3_P4_JOURNEY_MINIMAL.md) | active | P4 — Parcours minimal (dev) |
 | [PX_V1_3_P4_PROMOTION_PROD_R1.md](./PX_V1_3_P4_PROMOTION_PROD_R1.md) | active | P4 — Promotion Prod (R1) |
+| [PX_V1_3_P5_JOURNEY_MINIMAL.md](./PX_V1_3_P5_JOURNEY_MINIMAL.md) | active | P5 — Useful Slice V0 (Minimal) |
 | [PX_V1_3_P5_PROMOTION_PROD_R1.md](./PX_V1_3_P5_PROMOTION_PROD_R1.md) | active | P5 — Promotion Prod (R1) |
 | [PX_V1_3_PARCOURS_CATALOG_R1.md](./PX_V1_3_PARCOURS_CATALOG_R1.md) | active | Parcours Catalog (R1) |
 | [PX_V1_3_PP_JOURNEY_STEP_SHELL_SPEC_V1.md](./PX_V1_3_PP_JOURNEY_STEP_SHELL_SPEC_V1.md) | active | PX V1.3 — PPJourneyStepShell Spec (V1) |

@@ -7,8 +7,9 @@ export const p5Manifest: JourneyManifestV1 = {
   visibility: 'prod',
   maturity: 'stub',
   axes: [
-    { axisId: 'clarity', label: 'Clarte' },
-    { axisId: 'capacity', label: 'Capacite' }
+    { axisId: 'symptomes', label: 'Symptomes' },
+    { axisId: 'rythmes', label: 'Rythmes' },
+    { axisId: 'alignement', label: 'Alignement' }
   ],
   modules: {
     panorama: true,

@@ -107,7 +107,7 @@ const questionsRegistry: Record<string, PanoramaQuestionsBundle> = {
     axisOrder: [...P4_PANORAMA_AXIS_ORDER],
     axesMeta: p4PanoramaAxesMeta
   },
-  'app/config/journeys/p5QuestionsV1_0': { questions: p5PanoramaQuestions, axisOrder: P5_PANORAMA_AXIS_ORDER, axesMeta: p5PanoramaAxesMeta },
+  'app/config/journeys/p5QuestionsV1_0': { questions: p5PanoramaQuestions, axisOrder: [...P5_PANORAMA_AXIS_ORDER], axesMeta: p5PanoramaAxesMeta },
   'app/config/journeys/p2_stubQuestionsV1_0': { questions: p2_stubPanoramaQuestions, axisOrder: P2_STUB_PANORAMA_AXIS_ORDER, axesMeta: p2_stubPanoramaAxesMeta },
   'app/config/journeys/p3_stubQuestionsV1_0': { questions: p3_stubPanoramaQuestions, axisOrder: P3_STUB_PANORAMA_AXIS_ORDER, axesMeta: p3_stubPanoramaAxesMeta },
   'app/config/journeys/p4_stubQuestionsV1_0': { questions: p4_stubPanoramaQuestions, axisOrder: P4_STUB_PANORAMA_AXIS_ORDER, axesMeta: p4_stubPanoramaAxesMeta }
