@@ -1,105 +1,154 @@
 import type { JourneyBilanAdapter } from './types';
-import { createEmptyUniversalBilanViewModel, type ResourcesActionsItemVM } from '@/types/bilan';
+import {
+  createEmptyUniversalBilanViewModel,
+  type ResourcesActionsItemVM,
+  type UniversalBilanSectionsVM
+} from '@/types/bilan';
 import { assertNoRawAnswers } from '@/utils/bilan/assertNoRawAnswers';
+import { listResources } from '@/config/resources/registryV0';
 import { useCoreJourneyStorage } from '~/composables/useCoreJourneyStorage';
-import { P5_PANORAMA_AXIS_ORDER, p5PanoramaAxesMeta } from '~/config/journeys/p5QuestionsV1_0';
+import { p5Copy } from '~/config/journeys/p5CopyV1_0';
+import { P5_PANORAMA_AXIS_ORDER, p5PanoramaAxesMeta, type P5PanoramaAxisId } from '~/config/journeys/p5QuestionsV1_0';
 import { recommendResourcesFromBilan } from '@/utils/resources/recommendResourcesFromBilan';
 
-type AxisId = (typeof P5_PANORAMA_AXIS_ORDER)[number];
+const P5_ACTION_SLUGS = [
+  'tableau-bord-3-signaux',
+  'rituel-hebdo-15min',
+  'decision-log-minimal',
+  'compte-rendu-utile-1page'
+] as const;
 
-const DEFAULT_AXIS_SCORES: Record<AxisId, number> = {
-  symptomes: 55,
-  rythmes: 50,
-  alignement: 45
+const DEFAULT_AXIS_SCORES: Record<P5PanoramaAxisId, number> = {
+  symptomes: 3,
+  rythmes: 3,
+  alignement: 2.5
 };
 
-const PRIORITY_LABELS: Record<AxisId, string> = {
+const PRIORITY_LABELS: Record<P5PanoramaAxisId, string> = {
   symptomes: 'Reduire les signaux de tension',
   rythmes: 'Stabiliser le rythme de pilotage',
   alignement: 'Clarifier les arbitrages et priorites'
 };
 
-const ACTION_CARDS: ResourcesActionsItemVM[] = [
-  {
-    id: 'p5_action_signaux',
-    kind: 'resource',
-    title: 'Installer 3 signaux de charge',
-    description: 'Outcome: une lecture hebdo des tensions. Effort: 45 min.',
-    effort: 2,
-    cta: { type: 'route', label: 'Voir la ressource', target: '/ressources/tableau-bord-3-signaux' }
-  },
-  {
-    id: 'p5_action_rituel',
-    kind: 'resource',
-    title: 'Rituel hebdo 15 min',
-    description: 'Outcome: un rythme clair pour ajuster. Effort: 15 min.',
-    effort: 1,
-    cta: { type: 'route', label: 'Voir la ressource', target: '/ressources/rituel-hebdo-15min' }
-  },
-  {
-    id: 'p5_action_decisions',
-    kind: 'resource',
-    title: 'Decision log minimal',
-    description: 'Outcome: arbitrages visibles sans friction. Effort: 30 min.',
-    effort: 1,
-    cta: { type: 'route', label: 'Voir la ressource', target: '/ressources/decision-log-minimal' }
-  },
-  {
-    id: 'p5_action_compte_rendu',
-    kind: 'resource',
-    title: 'Compte-rendu utile en 1 page',
-    description: 'Outcome: decisions et actions lisibles. Effort: 20 min.',
-    effort: 1,
-    cta: { type: 'route', label: 'Voir la ressource', target: '/ressources/compte-rendu-utile-1page' }
-  }
-];
+const clampAxisScore = (value: number) => Math.max(0, Math.min(5, Number.isFinite(value) ? value : 0));
+const scoreToPercent = (score: number) => Math.max(0, Math.min(100, Math.round((score / 5) * 100)));
 
-const normalizeAxisScore = (raw?: number | null, fallback?: number): number => {
-  if (typeof raw === 'number' && raw > 0) {
-    return Math.round((Math.min(5, Math.max(0, raw)) / 5) * 100);
-  }
-  return fallback ?? 0;
+const buildActionCards = (): ResourcesActionsItemVM[] => {
+  const resources = listResources();
+  const bySlug = new Map(resources.map((resource) => [resource.slug, resource]));
+
+  return P5_ACTION_SLUGS.flatMap((slug) => {
+    const resource = bySlug.get(slug);
+    if (!resource) return [];
+    if (!resource.relatedJourneys?.includes('p5')) return [];
+
+    const descriptionParts = [
+      resource.summary,
+      resource.outcome ? `Outcome: ${resource.outcome}` : null,
+      `Effort: ${resource.effort}`
+    ].filter(Boolean);
+
+    return [
+      {
+        id: `p5_action_${slug}`,
+        kind: 'action',
+        title: resource.title,
+        description: descriptionParts.join(' '),
+        tags: [resource.category, 'priorites'],
+        effort: resource.effort === 'low' ? 1 : resource.effort === 'medium' ? 2 : 3,
+        format: resource.level,
+        cta: {
+          type: 'route',
+          label: p5Copy.resources?.cta ?? 'Voir',
+          target: `/ressources/${resource.slug}`
+        },
+        reason: 'Action immediate et locale.'
+      }
+    ];
+  });
 };
 
 export const p5BilanAdapter: JourneyBilanAdapter = {
   journeyId: 'p5',
   buildViewModel() {
     const storage = useCoreJourneyStorage({ journeyId: 'p5' });
-    try {
-      storage.loadFromStorage();
-    } catch {
-      // ignore
-    }
-
-    const panoramaScores = storage.scores.value?.panorama;
+    storage.loadFromStorage();
+    const panoramaScores = storage.scores.value?.panorama ?? null;
     const answeredCount = panoramaScores?.answeredCount ?? 0;
     const skippedCount = panoramaScores?.skippedCount ?? 0;
 
     const axes = P5_PANORAMA_AXIS_ORDER.map((axisId) => {
-      const rawScore = panoramaScores?.byAxis?.[axisId]?.score ?? 0;
-      const score = normalizeAxisScore(rawScore, DEFAULT_AXIS_SCORES[axisId]);
+      const storedAxis = panoramaScores?.byAxis?.[axisId];
+      const score = clampAxisScore(storedAxis?.score ?? DEFAULT_AXIS_SCORES[axisId]);
+      const filledSegments = Math.max(0, Math.min(5, Math.round(score)));
       return {
         id: axisId,
         label: p5PanoramaAxesMeta[axisId]?.label ?? axisId,
-        score
+        score,
+        filledSegments
       };
     });
 
-    const globalScore = Math.round(axes.reduce((sum, axis) => sum + axis.score, 0) / axes.length);
-    const priorities = axes
+    const axisAverage = axes.reduce((total, axis) => total + axis.score, 0) / Math.max(axes.length, 1);
+    const globalScore = scoreToPercent(axisAverage);
+    const priorityAxes = axes
       .slice()
-      .sort((a, b) => (a.score - b.score) || a.id.localeCompare(b.id))
-      .slice(0, 2)
-      .map((axis) => PRIORITY_LABELS[axis.id as AxisId]);
+      .sort((a, b) => (b.score - a.score) || a.label.localeCompare(b.label))
+      .slice(0, 2);
+    const priorityLabels = priorityAxes.map((axis) => PRIORITY_LABELS[axis.id as P5PanoramaAxisId]).join(' · ');
 
-    const resourcesActions = ACTION_CARDS.map((action) => ({
-      ...action,
-      description: action.description ?? '',
-      cta: { ...action.cta }
-    }));
+    const actionCards = buildActionCards();
+    const actionTags = Array.from(new Set(actionCards.flatMap((item) => item.tags ?? [])));
+
+    const sections: UniversalBilanSectionsVM = {
+      reperes: {
+        id: 'reperes',
+        title: p5Copy.bilan?.scoreLabel ?? 'Score mixte (0-100)',
+        summary: `Score global: ${globalScore}/100.`,
+        state: 'full',
+        itemsCount: axes.length
+      },
+      risques: {
+        id: 'risques',
+        title: p5Copy.bilan?.prioritiesLabel ?? 'Priorites identifiees',
+        summary: priorityLabels || 'Priorites en cours d identification.',
+        state: 'full',
+        itemsCount: priorityAxes.length
+      },
+      recommandations: {
+        id: 'recommandations',
+        title: p5Copy.bilan?.actionCardsIntro ?? 'Actions locales',
+        summary: 'Ressources ciblees sur tes priorites.',
+        state: actionCards.length ? 'full' : 'partial',
+        itemsCount: actionCards.length
+      },
+      actions: {
+        id: 'actions',
+        title: 'Actions immediates',
+        summary: actionCards.length
+          ? `${actionCards.length} actions proposees.`
+          : 'Actions a definir.',
+        state: actionCards.length ? 'full' : 'empty',
+        itemsCount: actionCards.length
+      }
+    };
 
     const vm = createEmptyUniversalBilanViewModel({
-      copy: { title: 'Bilan P5', subtitle: 'Synthese locale, basee sur le panorama.' },
+      copy: {
+        title: p5Copy.global.title ?? 'Bilan P5',
+        subtitle: p5Copy.global.subtitle ?? 'Synthese locale et neutre.',
+        exportHeading: p5Copy.global.exportHeading ?? 'Export (client-side)',
+        exportNotice: p5Copy.global.exportNotice ?? 'Le texte ci-dessus est genere cote client.',
+        copyCta: p5Copy.global.copyCta ?? 'Copier le bilan',
+        printCta: p5Copy.global.printCta ?? 'Imprimer',
+        clearCta: p5Copy.global.clearCta ?? 'Effacer mes reponses de cet appareil',
+        backToHub: p5Copy.global.backToHub ?? 'Retour au panorama',
+        sovereigntyNote: p5Copy.global.sovereigntyNote ?? 'Ce bilan reste sur cet appareil.'
+      },
+      axisSummaryLabel: p5Copy.bilan?.scoreLabel ?? 'Score mixte (0-100)',
+      completedBlocksLabel: 'Aucun bloc',
+      blocksSummaryHeading: 'Blocs exploratoires',
+      panoramaAnsweredLabel: `${answeredCount}/${P5_PANORAMA_AXIS_ORDER.length * 2}`,
       summaryNav: [
         { id: 'gb_panorama', label: 'Panorama' },
         { id: 'gb_export', label: 'Export' }
@@ -107,50 +156,17 @@ export const p5BilanAdapter: JourneyBilanAdapter = {
       panorama: {
         answeredCount,
         skippedCount,
-        completenessLabel: `Score global ${globalScore}/100`,
-        axes: axes.map((axis) => ({
-          ...axis,
-          isPriority: priorities.includes(PRIORITY_LABELS[axis.id as AxisId]),
-          priorityLabel: PRIORITY_LABELS[axis.id as AxisId]
-        })),
+        completenessLabel: `Score global: ${globalScore}/100`,
+        axes,
         blocks: [],
         completedLabel: answeredCount > 0 ? 'Panorama renseigne' : 'Panorama par defaut'
       },
-      sections: {
-        reperes: {
-          id: 'reperes',
-          title: 'Priorites',
-          summary: priorities.join(' · '),
-          state: 'full',
-          itemsCount: priorities.length
-        },
-        risques: {
-          id: 'risques',
-          title: 'Risques visibles',
-          summary: 'Charge, malentendus, decisions floues.',
-          state: 'partial',
-          itemsCount: 3
-        },
-        recommandations: {
-          id: 'recommandations',
-          title: 'Recommandations',
-          summary: 'Ressources ciblees sur les priorites.',
-          state: 'partial',
-          itemsCount: 3
-        },
-        actions: {
-          id: 'actions',
-          title: 'Actions immediates',
-          summary: `${resourcesActions.length} actions proposees.`,
-          state: 'full',
-          itemsCount: resourcesActions.length
-        }
-      },
+      sections,
       modules: {
         resourcesActions: {
-          recommended: resourcesActions,
+          recommended: actionCards,
           library: [],
-          tags: ['p5']
+          tags: actionTags
         }
       },
       meta: { isEmpty: false, partial: false, maturity: 'core' }
