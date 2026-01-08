@@ -1,26 +1,61 @@
 export const p5Copy = {
   intro: {
-    title: 'Parcours P5 (stub)',
-    subtitle: 'Panorama rapide, reponses locales uniquement.',
-    cta: 'Commencer le panorama'
+    title: 'Panorama P5',
+    subtitle: '3 axes et 6 questions factuelles pour capter les signaux, rythmes et alignement.',
+    outcome: 'Un bilan local 0-100, des priorites claires et quelques actions p5-only.',
+    cta: 'Lancer le panorama',
+    sections: {
+      purpose: {
+        title: 'Ce que fait ce parcours',
+        items: [
+          'Mesurer rythme, coordination et alignement sans jugement.',
+          'Produire un bilan deterministe pour situer les priorites.',
+          'Recommander 3 actions locales basees uniquement sur les ressources du kit P5.'
+        ]
+      },
+      beforeStart: {
+        title: 'Avant de commencer',
+        items: [
+          'Reponds selon ce que tu observes aujourd hui, pas selon ton ideal.',
+          'Tu peux passer une question si elle n est pas pertinente.',
+          'Tu peux stopper et reprendre plus tard : tout reste local.'
+        ]
+      }
+    }
   },
   panorama: {
     title: 'Panorama P5',
-    subtitle: 'Questions de base pour poser le contexte.',
-    meta: 'Tu peux ignorer des questions.',
+    subtitle: 'Symptomes, rythmes, alignement — 6 questions neutres.',
+    meta: 'Reponds avec ce que ton equipe vit cette semaine.',
     validate: 'Voir le bilan',
     back: 'Retour'
   },
   panoramaBilan: {
     title: 'Bilan P5',
-    subtitle: 'Synthese par axe.',
+    subtitle: 'Synthese factuelle par axe.',
     summaryTitle: 'Ce que tu viens de poser',
-    summarySubtitle: 'Panorama rapide, base sur tes reponses.',
+    summarySubtitle: '6 reponses locales, 3 axes, aucun jugement.',
     nextStepsTitle: 'Prochaine etape',
-    nextStepsSubtitle: 'Explorer le bilan global pour un export.',
+    nextStepsSubtitle: 'Revenir au panorama ou choisir une ressource locale.',
     backToPanorama: 'Retour au panorama',
     globalCta: 'Voir le bilan global',
     globalLocked: 'Le bilan global est accessible apres le panorama.'
+  },
+  bilan: {
+    scoreLabel: 'Score mixte (0-100)',
+    prioritiesLabel: 'Priorites identifiees',
+    actionCardsIntro: 'Actions locales P5',
+    actionCards: [
+      {
+        title: 'Un rituel hebdo 15 min',
+        description: 'Un cap clair pour relire les signaux et ajuster le rythme.',
+        cta: 'Voir la ressource'
+      }
+    ]
+  },
+  resources: {
+    intro: 'Ressources exclusivement marquees p5, sans inventaire externe.',
+    cta: 'Voir une ressource'
   },
   global: {
     title: 'Bilan global P5',
