@@ -9,10 +9,34 @@ export const p5PanoramaAxesMeta = {
 };
 
 export const p5PanoramaQuestions = [
-  { id: 'p5_panorama_symptomes_q1', axisId: 'symptomes', label: 'Les signaux de tension sont visibles (retards, erreurs, irritations).' },
-  { id: 'p5_panorama_symptomes_q2', axisId: 'symptomes', label: 'La charge ressentie reste soutenable semaine apres semaine.' },
-  { id: 'p5_panorama_rythmes_q1', axisId: 'rythmes', label: 'Le rythme des points d avance est court et regulier.' },
-  { id: 'p5_panorama_rythmes_q2', axisId: 'rythmes', label: 'Les decisions se prennent a un rythme clair.' },
-  { id: 'p5_panorama_alignement_q1', axisId: 'alignement', label: 'Les priorites de la semaine sont comprises par tous.' },
-  { id: 'p5_panorama_alignement_q2', axisId: 'alignement', label: 'Les arbitrages sont compris meme quand ils frustrent.' }
+  {
+    id: 'p5_panorama_symptomes_q1',
+    axisId: 'symptomes',
+    label: 'Les signaux de tension (retards, erreurs, irritations) sont visibles.'
+  },
+  {
+    id: 'p5_panorama_symptomes_q2',
+    axisId: 'symptomes',
+    label: 'Les incidents critiques sont partages et documentes sans sur-interpretation.'
+  },
+  {
+    id: 'p5_panorama_rythmes_q1',
+    axisId: 'rythmes',
+    label: 'Les points de verification de la semaine ont un rythme court et stable.'
+  },
+  {
+    id: 'p5_panorama_rythmes_q2',
+    axisId: 'rythmes',
+    label: 'Les decisions et livrables suivent un tempo connu de tous.'
+  },
+  {
+    id: 'p5_panorama_alignement_q1',
+    axisId: 'alignement',
+    label: 'Les priorites de la semaine sont clairement comprises par l equipe.'
+  },
+  {
+    id: 'p5_panorama_alignement_q2',
+    axisId: 'alignement',
+    label: 'Les arbitrages sont partages et acceptes, meme quand ils frustrent.'
+  }
 ];
