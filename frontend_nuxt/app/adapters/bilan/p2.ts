@@ -9,45 +9,35 @@ import { p2Copy } from '~/config/journeys/p2CopyV1_0';
 import { p2PanoramaAxesMeta, P2_PANORAMA_AXIS_ORDER, type P2PanoramaAxisId } from '~/config/journeys/p2QuestionsV1_0';
 import { BILAN_SKIP_SIGNAL_COPY } from '~/config/bilan/bilanSkipSignalCopy';
 
-const SCORE_LABEL = 'Axes prioritaires';
+const DEFAULT_BILAN_COPY = {
+  scoreLabel: 'Niveau de friction',
+  prioritiesLabel: 'Priorités immédiates',
+  actionCards: [
+    {
+      title: 'Clarifier la promesse en une phrase',
+      description:
+        'Avant de refaire quoi que ce soit, assure-toi que le message est limpide : qui tu aides, ce que tu proposes, et la prochaine étape. Souvent, c’est le levier le plus rapide.',
+      cta: 'Écrire la phrase'
+    },
+    {
+      title: 'Sécuriser et simplifier les accès',
+      description:
+        'Fais l’inventaire des comptes et des clés (domaine, hébergement, boîte mail, outils). Retire les accès inutiles. Objectif : éviter l’effet “personne ne sait”.',
+      cta: 'Faire l’inventaire'
+    },
+    {
+      title: 'Tester le parcours principal sur mobile',
+      description:
+        'Ouvre le site sur un téléphone et fais le parcours principal comme un visiteur : arriver, comprendre, agir. Note 3 blocages max, puis corrige dans cet ordre.',
+      cta: 'Faire le test'
+    }
+  ]
+};
 
-const ACTION_CARDS: ResourcesActionsItemVM[] = [
-  {
-    id: 'p2_card_1',
-    kind: 'action',
-    title: 'Réunions éclair et sans noyade',
-    description:
-      'Une méthode pour des réunions de 30 minutes maximum, centrées sur l essentiel. Outils pour préparer l ordre du jour, limiter les digressions et sortir avec des décisions claires.',
-    cta: {
-      type: 'route',
-      label: 'Je structure mes réunions',
-      target: '/ressources/reunion-30min-sans-noyade'
-    }
-  },
-  {
-    id: 'p2_card_2',
-    kind: 'action',
-    title: 'Journal de décisions minimal',
-    description:
-      'Un modèle simple pour consigner qui décide quoi, quand et pourquoi. Idéal pour clarifier les responsabilités et éviter les zones grises.',
-    cta: {
-      type: 'route',
-      label: 'Je consigne mes décisions',
-      target: '/ressources/decision-log-minimal'
-    }
-  },
-  {
-    id: 'p2_card_3',
-    kind: 'action',
-    title: 'Charte des canaux en 3 couleurs',
-    description:
-      'Un guide pour définir des canaux de communication selon l urgence et la nature des demandes. Trois niveaux (critique, important, informatif) pour réduire les interruptions et fluidifier la coordination.',
-    cta: {
-      type: 'route',
-      label: 'Je clarifie mes canaux',
-      target: '/ressources/charte-canaux-3-couleurs'
-    }
-  }
+const RESOURCES_TARGETS = [
+  '/ressources/reunion-30min-sans-noyade',
+  '/ressources/decision-log-minimal',
+  '/ressources/charte-canaux-3-couleurs'
 ];
 
 const axisLabelFor = (axisId: P2PanoramaAxisId) => p2PanoramaAxesMeta[axisId]?.label ?? axisId;
@@ -68,6 +58,7 @@ export const p2BilanAdapter: JourneyBilanAdapter = {
   journeyId: 'p2',
   buildViewModel() {
     const storage = useCoreJourneyStorage({ journeyId: 'p2' });
+    const bilanCopy = p2Copy.bilan ?? DEFAULT_BILAN_COPY;
     const panoramaScores = computed(() => storage.scores.value?.panorama ?? null);
     const answeredCount = computed(() => panoramaScores.value?.answeredCount ?? 0);
     const skippedCount = computed(() => panoramaScores.value?.skippedCount ?? 0);
@@ -115,7 +106,7 @@ export const p2BilanAdapter: JourneyBilanAdapter = {
       const summary = axisScores.value
         .map((axis) => `${axisShortLabelFor(axis.id)}:${axis.score}`)
         .join(' · ');
-      return summary ? `${SCORE_LABEL} · ${summary}` : SCORE_LABEL;
+      return summary ? `${bilanCopy.scoreLabel} · ${summary}` : bilanCopy.scoreLabel;
     });
 
     const panoramaAnsweredLabel = computed(() => `R ${answeredCount.value} / NR ${skippedCount.value}`);
@@ -144,7 +135,7 @@ export const p2BilanAdapter: JourneyBilanAdapter = {
     });
 
     const summaryNav = [
-      { id: 'gb_reperes', label: 'Repères' },
+      { id: 'gb_reperes', label: bilanCopy.prioritiesLabel },
       { id: 'gb_panorama', label: p2Copy.global.panoramaHeading ?? 'Panorama' },
       { id: 'gb_export', label: 'Export' }
     ];
@@ -152,7 +143,7 @@ export const p2BilanAdapter: JourneyBilanAdapter = {
     const repereCount = computed(() => (hasPanorama.value ? panoramaAxesForCard.value.length : 0));
     const sections = createEmptySections({
       reperes: {
-        title: 'Repères',
+        title: bilanCopy.prioritiesLabel,
         summary: 'Synthèse des axes et repères clés.',
         state: toSectionState(repereCount.value, skippedCount.value > 0),
         itemsCount: repereCount.value
@@ -176,6 +167,18 @@ export const p2BilanAdapter: JourneyBilanAdapter = {
         itemsCount: 0
       }
     });
+
+    const actionCards = bilanCopy.actionCards.map((card, index) => ({
+      id: `p2_card_${index + 1}`,
+      kind: 'action' as const,
+      title: card.title,
+      description: card.description,
+      cta: {
+        type: 'route' as const,
+        label: card.cta,
+        target: RESOURCES_TARGETS[index] ?? '/ressources'
+      }
+    })) satisfies ResourcesActionsItemVM[];
 
     const vm = createEmptyUniversalBilanViewModel({
       copy: {
@@ -205,7 +208,7 @@ export const p2BilanAdapter: JourneyBilanAdapter = {
       sections,
       modules: {
         resourcesActions: {
-          recommended: ACTION_CARDS,
+          recommended: actionCards,
           library: [],
           tags: []
         },
