@@ -24,6 +24,9 @@ const normalizeText = (value: string): string =>
 const matchesKeywords = (value: string, keywords: string[]): boolean =>
   keywords.some((keyword) => value.includes(keyword));
 
+const normalizeScore = (score: number): number =>
+  score > 5 ? score / 20 : score;
+
 const addRecommendation = (
   items: ResourceRecommendation[],
   candidate: ResourceRecommendation,
@@ -92,7 +95,8 @@ export const recommendResourcesFromBilan = (
     .sort((a, b) => (b.score - a.score) || a.id.localeCompare(b.id));
 
   axesSorted.forEach((axis) => {
-    if (axis.score < 4) return;
+    const score = normalizeScore(axis.score ?? 0);
+    if (score < 4) return;
     const axisText = normalizeText(`${axis.id} ${axis.label}`);
 
     if (matchesKeywords(axisText, KEYWORDS.governance)) {
@@ -119,6 +123,83 @@ export const recommendResourcesFromBilan = (
       }, allowedSlugs);
     }
   });
+
+  if (recommendations.length === 0 && input?.journeyId === 'p2') {
+    addRecommendation(recommendations, {
+      slug: 'reunion-30min-sans-noyade',
+      reason: 'Une action courte pour fixer des priorites claires.'
+    }, allowedSlugs);
+    addRecommendation(recommendations, {
+      slug: 'decision-log-minimal',
+      reason: 'Clarifier les decisions pour reduire les retours en arriere.'
+    }, allowedSlugs);
+    addRecommendation(recommendations, {
+      slug: 'charte-canaux-3-couleurs',
+      reason: 'Stabiliser la coordination et le flux des demandes.'
+    }, allowedSlugs);
+  }
+
+  if (input?.journeyId === 'p3') {
+    const axisToSlug: Record<string, ResourceRecommendation> = {
+      decisions: {
+        slug: 'decision-log-minimal',
+        reason: 'Besoin de decisions tracees pour eviter les retours en arriere.'
+      },
+      organisation: {
+        slug: 'matrice-responsabilites-raci-lite',
+        reason: 'Rendre les roles lisibles pour accelerer les decisions.'
+      },
+      symptomes: {
+        slug: 'reunion-30min-sans-noyade',
+        reason: 'Une action courte pour sortir des boucles improductives.'
+      }
+    };
+
+    axesSorted.forEach((axis) => {
+      if (recommendations.length >= 3) return;
+      const candidate = axisToSlug[axis.id];
+      if (!candidate) return;
+      addRecommendation(recommendations, candidate, allowedSlugs);
+    });
+
+    if (recommendations.length === 0) {
+      addRecommendation(recommendations, {
+        slug: 'rituel-hebdo-15min',
+        reason: 'Instaurer un rythme court pour stabiliser les priorites.'
+      }, allowedSlugs);
+    }
+  }
+
+  if (input?.journeyId === 'p4') {
+    const axisToSlug: Record<string, ResourceRecommendation> = {
+      coordination: {
+        slug: 'compte-rendu-utile-1page',
+        reason: 'Clarifier qui fait quoi et quand sans rallonger les cycles.'
+      },
+      rythmes: {
+        slug: 'tableau-bord-3-signaux',
+        reason: 'Suivre le rythme et les signaux avant la derive.'
+      },
+      symptomes: {
+        slug: 'reunion-30min-sans-noyade',
+        reason: 'Un format court pour sortir des boucles improductives.'
+      }
+    };
+
+    axesSorted.forEach((axis) => {
+      if (recommendations.length >= 3) return;
+      const candidate = axisToSlug[axis.id];
+      if (!candidate) return;
+      addRecommendation(recommendations, candidate, allowedSlugs);
+    });
+
+    if (recommendations.length === 0) {
+      addRecommendation(recommendations, {
+        slug: 'rituel-hebdo-15min',
+        reason: 'Poser un rituel court pour stabiliser la semaine.'
+      }, allowedSlugs);
+    }
+  }
 
   return recommendations;
 };

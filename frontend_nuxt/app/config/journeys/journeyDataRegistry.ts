@@ -94,17 +94,17 @@ const copyRegistry: Record<string, JourneyCopyBundle> = {
 const questionsRegistry: Record<string, PanoramaQuestionsBundle> = {
   'app/config/journeys/p2QuestionsV1_0': {
     questions: p2PanoramaQuestions,
-    axisOrder: P2_PANORAMA_AXIS_ORDER,
+    axisOrder: [...P2_PANORAMA_AXIS_ORDER],
     axesMeta: p2PanoramaAxesMeta
   },
   'app/config/journeys/p3QuestionsV1_0': {
     questions: p3PanoramaQuestions,
-    axisOrder: P3_PANORAMA_AXIS_ORDER,
+    axisOrder: [...P3_PANORAMA_AXIS_ORDER],
     axesMeta: p3PanoramaAxesMeta
   },
   'app/config/journeys/p4QuestionsV1_0': {
     questions: p4PanoramaQuestions,
-    axisOrder: P4_PANORAMA_AXIS_ORDER,
+    axisOrder: [...P4_PANORAMA_AXIS_ORDER],
     axesMeta: p4PanoramaAxesMeta
   },
   'app/config/journeys/p5QuestionsV1_0': { questions: p5PanoramaQuestions, axisOrder: [...P5_PANORAMA_AXIS_ORDER], axesMeta: p5PanoramaAxesMeta },

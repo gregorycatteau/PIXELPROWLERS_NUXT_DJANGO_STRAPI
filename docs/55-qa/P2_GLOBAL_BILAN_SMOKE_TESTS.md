@@ -14,16 +14,17 @@ tags:
 
 # P2 Global Bilan — Smoke tests (engine + adapter)
 
-Scénarios rapides pour valider le flow P2 core (E1 -> E2 -> Global + export).
+Scenarios rapides pour valider le flow P2 core (E1 -> E2 -> E3 + ressources).
 
-## 1) E1 -> E2 -> Global
-- Action: ouvrir `/parcours/nos-outils-numeriques-nous-epuisent` puis repondre a 1-2 questions.
-- Attendu: E2 affiche un bilan panorama (scores par axe), bouton vers bilan global OK.
+## 1) E1 -> E2 -> E3
+- Action: ouvrir `/parcours/parcours-p2` puis repondre a 1-2 questions.
+- Attendu: E2 affiche un bilan panorama (3 axes, scores 0-100) + 3 priorites.
+- Attendu: E3 affiche 3 ressources taggees P2.
 
-## 2) Skip signal (Option C)
-- Action: ignorer 2 questions d un meme axe, aller en E2 puis Global Bilan.
-- Attendu: bandeau skip global visible; mention par axe si seuil atteint.
+## 2) Smoke script (CI/Local)
+- Action: `bash frontend_nuxt/scripts/smoke/smoke-p2-value.sh`
+- Attendu: statut 200 sur E2/E3, bilan non vide, actions presentes, ressources P2 uniquement.
 
 ## 3) Export + reload
-- Action: ouvrir Global Bilan, copier l export, puis recharger la page.
+- Action: ouvrir E2, copier l export, puis recharger la page.
 - Attendu: export genere cote client, aucune reponse brute, recharge conserve les agregats.

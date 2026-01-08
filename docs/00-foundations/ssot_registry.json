@@ -390,18 +390,37 @@
       },
       {
         "id": "PX_V1_3_P3_JOURNEY_MINIMAL",
-        "path": "docs/20-product_specs/functional/PX_V1_3_P3_JOURNEY_MINIMAL.md",
+        "path": "docs/30-tech_specs/frontend/PX_V1_3_P3_JOURNEY_MINIMAL.md",
         "status": "active",
         "hasFrontmatter": true,
-        "domain": "product_specs",
+        "domain": "tech_specs",
         "owners": [
           "Marty"
         ],
         "priority": "P2",
         "tags": [
-          "product_specs",
+          "tech_specs",
+          "frontend",
           "journey",
           "p3",
+          "v1.3"
+        ]
+      },
+      {
+        "id": "PX_V1_3_P4_JOURNEY_MINIMAL",
+        "path": "docs/30-tech_specs/frontend/PX_V1_3_P4_JOURNEY_MINIMAL.md",
+        "status": "active",
+        "hasFrontmatter": true,
+        "domain": "tech_specs",
+        "owners": [
+          "Marty"
+        ],
+        "priority": "P2",
+        "tags": [
+          "tech_specs",
+          "frontend",
+          "journey",
+          "p4",
           "v1.3"
         ]
       },
@@ -591,6 +610,30 @@
           "security",
           "no-tech-reveal",
           "guard"
+        ]
+      },
+      {
+        "id": "P3_GLOBAL_BILAN_SMOKE_TESTS",
+        "path": "docs/55-qa/P3_GLOBAL_BILAN_SMOKE_TESTS.md",
+        "status": "active",
+        "hasFrontmatter": true,
+        "domain": "qa",
+        "tags": [
+          "qa",
+          "testing",
+          "p3"
+        ]
+      },
+      {
+        "id": "P4_GLOBAL_BILAN_SMOKE_TESTS",
+        "path": "docs/55-qa/P4_GLOBAL_BILAN_SMOKE_TESTS.md",
+        "status": "active",
+        "hasFrontmatter": true,
+        "domain": "qa",
+        "tags": [
+          "qa",
+          "testing",
+          "p4"
         ]
       },
       {
