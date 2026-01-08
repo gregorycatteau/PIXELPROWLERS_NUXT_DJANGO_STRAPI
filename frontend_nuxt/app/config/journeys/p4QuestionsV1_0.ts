@@ -8,10 +8,34 @@ export const p4PanoramaAxesMeta = {
 };
 
 export const p4PanoramaQuestions = [
-  { id: 'p4_panorama_symptomes_q1', axisId: 'symptomes', label: 'Les urgences interrompent souvent le travail en cours.' },
-  { id: 'p4_panorama_symptomes_q2', axisId: 'symptomes', label: 'On perd du temps a corriger des details deja vus.' },
-  { id: 'p4_panorama_rythmes_q1', axisId: 'rythmes', label: 'Le rythme de la semaine est previsible.' },
-  { id: 'p4_panorama_rythmes_q2', axisId: 'rythmes', label: 'Les temps de recul sont preserves.' },
-  { id: 'p4_panorama_coordination_q1', axisId: 'coordination', label: 'Les demandes passent par un point de contact clair.' },
-  { id: 'p4_panorama_coordination_q2', axisId: 'coordination', label: 'Les relais entre personnes sont fluides.' }
+  {
+    id: 'p4_panorama_symptomes_q1',
+    axisId: 'symptomes',
+    label: 'Les urgences interrompent le travail en cours sans priorite partagee.'
+  },
+  {
+    id: 'p4_panorama_symptomes_q2',
+    axisId: 'symptomes',
+    label: 'On doit regularly reallocer du temps pour corriger des incidents deja identifies.'
+  },
+  {
+    id: 'p4_panorama_rythmes_q1',
+    axisId: 'rythmes',
+    label: 'La cadence hebdo est predictable et partagee par l equipe.'
+  },
+  {
+    id: 'p4_panorama_rythmes_q2',
+    axisId: 'rythmes',
+    label: 'Chaque semaine a un rituel court qui permet d aligner la priorite.'
+  },
+  {
+    id: 'p4_panorama_coordination_q1',
+    axisId: 'coordination',
+    label: 'Les relais sont clairs quand une personne est en retard ou absente.'
+  },
+  {
+    id: 'p4_panorama_coordination_q2',
+    axisId: 'coordination',
+    label: 'Les demandes urgentes passent par un canal connu et respecte.'
+  }
 ];
