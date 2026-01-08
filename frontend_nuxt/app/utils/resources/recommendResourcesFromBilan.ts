@@ -132,5 +132,36 @@ export const recommendResourcesFromBilan = (
     }
   }
 
+  if (input?.journeyId === 'p4') {
+    const axisToSlug: Record<string, ResourceRecommendation> = {
+      coordination: {
+        slug: 'compte-rendu-utile-1page',
+        reason: 'Clarifier qui fait quoi et quand sans rallonger les cycles.'
+      },
+      rythmes: {
+        slug: 'tableau-bord-3-signaux',
+        reason: 'Suivre le rythme et les signaux avant la derive.'
+      },
+      symptomes: {
+        slug: 'reunion-30min-sans-noyade',
+        reason: 'Un format court pour sortir des boucles improductives.'
+      }
+    };
+
+    axesSorted.forEach((axis) => {
+      if (recommendations.length >= 3) return;
+      const candidate = axisToSlug[axis.id];
+      if (!candidate) return;
+      addRecommendation(recommendations, candidate, allowedSlugs);
+    });
+
+    if (recommendations.length === 0) {
+      addRecommendation(recommendations, {
+        slug: 'rituel-hebdo-15min',
+        reason: 'Poser un rituel court pour stabiliser la semaine.'
+      }, allowedSlugs);
+    }
+  }
+
   return recommendations;
 };
