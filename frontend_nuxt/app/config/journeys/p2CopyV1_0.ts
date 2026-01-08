@@ -22,6 +22,10 @@ export const p2Copy = {
     globalCta: 'Voir le bilan global',
     globalLocked: 'Le bilan global est accessible apres le panorama.'
   },
+  resources: {
+    intro: 'Pour aller plus loin, consulte nos kits P2 : guides et modèles pour appliquer ces actions sans attendre.',
+    cta: 'Explorer les ressources P2'
+  },
   global: {
     title: 'Bilan global P2',
     subtitle: 'Synthese publique, basee sur des agregats.',

@@ -1,6 +1,6 @@
 import { computed } from 'vue';
 import type { JourneyBilanAdapter } from './types';
-import type { GlobalBilanViewModel, ResourcesActionsItemVM } from '@/types/bilan';
+import type { ResourcesActionsItemVM } from '@/types/bilan';
 import { createEmptyUniversalBilanViewModel } from '@/types/bilan';
 import { createEmptySections } from '@/adapters/bilan/universalBilanViewModel';
 import { assertNoRawAnswers } from '@/utils/bilan/assertNoRawAnswers';
@@ -177,7 +177,7 @@ export const p2BilanAdapter: JourneyBilanAdapter = {
       }
     });
 
-    const vm: GlobalBilanViewModel = {
+    const vm = createEmptyUniversalBilanViewModel({
       copy: {
         title: p2Copy.global.title,
         subtitle: p2Copy.global.subtitle,
@@ -216,10 +216,9 @@ export const p2BilanAdapter: JourneyBilanAdapter = {
         partial: !hasPanorama.value,
         maturity: 'stub'
       }
-    };
+    });
 
-    const filledVm = createEmptyUniversalBilanViewModel(vm);
-    assertNoRawAnswers(filledVm);
-    return filledVm;
+    assertNoRawAnswers(vm);
+    return vm;
   }
 };

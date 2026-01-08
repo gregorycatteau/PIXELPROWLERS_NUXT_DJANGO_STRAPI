@@ -61,11 +61,17 @@ export type JourneyCopyGlobal = {
   subtitle?: string;
 };
 
+export type JourneyCopyResources = {
+  intro?: string;
+  cta?: string;
+};
+
 export type JourneyCopyBundle = {
   intro?: JourneyCopyIntro;
   panorama?: JourneyCopyPanorama;
   panoramaBilan?: JourneyCopyPanoramaBilan;
   global?: JourneyCopyGlobal;
+  resources?: JourneyCopyResources;
 };
 
 export type PanoramaQuestion = {

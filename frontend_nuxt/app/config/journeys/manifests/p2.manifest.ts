@@ -6,8 +6,9 @@ export const p2Manifest: JourneyManifestV1 = {
   engine: 'universal',
   maturity: 'stub',
   axes: [
-    { axisId: 'clarity', label: 'Clarte' },
-    { axisId: 'capacity', label: 'Capacite' }
+    { axisId: 'clarity', label: 'Gouvernance et priorités' },
+    { axisId: 'capacity', label: 'Coordination et suivi' },
+    { axisId: 'security', label: 'Sécurité et risques' }
   ],
   modules: {
     panorama: true,
